@@ -1,0 +1,364 @@
+{
+  "result": {
+    "PEG_F3_GEOMETRY_FIX_REVIEW": "PASS",
+    "LINK0_LINK1_GEOMETRY_CLASSIFICATION": "LIKELY_MISSING_EXCLUSION",
+    "LINK0_LINK1_STATIC_OVERLAP": "YES",
+    "OTHER_ADJACENT_PAIR_OVERLAP": "MIXED",
+    "UPSTREAM_EXCLUSION_EVIDENCE": "UNAVAILABLE",
+    "next_minimal_fix": "Propose one source-level base_link/shoulder_Link exclusion, then separately authorize compile-only and reset-only validation before any axial diagnostic.",
+    "GUARD_POLICY_NEXT": "EXCLUSION_FIX_REVIEW",
+    "simulator_started": false,
+    "files_modified": false
+  },
+  "mesh_sources": [
+    {
+      "link": 0,
+      "path": "external\\packages\\peg_insertion\\peg_insertion\\code\\env\\mujoco_env\\mujoco_env\\assets\\models\\manipulators\\Aubo_i5\\meshes\\collision\\link0.STL",
+      "sha256": "fc70e195eeb2e9281e17fc2f32bb418fbca28f7460919902ea2b86a3eef62d6c",
+      "bytes": 14184,
+      "triangles": 282,
+      "declared_file": "../assets/models/manipulators/Aubo_i5/meshes/collision/link0.STL",
+      "scale": "1 1 1 (implicit)",
+      "source_and_generated_reference_same_bytes": true
+    },
+    {
+      "link": 1,
+      "path": "external\\packages\\peg_insertion\\peg_insertion\\code\\env\\mujoco_env\\mujoco_env\\assets\\models\\manipulators\\Aubo_i5\\meshes\\collision\\link1.STL",
+      "sha256": "b068360a0c5241568ea8f78a2523c059e96cc954b5a4f4e06c184189bcb6095b",
+      "bytes": 23384,
+      "triangles": 466,
+      "declared_file": "../assets/models/manipulators/Aubo_i5/meshes/collision/link1.STL",
+      "scale": "1 1 1 (implicit)",
+      "source_and_generated_reference_same_bytes": true
+    },
+    {
+      "link": 2,
+      "path": "external\\packages\\peg_insertion\\peg_insertion\\code\\env\\mujoco_env\\mujoco_env\\assets\\models\\manipulators\\Aubo_i5\\meshes\\collision\\link2.STL",
+      "sha256": "a887276a3c3241c06cca8b41e86c6dd77496991a9fe29aaec7e83ec5aee0c361",
+      "bytes": 52284,
+      "triangles": 1044,
+      "declared_file": "../assets/models/manipulators/Aubo_i5/meshes/collision/link2.STL",
+      "scale": "1 1 1 (implicit)",
+      "source_and_generated_reference_same_bytes": true
+    },
+    {
+      "link": 3,
+      "path": "external\\packages\\peg_insertion\\peg_insertion\\code\\env\\mujoco_env\\mujoco_env\\assets\\models\\manipulators\\Aubo_i5\\meshes\\collision\\link3.STL",
+      "sha256": "92b2a48d0e3df35c344725066ccc00e8eb302d83a8037776915482c37ce91ce6",
+      "bytes": 18184,
+      "triangles": 362,
+      "declared_file": "../assets/models/manipulators/Aubo_i5/meshes/collision/link3.STL",
+      "scale": "1 1 1 (implicit)",
+      "source_and_generated_reference_same_bytes": true
+    },
+    {
+      "link": 4,
+      "path": "external\\packages\\peg_insertion\\peg_insertion\\code\\env\\mujoco_env\\mujoco_env\\assets\\models\\manipulators\\Aubo_i5\\meshes\\collision\\link4.STL",
+      "sha256": "8922499305bc14a58823b3726b540c5e809a7771ef418823db915bc0b224db1b",
+      "bytes": 17784,
+      "triangles": 354,
+      "declared_file": "../assets/models/manipulators/Aubo_i5/meshes/collision/link4.STL",
+      "scale": "1 1 1 (implicit)",
+      "source_and_generated_reference_same_bytes": true
+    },
+    {
+      "link": 5,
+      "path": "external\\packages\\peg_insertion\\peg_insertion\\code\\env\\mujoco_env\\mujoco_env\\assets\\models\\manipulators\\Aubo_i5\\meshes\\collision\\link5.STL",
+      "sha256": "859f746bf0ab64a84db7ffe52f04a346be03bd075b6f1b18b2a267fc57bc0ae2",
+      "bytes": 17784,
+      "triangles": 354,
+      "declared_file": "../assets/models/manipulators/Aubo_i5/meshes/collision/link5.STL",
+      "scale": "1 1 1 (implicit)",
+      "source_and_generated_reference_same_bytes": true
+    },
+    {
+      "link": 6,
+      "path": "external\\packages\\peg_insertion\\peg_insertion\\code\\env\\mujoco_env\\mujoco_env\\assets\\models\\manipulators\\Aubo_i5\\meshes\\collision\\link6.STL",
+      "sha256": "e319fd5d4e51c1a5289cc79abafcb5b2a7952897059df428855dad5d60ebd2ab",
+      "bytes": 13984,
+      "triangles": 278,
+      "declared_file": "../assets/models/manipulators/Aubo_i5/meshes/collision/link6.STL",
+      "scale": "1 1 1 (implicit)",
+      "source_and_generated_reference_same_bytes": true
+    }
+  ],
+  "body_transform_comparison": [
+    {
+      "body": "base_link",
+      "source_pos": "0 0 0",
+      "generated_pos": "0 0 0",
+      "source_quat": "1 0 0 0",
+      "generated_quat": "1 0 0 0",
+      "match": true
+    },
+    {
+      "body": "shoulder_Link",
+      "source_pos": "0 0 0.122",
+      "generated_pos": "0 0 0.122",
+      "source_quat": "0 0 0 1",
+      "generated_quat": "0 0 0 1",
+      "match": true
+    },
+    {
+      "body": "upperArm_Link",
+      "source_pos": "0 0.1215 0",
+      "generated_pos": "0 0.1215 0",
+      "source_quat": "0.5 -0.5 -0.5 -0.5",
+      "generated_quat": "0.5 -0.5 -0.5 -0.5",
+      "match": true
+    },
+    {
+      "body": "foreArm_Link",
+      "source_pos": "0.408 0 0",
+      "generated_pos": "0.408 0 0",
+      "source_quat": "0 -1 0 0",
+      "generated_quat": "0 -1 0 0",
+      "match": true
+    },
+    {
+      "body": "wrist1_Link",
+      "source_pos": "0.376 0 0",
+      "generated_pos": "0.376 0 0",
+      "source_quat": "0 0.707107 0.707107 0",
+      "generated_quat": "0 0.707107 0.707107 0",
+      "match": true
+    },
+    {
+      "body": "wrist2_Link",
+      "source_pos": "0 0.1025 0",
+      "generated_pos": "0 0.1025 0",
+      "source_quat": "0.707107 -0.707107 0 0",
+      "generated_quat": "0.707107 -0.707107 0 0",
+      "match": true
+    },
+    {
+      "body": "wrist3_Link",
+      "source_pos": "0 -0.094 0",
+      "generated_pos": "0 -0.094 0",
+      "source_quat": "0.707107 0.707107 0 0",
+      "generated_quat": "0.707107 0.707107 0 0",
+      "match": true
+    }
+  ],
+  "shoulder_joint": {
+    "origin": "0 0 0.122",
+    "body_quat": "0 0 0 1",
+    "axis": "0 0 1",
+    "range": "-6.28319 6.28319",
+    "reset_q": 1.5700142475689465
+  },
+  "link01_samples": [
+    {
+      "shoulder_q_rad": -3.141592653589793,
+      "aabb_overlap": true,
+      "axis_overlap_m": [
+        0.12320994213223457,
+        0.1306748278439045,
+        0.006499720245599749
+      ],
+      "aabb_clearance_m": 0.0,
+      "exact_mesh_overlap": "UNRESOLVED_AABB_BROAD_PHASE_ONLY"
+    },
+    {
+      "shoulder_q_rad": -1.5707963267948966,
+      "aabb_overlap": true,
+      "axis_overlap_m": [
+        0.1306748278439045,
+        0.12320994213223457,
+        0.006499720245599749
+      ],
+      "aabb_clearance_m": 0.0,
+      "exact_mesh_overlap": "UNRESOLVED_AABB_BROAD_PHASE_ONLY"
+    },
+    {
+      "shoulder_q_rad": 0,
+      "aabb_overlap": true,
+      "axis_overlap_m": [
+        0.12320994213223457,
+        0.1306748278439045,
+        0.006499720245599749
+      ],
+      "aabb_clearance_m": 0.0,
+      "exact_mesh_overlap": "UNRESOLVED_AABB_BROAD_PHASE_ONLY"
+    },
+    {
+      "shoulder_q_rad": 1.5707963267948966,
+      "aabb_overlap": true,
+      "axis_overlap_m": [
+        0.1306748278439045,
+        0.12320994213223457,
+        0.006499720245599749
+      ],
+      "aabb_clearance_m": 0.0,
+      "exact_mesh_overlap": "UNRESOLVED_AABB_BROAD_PHASE_ONLY"
+    },
+    {
+      "shoulder_q_rad": 3.141592653589793,
+      "aabb_overlap": true,
+      "axis_overlap_m": [
+        0.12320994213223457,
+        0.1306748278439045,
+        0.006499720245599749
+      ],
+      "aabb_clearance_m": 0.0,
+      "exact_mesh_overlap": "UNRESOLVED_AABB_BROAD_PHASE_ONLY"
+    },
+    {
+      "shoulder_q_rad": 1.5700142475689465,
+      "aabb_overlap": true,
+      "axis_overlap_m": [
+        0.13071785077566986,
+        0.12321449464081609,
+        0.006499720245599749
+      ],
+      "aabb_clearance_m": 0.0,
+      "exact_mesh_overlap": "YES_FROM_SAVED_MUJOCO_CONTACTS"
+    }
+  ],
+  "adjacent_pairs": [
+    {
+      "pair": [
+        "link0",
+        "link1"
+      ],
+      "bodies": [
+        "base_link",
+        "shoulder_Link"
+      ],
+      "exclude": false,
+      "collision_enabled": true,
+      "static_overlap_possible": true,
+      "clearance_estimate": {
+        "aabb_overlap": true,
+        "axis_overlap_m": [
+          0.13071785077566986,
+          0.12321449464081609,
+          0.006499720245599749
+        ],
+        "aabb_clearance_m": 0.0
+      },
+      "exact_overlap": "YES_FROM_SAVED_CONTACTS"
+    },
+    {
+      "pair": [
+        "link1",
+        "link2"
+      ],
+      "bodies": [
+        "shoulder_Link",
+        "upperArm_Link"
+      ],
+      "exclude": false,
+      "collision_enabled": true,
+      "static_overlap_possible": true,
+      "clearance_estimate": {
+        "aabb_overlap": true,
+        "axis_overlap_m": [
+          0.12320994213223457,
+          0.006999712795019153,
+          0.14339186820178754
+        ],
+        "aabb_clearance_m": 0.0
+      },
+      "exact_overlap": "UNRESOLVED"
+    },
+    {
+      "pair": [
+        "link2",
+        "link3"
+      ],
+      "bodies": [
+        "upperArm_Link",
+        "foreArm_Link"
+      ],
+      "exclude": false,
+      "collision_enabled": true,
+      "static_overlap_possible": true,
+      "clearance_estimate": {
+        "aabb_overlap": true,
+        "axis_overlap_m": [
+          0.16310702439898078,
+          0.12046323761220964,
+          0.017499715089797974
+        ],
+        "aabb_clearance_m": 0.0
+      },
+      "exact_overlap": "UNRESOLVED"
+    },
+    {
+      "pair": [
+        "link3",
+        "link4"
+      ],
+      "bodies": [
+        "foreArm_Link",
+        "wrist1_Link"
+      ],
+      "exclude": false,
+      "collision_enabled": true,
+      "static_overlap_possible": true,
+      "clearance_estimate": {
+        "aabb_overlap": true,
+        "axis_overlap_m": [
+          0.11020790728331281,
+          0.11772491782903671,
+          0.006000000983476639
+        ],
+        "aabb_clearance_m": 0.0
+      },
+      "exact_overlap": "UNRESOLVED"
+    },
+    {
+      "pair": [
+        "link4",
+        "link5"
+      ],
+      "bodies": [
+        "wrist1_Link",
+        "wrist2_Link"
+      ],
+      "exclude": false,
+      "collision_enabled": true,
+      "static_overlap_possible": true,
+      "clearance_estimate": {
+        "aabb_overlap": true,
+        "axis_overlap_m": [
+          0.08249999210238457,
+          0.006000000089406973,
+          0.08250195324065568
+        ],
+        "aabb_clearance_m": 0.0
+      },
+      "exact_overlap": "UNRESOLVED"
+    },
+    {
+      "pair": [
+        "link5",
+        "link6"
+      ],
+      "bodies": [
+        "wrist2_Link",
+        "wrist3_Link"
+      ],
+      "exclude": false,
+      "collision_enabled": true,
+      "static_overlap_possible": true,
+      "clearance_estimate": {
+        "aabb_overlap": true,
+        "axis_overlap_m": [
+          0.07500000298022697,
+          0.005999997764825821,
+          0.07875000312924121
+        ],
+        "aabb_clearance_m": 0.0
+      },
+      "exact_overlap": "UNRESOLVED"
+    }
+  ],
+  "method_limitations": [
+    "Reset overlap is exact evidence from saved MuJoCo contacts; no simulator was run here.",
+    "Representative-pose and other-pair results are transformed STL AABB broad-phase only; AABB overlap is possible overlap, not triangle-level proof.",
+    "Repository search found no URDF/SRDF/xacro or vendor/upstream disable-collision evidence for this Aubo model.",
+    "LIKELY_MISSING_EXCLUSION is based on direct parent-child mesh overlap, all-angle AABB overlap, lack of source exclusion, and adjacent-joint convention; it is not proof of vendor intent."
+  ]
+}

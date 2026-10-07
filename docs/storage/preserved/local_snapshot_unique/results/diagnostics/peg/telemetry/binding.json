@@ -1,0 +1,14 @@
+{
+  "schema": "PEG_AXIAL_TELEMETRY_V1",
+  "files": {
+    "/home/makoto/flexible_line_project/external/packages/peg_insertion/peg_insertion/code/env/mujoco_env/mujoco_env/core/sim_env.py": "22c8e02c3df3619281e5fe12c86a555928ba8ca28dab41d3081104dae2ed52e5",
+    "/home/makoto/flexible_line_project/external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim/peg_env_adapter.py": "8a703941822d7c045dcf573e88580ec1bab5f08351d2a059083831f5668f0952",
+    "/home/makoto/miniconda3/envs/serl_peg_gpu/lib/python3.10/site-packages/mujoco/minimize.py": "a627c3ef45b73ed0675f4fb07d3fea8fd16a5d3dc4b200ff6d8b045c7e1a26a2",
+    "/home/makoto/flexible_line_project/external/packages/peg_insertion/peg_insertion/code/env/mujoco_env/mujoco_env/controllers/cartesian_ik.py": "048974d7e6166ab15c2aa2857f281873cc15ea30c7c12185ae479610b560025e",
+    "/home/makoto/flexible_line_project/training/peg_insertion/axial_telemetry.py": "8f4cb38a55390108baee43531b35721e500a7861c4e2a25a7747696990f5f694"
+  },
+  "observation_contract_version": "PEG_OBS_CONTRACT_V2_SENSOR_FIXED",
+  "contacts_phase": "pre_step and post_physics; not every physics substep",
+  "jacobian_scope": "existing evaluations only; q attached; last evaluated may differ from returned q",
+  "training_data": false
+}

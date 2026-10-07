@@ -1,0 +1,11 @@
+{
+  "PEG_F3_GEOMETRY_FIX_REVIEW": "PASS",
+  "LINK0_LINK1_GEOMETRY_CLASSIFICATION": "LIKELY_MISSING_EXCLUSION",
+  "LINK0_LINK1_STATIC_OVERLAP": "YES",
+  "OTHER_ADJACENT_PAIR_OVERLAP": "UNRESOLVED",
+  "UPSTREAM_EXCLUSION_EVIDENCE": "UNAVAILABLE",
+  "next_minimal_fix": "Propose one source-level base_link/shoulder_Link exclusion, then separately authorize compile-only and reset-only validation before any axial diagnostic.",
+  "GUARD_POLICY_NEXT": "EXCLUSION_FIX_REVIEW",
+  "simulator_started": false,
+  "files_modified": false
+}

@@ -1,0 +1,52 @@
+    PID COMMAND
+      1 /sbin/init
+      2 /init
+      7 plan9 --control-socket 7 --log-level 4 --server-fd 8 --pipe-fd 10 --log-truncate
+     58 /lib/systemd/systemd-journald
+     86 /lib/systemd/systemd-udevd
+     89 /lib/systemd/systemd-udevd
+     90 /lib/systemd/systemd-udevd
+     91 /lib/systemd/systemd-udevd
+     92 /lib/systemd/systemd-udevd
+     93 /lib/systemd/systemd-udevd
+     94 /lib/systemd/systemd-udevd
+     95 /lib/systemd/systemd-udevd
+     96 /lib/systemd/systemd-udevd
+     97 /lib/systemd/systemd-udevd
+     98 /lib/systemd/systemd-udevd
+     99 /lib/systemd/systemd-udevd
+    100 /lib/systemd/systemd-udevd
+    101 /lib/systemd/systemd-udevd
+    102 /lib/systemd/systemd-udevd
+    103 /lib/systemd/systemd-udevd
+    106 /lib/systemd/systemd-udevd
+    107 /lib/systemd/systemd-udevd
+    108 /lib/systemd/systemd-udevd
+    109 /lib/systemd/systemd-udevd
+    110 /lib/systemd/systemd-udevd
+    111 /lib/systemd/systemd-udevd
+    112 /lib/systemd/systemd-udevd
+    113 /lib/systemd/systemd-udevd
+    119 /lib/systemd/systemd-udevd
+    120 /lib/systemd/systemd-udevd
+    153 /lib/systemd/systemd-resolved
+    154 /lib/systemd/systemd-timesyncd
+    165 /usr/sbin/cron -f -P
+    167 @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+    172 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+    173 /usr/sbin/rsyslogd -n -iNONE
+    175 /usr/lib/snapd/snapd
+    176 /lib/systemd/systemd-logind
+    200 /sbin/agetty -o -p -- \u --noclear tty1 linux
+    201 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+    246 /lib/systemd/systemd-timedated
+    281 /init
+    282 /init
+    283 bash -c ps -eo pid,args > /home/makoto/flexible_line_project/results/diagnostics/peg/f3_axial_bounded_20260905/processes_after.txt; cp -r /home/makoto/flexible_line_project/results/diagnostics/peg/f3_axial_bounded_20260905 /mnt/d/桌面/小挑/flexible_line_project/flexible_line_project/results/diagnostics/peg/
+    284 /bin/login -f
+    326 /lib/systemd/systemd --user
+    327 (sd-pam)
+    340 -bash
+    356 -bash
+    357 /home/makoto/miniconda3/bin/python /home/makoto/miniconda3/bin/conda shell.bash hook
+    360 ps -eo pid,args

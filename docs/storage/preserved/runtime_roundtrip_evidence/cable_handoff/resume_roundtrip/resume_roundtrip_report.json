@@ -1,0 +1,17 @@
+{
+  "initial_checkpoint_step": 123,
+  "restored_learner_step": 123,
+  "restored_actor_steps": 4,
+  "online_replay_size": 5,
+  "online_replay_resume": "RESTORED",
+  "demo_raw_transitions": 10521,
+  "demo_replay_size": 10526,
+  "demo_replay_resume": "REBUILT",
+  "wandb_run_id": "resume-unit-run-id",
+  "wandb_resume_policy": "must",
+  "next_checkpoint_step": 125,
+  "original_checkpoint_unchanged": true,
+  "collision_protection": "PASS",
+  "restored_policy_inference": "PASS",
+  "training_resume": "VALIDATED"
+}

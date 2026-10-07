@@ -1,0 +1,177 @@
+[
+  {
+    "_step": 0,
+    "learner_update": 0,
+    "critic_loss": 126.5620346069336,
+    "actor_loss": 0.15959526598453522,
+    "temperature_loss": 0.01814853958785534
+  },
+  {
+    "_step": 1,
+    "learner_update": 1,
+    "critic_loss": 131.4639892578125,
+    "actor_loss": 0.07388569414615631,
+    "temperature_loss": 0.02668602019548416
+  },
+  {
+    "_step": 2,
+    "learner_update": 2,
+    "critic_loss": 188.3892059326172,
+    "actor_loss": 0.1931874305009842,
+    "temperature_loss": 0.0037819850258529186
+  },
+  {
+    "_step": 3,
+    "learner_update": 3,
+    "critic_loss": 231.72105407714844,
+    "actor_loss": 0.10648848116397858,
+    "temperature_loss": 0.02282649837434292
+  },
+  {
+    "_step": 4,
+    "learner_update": 4,
+    "critic_loss": 201.91799926757812,
+    "actor_loss": 0.1582925021648407,
+    "temperature_loss": 0.00634626904502511
+  },
+  {
+    "_step": 5,
+    "learner_update": 5,
+    "critic_loss": 219.1688995361328,
+    "actor_loss": 0.2152901291847229,
+    "temperature_loss": 0.022188279777765274
+  },
+  {
+    "_step": 6,
+    "learner_update": 6,
+    "critic_loss": 212.7440948486328,
+    "actor_loss": 0.1791437566280365,
+    "temperature_loss": 0.025353124365210533
+  },
+  {
+    "_step": 7,
+    "learner_update": 7,
+    "critic_loss": 214.13296508789062,
+    "actor_loss": 0.19947415590286255,
+    "temperature_loss": 0.01496354304254055
+  },
+  {
+    "_step": 8,
+    "learner_update": 8,
+    "critic_loss": 240.3667755126953,
+    "actor_loss": 0.2080727368593216,
+    "temperature_loss": 0.015230257995426655
+  },
+  {
+    "_step": 9,
+    "learner_update": 9,
+    "critic_loss": 228.486083984375,
+    "actor_loss": 0.188655823469162,
+    "temperature_loss": 0.01223871298134327
+  },
+  {
+    "_step": 10,
+    "learner_update": 10,
+    "critic_loss": 187.4689483642578,
+    "actor_loss": 0.13456498086452484,
+    "temperature_loss": 0.014932287856936455
+  },
+  {
+    "_step": 11,
+    "learner_update": 11,
+    "critic_loss": 237.7082977294922,
+    "actor_loss": 0.08347359299659729,
+    "temperature_loss": 0.025247864425182343
+  },
+  {
+    "_step": 12,
+    "learner_update": 12,
+    "critic_loss": 205.08189392089844,
+    "actor_loss": 0.14762067794799805,
+    "temperature_loss": 0.018074877560138702
+  },
+  {
+    "_step": 13,
+    "learner_update": 13,
+    "critic_loss": 209.29385375976562,
+    "actor_loss": 0.23569057881832123,
+    "temperature_loss": 0.0061932276003062725
+  },
+  {
+    "_step": 14,
+    "learner_update": 14,
+    "critic_loss": 229.8269805908203,
+    "actor_loss": 0.16912265121936798,
+    "temperature_loss": 0.028091980144381523
+  },
+  {
+    "_step": 15,
+    "learner_update": 15,
+    "critic_loss": 205.80967712402344,
+    "actor_loss": 0.1824536770582199,
+    "temperature_loss": 0.01825045794248581
+  },
+  {
+    "_step": 16,
+    "learner_update": 16,
+    "critic_loss": 234.14697265625,
+    "actor_loss": 0.322587788105011,
+    "temperature_loss": 0.021250532940030098
+  },
+  {
+    "_step": 17,
+    "learner_update": 17,
+    "critic_loss": 217.3699951171875,
+    "actor_loss": 0.27470794320106506,
+    "temperature_loss": 0.01765516959130764
+  },
+  {
+    "_step": 18,
+    "learner_update": 18,
+    "critic_loss": 175.2466278076172,
+    "actor_loss": 0.30413126945495605,
+    "temperature_loss": 0.006041503511369228
+  },
+  {
+    "_step": 19,
+    "learner_update": 19,
+    "critic_loss": 204.6670684814453,
+    "actor_loss": 0.23959186673164368,
+    "temperature_loss": 0.024535516276955605
+  },
+  {
+    "_step": 20,
+    "learner_update": 20,
+    "critic_loss": 234.8828582763672,
+    "actor_loss": 0.27661266922950745,
+    "temperature_loss": 0.01728334277868271
+  },
+  {
+    "_step": 21,
+    "learner_update": 21,
+    "critic_loss": 188.83460998535156,
+    "actor_loss": 0.24346250295639038,
+    "temperature_loss": 0.013467483222484589
+  },
+  {
+    "_step": 22,
+    "learner_update": 22,
+    "critic_loss": 231.80874633789062,
+    "actor_loss": 0.225124329328537,
+    "temperature_loss": 0.020487111061811447
+  },
+  {
+    "_step": 23,
+    "learner_update": 23,
+    "critic_loss": 225.0097198486328,
+    "actor_loss": 0.24299825727939606,
+    "temperature_loss": 0.010406628251075745
+  },
+  {
+    "_step": 24,
+    "learner_update": 24,
+    "critic_loss": 208.69302368164062,
+    "actor_loss": 0.33810287714004517,
+    "temperature_loss": 0.01953168399631977
+  }
+]

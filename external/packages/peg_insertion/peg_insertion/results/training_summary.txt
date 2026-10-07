@@ -1,0 +1,136 @@
+# Peg Insertion 训练进度总结
+
+## 已完成
+
+1. SERL 基础环境安装与版本兼容处理。
+2. PandaPickCube 基准异步训练链路验证。
+3. Aubo i5 Peg Insertion MuJoCo 环境独立 reset/step 验证。
+4. Peg state-only SERL Adapter。
+5. Peg Actor / Learner / ReplayBuffer 通信。
+6. Peg Online SAC smoke test。
+7. Checkpoint 保存与恢复。
+8. W&B 日志接入。
+9. SERL 格式 Demo Recorder。
+10. 20 条成功 Peg Demo。
+11. 20 条 Demo 转换为 RLPD transition PKL。
+12. 5512 Demo transitions 成功用于 Demo Buffer。
+13. RLPD Demo + Online 混合训练链路。
+14. 多轮 RLPD 训练：
+    - smoke
+    - pretrain10k
+    - v2_5k
+    - v3_10k_utd1
+15. BC consistent dataset：
+    peg_insert_bc_consistent.pkl
+16. Peg state BC train/eval 脚本。
+17. BC checkpoint：
+    peg_insert_bc_consistent_v1
+
+## 当前 RLPD 配置
+
+experiment：
+
+serl_peg_insert_rlpd20_v3_10k_utd1
+
+env：
+
+AuboPegInsert-State-v0
+
+seed：
+
+0
+
+max_steps：
+
+10000
+
+random_steps：
+
+0
+
+training_starts：
+
+100
+
+batch_size：
+
+64
+
+critic_actor_ratio：
+
+1
+
+utd_ratio：
+
+1
+
+checkpoint_period：
+
+1000
+
+Demo：
+
+peg_insert_20_demos_state.pkl
+
+数据混合：
+
+32 Online + 32 Demo
+
+checkpoint：
+
+peg_insert_rlpd_v3_10k_utd1
+
+## 当前状态
+
+RLPD：
+
+正在继续排查和提高自主插入正确率。
+
+BC：
+
+训练及初步测试已经开始，
+但 BC evaluation 尚未完全结束。
+
+## 正式 Evaluation
+
+当前统一正式 success-rate evaluation：
+
+未评测 / 尚未完成。
+
+不得根据训练 reward 推测 success rate。
+
+后续正式 evaluation 建议统一统计：
+
+- Success Rate
+- Mean Episode Steps
+- Median Episode Steps
+- Cycle Time
+- lateral_error
+- axial_error
+- orientation_error
+- max force
+- action saturation
+
+并对：
+
+- Online SAC
+- RLPD 20 Demo
+- BC
+
+使用一致的环境和评测条件。
+
+## Checkpoint 状态
+
+RLPD：
+
+peg_insert_rlpd_v3_10k_utd1
+
+目前作为 current candidate 提交，
+尚不能标记为 final best。
+
+BC：
+
+peg_insert_bc_consistent_v1
+
+目前作为 current BC checkpoint，
+BC 测试尚未完成。

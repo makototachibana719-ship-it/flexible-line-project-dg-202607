@@ -1,0 +1,284 @@
+# Project Status
+
+Latest AxialTelemetry: independent opt-in observer implemented;18 CPU tests PASS, protected production bytes/failed pilot unchanged. AXIAL_DIAGNOSTIC=READY for separately authorized use, not executed. Solver/joint/ctrl/contact evidence fields available prospectively; historical root cause remains UNRESOLVED. No new simulator/model/reset/rollout or pilot/training. See `results/validation/peg/f3_axial_telemetry_20260905/REPORT.md`.
+
+Latest AxialTrackingAudit: existing steps100–126 audited offline. Cartesian target accumulation PASS; adapter/base clipping not blocking. IK/joint audit incomplete (FAIL evidence gate), contacts UNRESOLVED because qpos/q_target/ctrl/contact pairs were not recorded. No root cause attribution beyond downstream-of-target blockage. Need separately authorized telemetry-only instrumentation; no rollout or repair performed. Evidence `results/validation/peg/f3_axial_tracking_audit_20260905/REPORT.md`.
+
+Latest F3 V2 DemoPilot (2026-09-05): standard FAIL after126 transitions; agent-generated simulated demonstration, not human data. Axial command12mm produced0.0088mm EE displacement over steps107–126; target tracking error grew to12.51mm. Controlled q stop, INTERRUPTED/ineligible preserved. Other four pilots NOT_RUN. Contract/sensor/continuity/hash audit PASS. No retry, training, checkpoint load/change or data promotion. Collection BLOCKED pending axial tracking review. See `results/validation/peg/f3_v2_pilot_20260905/REPORT.md`.
+
+Latest F3 V2 RecorderReady: schema/sensor/phase/hash/preflight PASS,27 synthetic CPU tests PASS. V2_DEMO_PILOT=READY_TO_RECORD (tool readiness only). Default CLI is preflight-only; explicit recording authorization required. No Demo/simulator/training started. Pilot success and coverage remain unverified; training remains BLOCKED. See `results/validation/peg/f3_v2_recorder_ready_20260904/REPORT.md`.
+
+Last updated: 2026-09-04
+
+Latest F3 DataReview:20 V1 demos/5512 transitions,20 successful terminals; zero rotation valid for near-aligned fixed reset but active correction coverage INADEQUATE (5213/5512 orientation<=0.05). Frozen near-hole10mm lateral/20mm axial contains1131 transitions. V2 five-pilot protocol/acceptance spec PASS; collection BLOCKED pending recorder V2/raw sensor/hash/phase readiness. No recording/rollout/training. See `results/validation/peg/f3_data_review_20260904/REPORT.md`.
+
+Latest F3 SensorFix: address/dim helper and CPU tests PASS; env/config V2, immutable legacy formal models and Demo hash-labeled V1 in external registry. Default V1->V2 eval/restore blocked; explicit diagnostic-only mode is non-skill and NOT executed. Legacy Demo cannot reconstruct missing Ty/Tz from available PKL/NPZ. No training/resume/checkpoint/cloud changes; prior Gates retained/stale, V1 Demo/V2 training blocked. See `results/validation/peg/f3_sensorfix_20260904/REPORT.md`.
+
+Latest F3 ContractAudit: action mapping PASS; torque sensor id1/adr3 sliced1:4 instead of3:6, observation/force mapping FAIL. First5 Demo episodes1328 transitions match source; full5512 actions have zero rotation. Rotation empirical check UNVERIFIED (gate FAIL), not proven rotation mismatch. One9000 episode reproduces prior trace; tracking error67=40.6mm/0.0947rad, commanded goal-orientation error0.683rad. No production fixes/training. See `results/validation/peg/f3_contract_audit_20260904/REPORT.md`.
+
+Latest F3 Diagnostic:5000/9000 one fixed episode each, diagnostic PASS; best simultaneous success ratios26.2649/13.3361, neither<=1. Mixed approach/fine-alignment/orientation failure; lateral threshold never met. E saturation mostly gripper-driven, D force rejection unproven. Recommend action/controller/Demo and sensor-mapping audit before any fix; no training-code change. See `results/validation/peg/f3_diagnostic_20260904/REPORT.md`.
+
+Latest F3 Stage2: fixed-reset screening execution PASS,5x10 episodes all0 successes. Diagnostic ranking9000>5000>7000>6000>8000; no final Top2.9000 min-position error26.6% lower than5000 but trend non-monotonic. CategoryB descriptive approach improvement; Policy Quality Review RECOMMENDED, FINAL_COMPARISON BLOCKED. No training/resume/cloud change/random reset/final evaluation. See `results/validation/peg/f3_stage2_20260904/REPORT.md`.
+
+Latest F3 Stage1: evaluator preflight/model load/smoke execution PASS. checkpoint9000 only,10 episodes,0 successes, all500-step truncations. Fixed-reset deterministic trajectories repeat across seeds0–9; no generalization claim. Screening READY/NOT STARTED; no formal50-episode evaluation. Model/replay/cloud unchanged, no training. See `results/validation/peg/f3_stage1_20260904/REPORT.md`.
+
+Latest F2-RetentionFix: bundle-aware retention repair PASS /62 CPU tests PASS. Isolated Flax staging plus numeric global-step bundle retention prevents sidecars consuming model keep slots; interrupted transactions fail closed. Original serialization/hash/binding semantics, config/runtime/Demo/sync/cadence unchanged. Historical missing0/1000 and partial2000 are NOT repaired;3000–9000 remain complete. Raw F2 FAIL and v3/v4 preserved; evaluation BLOCKED pending surviving-artifact adjudication and separate approval. No training/resume/cloud modification/evaluation. See `results/validation/peg/f2_retention_20260904/REPORT.md`.
+
+Latest F2-ExitFix: exit classification PASS /83 CPU tests PASS; v4 generated formal_ready=false, evaluation BLOCKED. Re-audit discovered Flax keep20 counts sidecars and automatically removed8 early bundle files during F2; only3000–9000 remain complete (2000 metadata only). Save-time audits were PASS but final retention is not. Retained hashes/checkpoint9000,10000 updates and1000 cloud loss rows PASS; raw F2 FAIL/runfailed/v3 preserved. No training/resume/cloud change/evaluation. Separate bundle-aware retention repair authorization required. See `results/validation/peg/f2_exitfix_20260904_review/REPORT.md`.
+
+Latest F2-Run: overall `PEG_FORMAL_TRAINING=FAIL` due W&B final-state classification. Actual formal updates10000/10000 PASS; all10 periodic bundles0–9000 PASS;1000 unique cloud loss steps match local data. Run e6fea100 statefailed despite learner exit0: frozen finally treats successful absl SystemExit as error and reports exit_code1. No timeout/NaN/RNG failure/retry/resume/evaluation; associated actor stopped, no training residuals. No frozen source/config/runtime/Demo/Gate changes. Separate exit-status repair authorization needed; see `results/validation/peg/f2_run_20260904/REPORT.md`.
+
+Latest F2-Monitor: `PEG_FORMAL_READINESS_V3=PASS`, `PEG_F2_EXECUTION=READY_TO_START` (NOT STARTED; separate authorization required). Formal-only120s watchdog, required finite-loss/RNG guards and per-update local telemetry added; W&B10/global checkpoint1000/max10000/runtime/config/Demo/per-leaf implementation unchanged.73 CPU tests plus syntax/actual fresh preflight PASS. Source-bound v3 published; v2 and all historical bundles preserved, v2 now stale. No GPU training/W&B run. See `docs/peg_f2_monitor_20260904.md`.
+
+Latest F1: `PEG_FORMAL_READINESS=PASS`, `PEG_FORMAL_TRAINING=READY_TO_START` (NOT STARTED). Shared per-leaf production sync, four-role guarded preflight, same-run binding, global checkpoint cadence1000/max_steps10000 and formal runtime freeze validated by47 CPU tests plus syntax/actual fresh-directory checks. New source-bound `results/validation/peg/formal_readiness_v2.json` has formal_ready=true; old failed Gate and all B/F0-R artifacts preserved. Historical GPU evidence reused explicitly; no F1 GPU run or checkpoint30 resume. Live actor/resume role checks were fixture-tested and repeat on actual launch. Native sync cause UNRESOLVED. See `docs/peg_f1_hardening_20260904.md`.
+
+Latest F0-R branch acceptance: `PEG_FORMAL_EXACT_PATH_CHECKPOINT_RESUME_5=PASS`. Exactly one production Python resume from B checkpoint25 completed true updates26–30; new W&B validation branch2243685c finished with five matching unique steps. 198 state leaves/replay/RNG restored exactly; new checkpoint30 counter1651 consistent, model finite. Source hr88a6u1 and old artifacts/Gate unchanged. No same-run continuation claim, retry/restart/formal. Formal remains BLOCKED pending general entry hardening/readiness review. See `docs/peg_f0_r_branch_20260904.md`.
+
+Latest F0-Verifier-Fix: schema fix PASS; existing B re-audit PASS, W&B history50 PASS; `PEG_FORMAL_EXACT_PATH_ACCEPTANCE_50=PASS_WITH_PER_LEAF_SYNC` for hr88a6u1 only. Dotted fields match50 unique steps/finite local losses, runfinished; checkpoint0/25 audits PASS. No training rerun/cloud writes/sync changes. Old raw FAIL and formal Gate unchanged; formal BLOCKED pending exact-path resume and entry hardening. Evidence: `results/diagnostics/peg_f0_verifier_fix_20260904/reaudit.json`.
+
+Latest F0-Sync: `PEG_F0_SYNC_PER_LEAF_50=PASS`, one B arm only. Update1 dispatch4.163s/sync0.028s;50 updates finite/normal RNG; bundles0/25 counters751/1261 consistent. Supports targeted per-leaf workaround, not exact native root cause. Raw full verifier FAIL: filtered W&B query returnedempty rows, runfinished; history-loss not established. Old Gate unchanged; formal BLOCKED. See `docs/peg_f0_sync_20260904.md`.
+
+Latest F0-Observe: observation COMPLETE; continuous run FAIL (1/50). Exactly one fresh instrumented production-path attempt reached update1 Python return in4.430s after XLA compilation completed, then timed out in full synchronization. 30s stack identifies JAX batched_block_until_ready; native cause UNRESOLVED. No retry/resume/formal; Gate remains failed. See `docs/peg_f0_observe_20260904.md`.
+
+## Latest Peg F0 — exact production-path acceptance
+
+2026-09-04: `PEG_FORMAL_EXACT_PATH_ACCEPTANCE_50=FAIL`; `PEG_FORMAL_TRAINING=BLOCKED`. Fixed runtime policy, source-bound fail-closed gate, preflight and an acceptance profile using the delivered learner were implemented. Six policy/history unit tests and syntax checks passed. Exactly one fresh bounded run completed update 0 (5.222 s), saved checkpoint_0, then timed out at update 1 after 120 s: 1/50 completed. Learner exited 124; supervisor stopped actor; no residual production processes. No retry, resume or formal training. No formal runtime file was created. Historical isolated I1–I4 PASS does not supersede this exact-path FAIL. Gate artifact has formal_ready=false. Hardening is PARTIAL: role-aware formal preflight/output handling and timeout profile-label cleanup still require review; not production-approved. See `docs/peg_f0_20260904.md`.
+
+## Latest Peg I1 diagnostic
+
+Latest I4 (2026-09-04): `PEG_I4_RESUME_LIFECYCLE_5=PASS_WITH_WANDB_HISTORY_WARNING`. Only repaired I3 checkpoint19 was restored; 198 state leaves plus replay/RNG/counters matched, five continuous updates20–24 passed, and new checkpoint24 has exact counter2102=2223−121. Same W&B44yrxufd resumed and finished; new steps20–24 unique/matching. Raw strict verifier FAIL is preserved because cached cloud history contains identical duplicates of old steps0–19; offline audit confirms lifecycle PASS with history-uniqueness warning. No retry/residual/formal. See `docs/peg_i4_resume_20260904.md`. Formal BLOCKED; historical NOT STARTED statements below are superseded only for this repaired source bundle.
+
+Latest I3-Fix (2026-09-04): snapshot/counter repair VALIDATED by 5/5 CPU concurrency regressions, followed by exactly one new 20-update I3 run. `PEG_I3_CHECKPOINT_IO_20=PASS` for `peg_i3_checkpoint_20260904_132008`; counters 691=812−121 and 1171=1292−121. W&B `44yrxufd` finished with steps 0–19; no stall/residual. Normal save cadence unchanged; no resume executed. Old I3 FAIL remains preserved. See `docs/peg_i3_snapshot_fix_20260904.md`. Formal remains BLOCKED; actual new-bundle resume and full formal readiness are not validated.
+
+Latest I3 audited result (2026-09-04): `PEG_I3_CHECKPOINT_IO_20=FAIL`. Continuous 20/20 updates, live communication, finished online W&B and periodic saves at 0/19 succeeded without stall. Independent audit supersedes the raw PASS: checkpoint_0 actor count 691 vs actual 721, checkpoint_19 1141 vs 1201. Existing save_bundle writes a stale actor counter after model I/O while live inserts continue. See `docs/peg_i3_checkpoint_integration_20260904.md`. No fix/retry/resume executed; new I3 bundles are NOT validated resume artifacts. Formal remains BLOCKED.
+
+Latest subsequent result: `PEG_I2_WANDB_20=PASS` (2026-09-04). I1 plus online W&B init/log/finish completed 20/20; online run `21p57czu` is finished with cloud steps 0–19 and losses matching local records. 1,201 accepted live transitions, 21 parameter callbacks, normal RNG, no stall or checkpoint saving. Update 0/1: 5.554/4.357 s, then 0.012–0.029 s. One index-1 recompile remains. See `docs/peg_i2_wandb_integration_20260904.md`. Full candidate FAIL / formal BLOCKED remain unchanged; no I3 started.
+
+`PEG_I1_LIVE_COMMUNICATION_20=PASS` (2026-09-04). One fresh learner completed 20 original updates with normal RNG and dynamically sampled 32 online + 32 Demo; real actor uploaded 1,111 transitions and received 21 parameter broadcasts. Live uploads overlapped both compilation and steady-state updates. Index 0/1: 5.549/4.626 s with one index-1 recompile; indices 2–19: 0.015–0.033 s. No stall, W&B, model checkpoint restore/save, restart, or retry. Both processes exited 0. See `docs/peg_i1_live_communication_20260904.md`. This single I1 run does not exclude intermittent failures or pass full candidate integration: `PEG_FORMAL_CANDIDATE_GPU_GATE=FAIL`, `PEG_FORMAL_TRAINING=BLOCKED` remain unchanged.
+
+## Current Phase
+
+MILESTONE 1D — THREE TASK GPU TRAINING PREPARATION is COMPLETE. The frozen delivery model is three independent parallel operators: A/Cable, B/Object, C/Peg. All per-task README 0–13 flows, transfer checklists, task sheets, independent environments/W&B/data contracts, return contracts, and CPU-reference verifiers pass. `THREE_MODEL_PARALLEL_GPU_HANDOFF_READY = READY`. Target-host GPU gates, formal training, and formal evaluation have not run.
+
+MILESTONE 1C evidence remains valid: Cable online W&B, actor execution, and entry into the learner update path were observed; the checkpoint root cause and project-side legacy Flax save/restore unit path were validated. The prior smoke remains PARTIAL. `FULL_GPU_SMOKE`, `FORMAL_TRAINING`, and `FORMAL_EVALUATION` are `NOT_STARTED` for Cable.
+
+## Incoming Process Packages
+
+- Cable Routing V1: PRESERVED — original archive and isolated extraction remain unchanged.
+- Cable Routing V2: PRESENT — new archive inventoried, safety-checked, and isolated under `external/packages/cable_routing_v2/`.
+- Object Grasping: PRESENT and frozen — archive/package, Demo, training sources, and checkpoint tree were hashed in M1D-B; package source remains unchanged.
+- Peg Insertion: PRESENT and frozen — archive/package, all Demo representations, algorithm entries, and checkpoint groups were audited in M1D-D.
+
+Original archives remain unchanged in `external/incoming/`. Isolated extracted copies are under `external/packages/`.
+
+## Completed
+
+- Inventoried three incoming archives by byte size, magic-based file type, and SHA256.
+- Tested archive integrity and rejected unsafe absolute or parent-traversal paths before extraction.
+- Mapped and extracted all three packages without modifying incoming originals.
+- Completed static package audits and a source-based interface compatibility comparison.
+- Recorded package-specific findings, integration risks, process comparison, interface matrix, and a provisional integration plan.
+- Recorded the project-member confirmation that Cable Routing intentionally has no delivered demo and that acquisition is a project-owned TODO.
+- Recorded Object Grasping's project-member algorithm mapping as DPRL, with package-code identity marked NEEDS_VERIFICATION because the delivered implementation names DrQ components.
+- Created external smoke harnesses for Cable Routing, Object Grasping, and Peg Insertion.
+- Executed the three smoke harnesses in the required order and recorded exact runtime output.
+- Runtime Environment Discovery: VALIDATED. Conda is at `/home/ubuntu/miniconda3/bin/conda`; existing `serl_mujoco` and `serl` environments contain the required core packages.
+- Peg runtime output isolation implemented through a project-side adapter; generated XML is confined to `runtime/peg_insertion/generated/`.
+- Peg completed import/create/reset/one-step/close in `serl_mujoco` with EGL.
+- Cable V2 archive integrity/safety and isolated extraction completed; the V2 package supplies the missing Franka assets.
+- Cable V2 completed import/create/reset/one-step/close in the version-matched `serl` runtime with EGL.
+- Implemented a project-owned Cable keyboard recorder, learner-facing observation adapter, success-only episode gate, metadata writer, and static validator.
+- Completed one TEST_ONLY real-environment transition dry run and inserted its pickle through SERL's population/replay path; no formal demo was created.
+- Audited all Cable V2 checkpoint groups, the DrQ construction/restore/inference call chain, and selected the highest numbered delivered smoke checkpoint for a bounded read-only restore attempt.
+- Added a project-owned MuJoCo passive-Viewer Cable recorder using the real environment, native Viewer key callback, delta actions, success-only immediate saving, truthful terminal semantics, and JSON-only discarded-attempt logs.
+- Completed syntax/import and headless create/reset/one-zero-step/close preflight without writing any formal demo.
+- Replaced the failed Viewer-native teleop callback with project-side pynput press/release state tracking and fixed-rate continuous/combined action generation; Viewer is now display-only.
+- Traced and runtime-tested the full Cable action-to-target-to-opspace-to-ctrl-to-qpos-to-TCP pipeline with six single-step directions and two 20-step held actions, without modifying environment state directly or writing Demo data.
+- Fixed only the project recorder's TCP operator display: `TCP_POS_REAL` uses `2f85/pinch_pos`, is checked against the pinch site, and reports mocap target separately. Bounded zero-action smoke returned `TCP_MATCH=True`.
+- Implemented project-side global X11 key-event suppression with pynput `suppress=True`, explicit startup status, raw/logical key diagnostics, and unconditional listener stop/join cleanup.
+- Diagnosed the premature Cable reset as two coincident 500-step limits and extended only the operator recorder instance's Gym/native truncation boundaries to 20000 control steps, with explicit pre-reset diagnostics.
+- Added project-recorder Gear 1/2/3 selection on numeric keys, using 1/2/5 real `env.step` calls and one transition per call; action values remain clipped to the original space.
+- Recorded operator evidence for the first real success: 2629 steps, `success=True`, `terminated=True`, `truncated=False`, final distance 0.029851879389882815, with the pickle preserved unchanged.
+- Changed recorder cleanup to use a five-second bounded listener join and independent Demo/cleanup results; post-save cleanup timeout is a warning, while cleanup failure with zero saved successes remains an error.
+- Synchronized the operator-confirmed validator PASS for the first formal Cable Demo: 1 episode, 2629 transitions, 1 success, `TEST_ONLY=False`, with the recorded SHA256 unchanged.
+- Completed Cable initial-state randomization audit: source inspection and 20 resets with seeds 0–19 found exact zero span for TCP, robot qpos, cable root/configuration/tip, slot, and camera parameters. `INITIAL_STATE = FIXED`; `DEMO_DIVERSITY_RISK = HIGH`.
+- Validated all five formal Cable demos individually and as a batch: 5 successful episodes, 10,521 raw transitions, consistent schema, expected replay size 10,526 with horizon-one initialization records, and safe in-memory episode-order concatenation.
+- Completed a static Cable W&B preflight: confirmed learner-only online initialization, debug-disable behavior, current metric keys, learner-update global-step semantics, and missing train-return/buffer/success metrics. No W&B run or training process was started.
+- Implemented the project-side Cable training launcher and single baseline config: explicit W&B project/name, sequential five-pickle loading without a merged duplicate, validated observation adapter reuse, isolated smoke/formal outputs, and fail-fast startup assertions. Dry run passed; no W&B run or learner update started.
+- Recorded the real Cable smoke split result: online W&B run `flexible-line-cable/cable_smoke_5demo_seed0` created successfully; actor completed 500/500 and shut down cleanly; learner entered real updates but failed at its first checkpoint save.
+- Diagnosed Flax 0.8.5 / Orbax 0.6.4 / TensorStore 0.1.51 checkpoint incompatibility. Exact `assume_config` rejection was reproduced; project-side legacy Flax save and restore passed without changing the Conda environment.
+
+## In Progress
+
+- Remote Operator A/B/C target-host acceptance, parallel formal training, independent evaluation, and artifact return are pending independently. None has started in repository evidence.
+- Local MILESTONE 2 Unified Skill API work is the next project-side milestone; it must preserve task-specific interfaces and treat all trained-policy quality as UNVERIFIED until returns are accepted.
+
+## Blocked
+
+- Real Skill adapter integration — BLOCKED: runtime compatibility and checkpoint restoration have not been validated.
+- Cable automatic-demo checkpoint evaluation — BLOCKED: absolute-path Orbax restore of `cable_route_smoke/checkpoint_200` did not finish within either the environment-derived attempt or the 180-second CPU-only diagnostic.
+- Cable baseline smoke training — PARTIAL historical evidence: W&B online and actor pass; learner entered its update path and then failed on step-0 Orbax save. The legacy save fix is isolated-test PASS. The local retry is cancelled by strategy; a bounded full smoke must be performed on the target GPU host.
+
+Cable Routing Demo Acquisition is TODO, not BLOCKED. It is an internally planned data-acquisition task and is not waiting for a package resend.
+
+## Validated Components
+
+- Archive identity, byte size, SHA256, magic-based type, integrity test, safe-path check, and extraction destination: VALIDATED.
+- Presence/absence findings recorded by static filesystem and source inspection: VALIDATED.
+- Runtime Environment Discovery: VALIDATED — `serl_mujoco` and `serl` were inspected using their own Python executables.
+
+No delivered or trained policy checkpoint, policy quality, success rate, training result, or formal policy evaluation result is VALIDATED. Project-generated synthetic/full-architecture checkpoint and resume mechanics are validated only within their bounded preflight scope. Environment lifecycle validation covers Cable V2, Object Grasping, and Peg Insertion.
+
+Object Grasping achieved ENVIRONMENT_SMOKE_VALIDATED in `serl` with headless EGL. M1D-B additionally validated the actual 2,000-transition schema, all-finite/action-bound checks, 2,001-record horizon-one replay insertion and packed sampling, 20-reset randomized block distribution, and code-level `DRQ_PLUS_DEMO_REPLAY` identity. This does not validate Demo success, checkpoint restore, policy, or success rate.
+
+Peg Insertion M1D-D/D1 is `PASS_FOR_FRESH_GPU_TRAINING`: prior Demo/algorithm evidence remains valid; 5,512 official replay inserts plus 32/32 sampling pass through a scoped project repair; portable generated XML lifecycle passes; a fresh 198-leaf SAC state saves/restores exactly and produces one finite in-range `(7,)` action. Legacy checkpoint restore remains nonblocking and policy quality remains unverified.
+
+Cable Routing V2 achieved ENVIRONMENT_SMOKE_VALIDATED in `serl` with headless EGL. This does not validate DrQ checkpoint, policy, demo, training result, success rate, or wrapper compatibility.
+
+Cable Demo Recorder is VALIDATED. The first formal operator Demo also passed the existing validator with one successful episode and 2629 transitions.
+
+Cable Routing formal Demo status:
+
+- `DEMO_RECORDER = VALIDATED`
+- `DEMO_DATA = PRESENT`
+- `FORMAL_DEMO_COUNT = 5`
+- `FORMAL_DEMO_SUCCESS_COUNT = 5` (operator-confirmed)
+- `VALIDATED_FORMAL_DEMO_COUNT = 5`
+- `UNVERIFIED_FORMAL_DEMO_COUNT = 0`
+- `DEMO_BATCH_VALIDATION = VALIDATED`
+- `DEMO_TRANSITIONS = 10521`
+- `REPLAY_BUFFER_COMPATIBILITY = VALIDATED`
+- `MERGE_COMPATIBLE = YES`
+
+Cable Viewer rendering is IMPLEMENTED. Human test evidence validates `KEYBOARD_INPUT`, `PYNPUT`, and `ACTION_CONSTRUCTION`: real logs showed correct ±0.05 actions for W/S and corresponding nonzero actions for A/D. Robot teleop motion is not validated.
+
+Cable `TCP_DEBUG_DISPLAY = FIXED`: real TCP sensor and pinch site matched during zero-action smoke. This validation covers display correctness only, not teleoperation motion.
+
+Cable `KEY_SUPPRESSION = IMPLEMENTED` using pynput 1.8.2 `suppress=True`. Non-GUI construction and cleanup tests do not validate actual Viewer/X11 suppression; `OPERATOR_SUPPRESSION_VALIDATION = REQUIRED`.
+
+Cable operator episode limit fix is IMPLEMENTED: Gym TimeLimit and native simulation time limit are both configured to 20000 steps on the recorder-owned instance. Success termination and Demo schema are unchanged.
+
+Cable Gear speed is IMPLEMENTED: Gear 1/2/3 map to 1/2/5 environment transitions per fixed-rate tick, with Gear 3 default. Non-GUI tests validate selection, counts, terminal short-circuit, action bounds, and transition preservation; visible two-second displacement remains operator-required.
+
+Cable recorder cleanup fix is VALIDATED by lifecycle tests. `DEMO_RESULT` remains authoritative after a completed save; listener timeout becomes `CLEANUP_RESULT: WARNING`. With no successful save, the same cleanup failure still raises.
+
+## Unverified Components
+
+- All checkpoint restore operations and policy performance.
+- Cable automatic-demo policy: UNVERIFIED. No restored state was returned, no policy action was sampled, and zero evaluation episodes ran.
+- Cable performance/generalization outside the single fixed initial state.
+- Cable robot teleop motion at a usable magnitude. Viewer native key input is known `FAILED_FOR_TELEOP`; global pynput keyboard input is now VALIDATED by operator evidence.
+- Cable Viewer shortcut suppression under the operator's real X11 session.
+- Object Grasping Demo success and episode count: the 2,000-transition flat pickle has all `dones=False`, all masks 1, and no success/block/lift/boundary fields; the package's claimed 20 trajectories cannot be recovered or independently success-validated.
+- Peg trained-policy quality and formal evaluation. Delivered legacy checkpoint restoration remains unresolved by policy and is not required for fresh training.
+- All reported historical training results and W&B records.
+- Cable W&B runtime metrics: code paths are statically audited, but no online run or metric emission has been runtime-validated in this project.
+- Cross-version Gym/Gymnasium, JAX/Flax, SERL wrapper, replay-buffer, and agent compatibility.
+- Object Grasping team-label DPRL meaning remains UNVERIFIED. The delivered code-level algorithm mapping is VALIDATED as `DRQ_PLUS_DEMO_REPLAY`: `DrQAgent` plus 50/50 online/Demo batches; no distinct DPRL class/loss/replay implementation is present.
+
+## Known Issues
+
+- Object legacy `checkpoint_4500`: PRESENT, architecture MATCH, native restore UNRESOLVED, required for new training NO. It is preserved and no further restore/conversion/inference work is planned.
+- Object safe resume: cross-process step 123→125 restored agent values, learner/actor progress, online replay size/index/RNG, rebuilt Demo replay, W&B identity, collision protection, six failure cases and one `(4,)` inference. `OBJECT_RESUME_GATE = VALIDATED`.
+- Team-reported historical Object success rate is approximately 70%; repository revalidation is not required and this is not a current experiment result.
+
+- Object M1D-B4 reproduced Python/JAX/JAXlib/Flax/Orbax/TensorStore/Optax producing versions exactly in retained `object_ckpt_compat`; original `serl` freeze hash stayed unchanged. TensorStore 0.1.78 did not resolve the stall: Orbax metadata 60 s, no-target restore 120 s, and matching-target restore 300 s all timed out. `ROOT_CAUSE = UNRESOLVED_NATIVE_ORBAX_TENSORSTORE_COORDINATION`; inference not run.
+- `OBJECT_DEMO_DATA = ACCEPTED_FOR_BASELINE` by project decision. This does not alter `OBJECT_DEMO_SUCCESS_PROVENANCE = UNVERIFIED`; the original 2,000 transitions will be used unchanged.
+
+- Object M1D-B3: checkpoint 4500 storage integrity PASS; direct OCDBT metadata/key traversal and representative scalar/9 MB parameter/9 MB optimizer reads PASS. Orbax metadata timed out at 30 seconds and target-free Flax/Orbax restore timed out at 60 seconds after an initial 371,388,416 bytes of disk reads followed by a sleeping no-I/O/no-CPU plateau. Producing/current environments differ only in TensorStore 0.1.78 versus 0.1.51. `CHECKPOINT_RESTORE_STATUS = BLOCKED_READ_STALL`.
+
+- Cable Routing had no delivered recorder or demo. The project-owned recorder has now saved one real operator-confirmed successful Demo; additional acquisition remains TODO.
+- Cable Routing V2: `DEMO_DATA = PRESENT`; all five formal files `VALIDATED`; `DEMO_SOURCE = SELF_RECORDED`.
+- Cable Routing V2 reset has no random reset/noise/domain randomization and ignores reset seed for initialization. Training, evaluation, and recorder share this fixed physical reset logic.
+- Cable Routing contains two non-empty smoke/shutdown checkpoint groups and two empty named checkpoint directories; none is validated.
+- Cable's highest delivered checkpoint is `cable_route_smoke/checkpoint_200`; its label indicates smoke data, not a final or validated policy. Its Orbax metadata appears structurally consistent with dual `encoder_front`/`encoder_wrist` DrQ, but full architecture compatibility remains UNVERIFIED because restore did not complete.
+- Cable Routing has no README and its handover acceptance checklist is entirely unchecked.
+- Object Grasping's success is exposed in `info`, but environment termination is time-limit based rather than success based.
+- Object Grasping checkpoint 4500 exact architecture mapping is MATCH. Its 601 metadata paths are 598 arrays plus three Optax `EmptyState` sentinels (`None`, `skip_deserialize=true`); fresh target has the same structure when empty nodes are retained. Zero-gradient update leaves 598/601 counts unchanged, so this is not lazy post-update state. A new matching-target restore still did not return within 300 seconds; restore and inference remain UNVERIFIED.
+- Object Grasping actual scalar gripper observation does not satisfy its declared `(1,)` Box, but bounded flattening produced `(7,)` and Demo/replay/DrQ structural paths passed; `OBJECT_GRIPPER_SHAPE_MISMATCH = BENIGN` for these tested consumers.
+- The current project SERL `SERLObsWrapper` expects `image`, while Cable Routing and Object Grasping environments expose nested `images/{front,wrist}`.
+- The Cable recorder uses a project-side `state/front/wrist` wrapper compatible with the replay buffer; the delivered training script still invokes the incompatible singular-`image` SERL wrapper before its demo loader.
+- Cable learner W&B project is hard-coded as `serl_cable_route`; `--exp_name` supplies an ID prefix/tag but not an explicit `wandb.init(name=...)`. The requested `flexible-line-cable` / `cable_baseline_5demo_seed0` identity needs configuration before launch.
+- Cable W&B currently logs raw critic/actor/temperature update metrics and timer/eval dictionaries at learner `update_steps`. It does not log `train/episode_return`, replay-buffer size, or training success. No missing metric is treated as present.
+- `WANDB_ONLINE = VALIDATED`: real project `flexible-line-cable`, run `cable_smoke_5demo_seed0`.
+- `ACTOR_SMOKE = PASS`; `ACTOR_STEPS = 500`; `ACTOR_SHUTDOWN = CLEAN`.
+- `CABLE_TRAINING_LAUNCHER = IMPLEMENTED / UNVERIFIED`; `SMOKE_TRAINING = PARTIAL`; `LEARNER_SMOKE = PARTIAL`; `FORMAL_TRAINING = NOT_STARTED`; `FORMAL_EVALUATION = NOT_YET_VALIDATED`.
+- `WANDB_ONLINE = VALIDATED`; `ACTOR_UPDATE_PATH = VALIDATED`; `LEARNER_UPDATE_PATH = VALIDATED`; `CHECKPOINT_ROOT_CAUSE = VALIDATED`; `CHECKPOINT_LEGACY_SAVE_RESTORE_UNIT_TEST = VALIDATED`.
+- `FULL_GPU_SMOKE = NOT_STARTED`; `FORMAL_TRAINING = NOT_STARTED`; `FORMAL_EVALUATION = NOT_STARTED`.
+- Cable real-agent legacy roundtrip: 598 serialized leaves; all key paths/shapes/dtypes and all leaf hashes matched after rebuild/restore; restored policy inference PASS. `REAL_AGENT_CHECKPOINT_ROUNDTRIP = VALIDATED`.
+- Cable GPU handoff files use project-relative paths/`PROJECT_ROOT`; Demo manifest hash verification, frozen config dry run, output isolation, and local CPU/reference verifier passed. `PORTABLE_PATHS = VALIDATED` for prepared handoff files.
+- Cable independent evaluation entry reset/one-step dry run passed. Metrics are defined, but trained-checkpoint evaluation is unverified: `EVALUATION_RUNTIME = PREPARED / TRAINED_CHECKPOINT_UNVERIFIED`.
+- Cable safe resume: real agent checkpoint at step 123, complete online replay/RNG/actor progress sidecar, five-Demo rebuild, W&B `resume="must"` reconstruction, cross-process restore, next checkpoint 125, original preservation, and collision rejection passed. `TRAINING_RESUME = VALIDATED`.
+- `CABLE_GPU_TRAINING_HANDOFF_READY = READY`. This does not validate GPU runtime, GPU smoke, formal training, trained policy, success rate, or formal evaluation.
+- Peg Insertion is state-only SAC/RLPD with a 20D observation and 7D action, unlike the two visual DrQ packages.
+- Peg Insertion uses a direct factory/adapter; the configured `AuboPegInsert-State-v0` name is not statically registered in the delivered adapter.
+- Package scripts contain submitter-specific absolute paths requiring future configuration, not source mutation.
+- Conda is not initialized on the current shell PATH but is available at `/home/ubuntu/miniconda3/bin/conda`.
+- Primary candidate runtime: `serl_mujoco` — Python 3.10.20, Gym 0.26.2, Gymnasium 1.3.0, MuJoCo 3.10.0, JAX 0.4.35, Flax 0.8.5.
+- Object Grasping compatible candidate: `serl` — Python 3.10.20, Gym 0.26.2, Gymnasium 1.3.0, MuJoCo 2.3.7, JAX 0.4.35, Flax 0.8.5.
+- Peg declared versions differ from `serl_mujoco`; the current environment lifecycle is smoke compatible, but broader training/checkpoint compatibility remains UNVERIFIED.
+- Cable V1 omits the `franka_emika_panda` mesh tree; V2 supplies 67 Franka asset files and resolves the previous `link1.stl` failure.
+- Cable V2's supplied checksum manifest has a mismatching self-entry, while all 240 other listed files validate and archive-level integrity passes.
+- Cable V2 headless smoke completed, but its EGL context destructor emitted a non-fatal cleanup exception after `env.close()` reported PASS.
+- Object requires headless `MUJOCO_GL=egl` over this SSH session; actual gripper observation is scalar while its space declares `(1,)`.
+- Peg factory normally derives generated XML output inside `/home/ubuntu/mujoco_env`; the project-side smoke adapter redirects only that generated output to `runtime/peg_insertion/generated/` and restores the original method afterward.
+- Peg 20-reset initial state is fixed. The current project adapter still resolves read-only XML/assets through `/home/ubuntu/mujoco_env`, so GPU portability needs a project-side asset-root solution.
+- Peg's installed SERL datastore retains an invalid sibling-class `super(...)` call; the project-scoped adapter repairs it without external mutation. Training must use that adapter.
+
+## Latest Experiments
+
+- 2026-09-04 Peg runtime-only reliability report: fresh fixed-batch R1 and normal replay-iterator dynamic-batch R2 each completed 20/20 original SAC updates, with finite losses and uninterrupted normal RNG. Both compiled once at index 0 and recompiled once at index 1 (4.276/4.307 s, WARNING); indices 2–19 were NORMAL at 0.013–0.023 s without further compilation. `PEG_RUNTIME_FIXED_BATCH_20=PASS`, `PEG_RUNTIME_DYNAMIC_BATCH_20=PASS`, `PEG_RUNTIME_RELIABILITY_CLASSIFICATION=RECOMPILE`. No timeout was reproduced. No resume, W&B, checkpoint writes, restart or retry occurred. This runtime-only result does not validate the integrated candidate Gate; formal remains BLOCKED / NOT STARTED.
+
+- 2026-09-03 Peg target GPU acceptance: restored complete SERL source from upstream commit `1fa2af7496be042e43d36120a7c8d1b71f1bfb59`, applied only the delivered state-only `bc.py` patch with an explicit backup, installed the project-local `serl_launcher` and Peg `mujoco_env`, repaired legacy absolute-path pointers, aligned JAX/JAXlib/CUDA plugin to 0.4.35, and passed a real 2048x2048 GPU matrix computation on `CudaDevice(id=0)`. `scripts/verify_peg_handoff.py --require-gpu` reports all five contracts PASS and `PEG_HANDOFF_VERIFY: PASS`; `pip check` reports no broken requirements. The EGL environment smoke also reports `RESET_ONE_STEP_DRY_RUN: PASS`, `CONTROL_DT_SECONDS: 0.02`, and five-value step API. Formal training, online W&B validation, bounded learner/actor smoke, checkpoint save/restore, and formal evaluation remain NOT_STARTED.
+- 2026-09-03 Peg target bounded-smoke checkpoint gate: W&B authentication and online run creation passed; the successful run ID is `2snda1i7` under `flexible-line-peg-insertion/peg_rlpd_gpu_smoke_seed0`. Actor completed 150/150 steps, learner received 121 online transitions, sampled exact 32 online + 32 Demo batches on JAX GPU, completed update step 0, and created fresh `/home/makoto/flexible_line_project/results/checkpoints/peg_rlpd_gpu_smoke_seed0/checkpoint_0` plus online-replay and resume-metadata sidecars. Per operator instruction, learner/actor were terminated immediately after the new checkpoint appeared, during update 1/10; no residual process remains and GPU memory returned to idle. Full 10-update smoke, W&B metric-sync validation, checkpoint restore, formal training, and formal evaluation remain pending. The launcher checkpoint recursion defect was fixed by retaining stable references to the original legacy-Flax save/restore functions; focused monkeypatch save/restore regression passed.
+- 2026-09-03 Peg checkpoint Resume Gate follow-up: `checkpoint_0` metadata/replay hashes and the 121-transition replay snapshot were validated, then learner and actor dry-runs restored the bundle on `CudaDevice(id=0)`. The launcher now infers the smoke/formal resume profile from the checkpoint-bound W&B name, so the generic resume scripts preserve smoke limits and output paths. A real resume under the same W&B run `2snda1i7` restored model/replay state, completed one additional GPU optimizer update, emitted finite actor/critic/temperature/timer metrics at W&B step 1, and atomically created loadable `checkpoint_1` plus matching replay/metadata sidecars while preserving `checkpoint_0`. Actor continuation from recorded step 121 completed 29/29 bounded steps. A further attempt from `checkpoint_1` remained inside one JAX/XLA worker at approximately one CPU core for more than ten minutes without completing its next update or producing `checkpoint_2`; it was stopped and no training process remains. Therefore checkpoint restore/save and online metric-sync gates PASS, but the full 10-update bounded smoke remains PARTIAL. Formal training and formal evaluation remain NOT STARTED.
+- 2026-09-03 Peg bounded GPU smoke completion: actor 150/150 and learner 10/10 are now complete under a strictly bounded, diagnostic GPU workaround. Investigation isolated the stall to the fused learner update on this RTX 4060/JAX 0.4.35 path: disabling Triton GEMM allowed updates to finish, while some PRNG states and the delivered periodic-checkpoint branch still produced non-returning GPU work. The project launcher therefore supports explicit diagnostic RNG provenance, one-update resume caps, and checkpointing immediately after synchronized update completion. Updates 2–9 were resumed one per process with `XLA_FLAGS=--xla_gpu_enable_triton_gemm=false` and the recorded safe key `[595175366, 1025945940]`; the frozen RLPD architecture, losses, optimizers, learning rates, batch size, 32/32 replay composition, Demo, environment, reward, and success logic were unchanged. Final `checkpoint_9` plus replay/metadata sidecars validates as 10 updates, 121 online transitions, matching replay SHA-256, 198 finite model-state leaves, GPU resume dry-run PASS, and W&B run `2snda1i7` finished with online actor/critic/temperature/timer history through step 9. `PEG_BOUNDED_GPU_SMOKE = PASS_WITH_DIAGNOSTIC_GPU_WORKAROUND`; nominal uninterrupted/formal training remains UNVERIFIED and MUST NOT start without resolving or explicitly accepting this workaround.
+
+- 2026-09-03 Peg formal-readiness hardening and continuous candidate Gate: the launcher now requires an explicit `formal`, `smoke`, or `diagnostic` profile. All eight diagnostic update/RNG/save controls fail closed under formal or smoke, while an empty diagnostic profile also fails closed. The normal RNG path is unchanged. The candidate runtime contains only disabled JAX preallocation, disabled Triton GEMM, and EGL; no formal runtime file was created. A single fresh learner process using the original `SACAgent.update_high_utd`, normal RNG, the integrity-checked 121-transition smoke replay, no restart and no retry completed update 1/20 in 4.928487 s with finite losses, advanced RNG from `[1278412471, 2182328957]` to `[595175366, 1025945940]`, and created an independent `checkpoint_0` bundle whose GPU resume dry-run passes. In the same process, update 2/20 exceeded the 120 s hard limit and was terminated with exit 124. No residual training process remains. W&B run `tzv5bsvz` was created but currently reports `running` with no synced history after the forced exit. `PEG_FORMAL_CANDIDATE_GPU_GATE = FAIL`; formal training remains BLOCKED and was not started.
+- 2026-09-03 Peg candidate checkpoint-0 next-update isolation: a fresh diagnostic learner restored candidate `checkpoint_0` with its normal RNG and ran exactly one original `SACAgent.update_high_utd` under disabled Triton GEMM, with W&B disabled, checkpoint period zero and no retry. Replay restore, 32+32 sampling and batch concatenation completed, but the update timed out at 130 s. Python stacks at 30 s and 90 s both showed the main thread in `jax.block_until_ready(new_agent)` after asynchronous update dispatch returned. GPU memory stabilized at 196 MiB while utilization remained mostly 4–8% and power about 2.3 W. This reproduces the failure in a new process and without W&B/checkpoint writes, ruling out same-process continuity, W&B, or the step-0 save as sufficient causes. Root cause remains unresolved at the JAX/XLA device-result synchronization layer; no residual process remains and formal stays BLOCKED.
+- 2026-09-03 Peg JAX/XLA A/B differential: one no-retry fresh update and one fresh-process candidate-checkpoint restore update used the same immutable 32+32 batch, GPU, original `update_high_utd`, normal RNG, disabled Triton GEMM and explicit full-tree synchronization. A completed in 5.189362 s and B in 5.301514 s with finite losses; the earlier 130 s stall did not reproduce. The decisive pre-update difference is that fresh state is GPU `ArrayImpl`/`SingleDeviceSharding`, whereas all 198 restored leaves (including 150 optimizer leaves) are host NumPy values until the update boundary. The update HLO, optimized HLO, PTX and thunk hashes are identical across A/B, and sync itself took only about 0.012 s. Classification is `RESTORE_DEVICE_PLACEMENT_DIFFERENCE`, but causality for the earlier intermittent stall remains UNRESOLVED. `PEG_FORMAL_CANDIDATE_GPU_GATE = FAIL`; formal remains BLOCKED and was not started.
+- 2026-09-03 Peg restore-placement causal diagnostic: D1 retained all 198 restored checkpoint leaves as host NumPy at the first update boundary; D2 explicitly placed and synchronized all 198 leaves on `cuda:0`. Both fresh-process arms used the same checkpoint RNG, immutable 32+32 batch, original `update_high_utd`, disabled Triton GEMM, no W&B/checkpoint writes/retry, and completed 5/5 consecutive updates. Update 0 took 5.062/5.135 s including compilation; later updates took 0.014–0.027 s. RNG progression and every finite loss were identical across arms. `PEG_RESTORE_PLACEMENT_CAUSAL_DIAGNOSTIC = NO_EFFECT`: explicit pre-placement neither improved nor regressed stability in this trial, and host restore placement is not a sufficient cause of the intermittent stall. Neither arm reproduced the timeout, so root cause remains unresolved and formal remains BLOCKED/NOT STARTED.
+
+- 2026-08-23 M1D-F parallel freeze: Cable/Object/Peg CPU-reference handoff verifiers PASS (Object with required EGL), all three README step audits report 14/14, all environment YAML parses, all handoff shell scripts pass `bash -n`, no credential material was found, and no cross-task execution-order dependency was found. No training ran.
+
+- 2026-08-23 Peg M1D-E: CPU verifier, full Demo launcher dry-run and evaluation reset+one-step PASS. Cross-process safe resume restored step 123/actor 17/replay RNG, rebuilt 5,512 Demo transitions, inferred once, committed step 125, preserved step 123, and passed six fail-closed tests. No training ran.
+
+- 2026-08-23 Peg M1D-D1: 5,512 Demo inserts, 32 online + 32 Demo sampling, RNG/index/schema integrity, portable XML lifecycle, fresh 198-leaf checkpoint exact roundtrip, and restored `(7,)` inference PASS. `PEG_M1D_D_STATUS = PASS_FOR_FRESH_GPU_TRAINING`.
+
+- 2026-08-23 Peg M1D-D: 20 NPZ/5,512 RLPD/2,388 BC transitions mapped exactly; Demo success 20/20; 20 resets fixed; algorithm/checkpoint mapping PASS. RLPD checkpoint_9000 restore TIMEOUT_120S and official replay insert TypeError, so status PARTIAL.
+
+- 2026-08-23 Object M1D-B4: isolated producing runtime PASS and original-serl integrity PASS; direct reads PASS, full-tree restores TIMEOUT, inference gated off.
+
+- 2026-08-23 Object M1D-B3: committed 105,193,080-byte OCDBT checkpoint inventory PASS; 1,196-key traversal and three isolated leaf reads PASS. Full-tree no-target restore timed out with native-wait behavior. GPU is not expected to fix the storage/runtime issue; next resolution is isolated producing-runtime reproduction.
+
+- 2026-08-15 Runtime Environment Discovery: VALIDATED.
+- 2026-08-22 Object M1D-B: 2,000 transitions deserialized read-only; schema/finite/action bounds PASS; no done/boundary/success/block fields; actual memory-efficient replay insertion/sample PASS at size 2,001.
+- 2026-08-22 Object reset audit: 20 EGL resets; TCP fixed, block XY and scene images randomized, scalar gripper mismatch reproduced.
+- 2026-08-22 Object checkpoint audit: checkpoint 4500 tree frozen at 15 files/105,193,080 bytes; 598/601 serialized-path comparison found three extra optimizer states; single restore timed out after 120 seconds and no inference ran.
+- 2026-08-22 Object M1D-B2 provenance: no generator/writer or success-only guarantee is delivered. Exact 2,000 = 20 × 100 evidence makes boundaries strongly supported but not authoritative; success remains UNVERIFIED.
+- 2026-08-22 Object M1D-B2 checkpoint closure: three apparent extra paths are Optax EmptyState sentinels. Exact structural mapping MATCH at 598 arrays/601 structural paths before and after a zero-gradient optimizer update. Matching-target Orbax restore exceeded 300 seconds; no state/inference returned.
+- Earlier `/usr/bin/python3` smoke attempts used the wrong interpreter and are INVALID as dependency conclusions for all three processes; they did not validate or block any process runtime.
+- Cable V1 in `serl_mujoco`: FAIL at create due missing `link1.stl` asset path; retained as historical V1 evidence.
+- Object in `serl` with `MUJOCO_GL=egl`: PASS; ENVIRONMENT_SMOKE_VALIDATED.
+- Peg in `serl_mujoco` with EGL and project runtime staging: PASS; ENVIRONMENT_SMOKE_VALIDATED. Actual observation `(20,)` float32, action `(7,)` float32, five-value step API.
+- Cable V2 in `serl` with EGL: PASS; ENVIRONMENT_SMOKE_VALIDATED. Actual nested dual-camera observation, seven-value state, `(3,)` float32 action, and five-value step API.
+- Cable recorder dry run in `serl` with EGL: PASS. One TEST_ONLY transition was serialized, statically validated, and inserted through the SERL population/memory-efficient replay path; success count 0 and no formal demo output.
+- Cable automatic-demo preflight in `serl`: checkpoint inventory and DrQ call-chain audit completed. Absolute-path restore of `cable_route_smoke/checkpoint_200` did not complete in bounded attempts; CPU-only target construction reached 598 leaves, then timed out after 180 seconds. Episodes 0; candidate demo not generated.
+- Cable Viewer recorder headless preflight in `serl` with EGL: syntax/import, Viewer API signature, model/data access, env create/reset, one zero-action step, and close passed. `DISPLAY` was unavailable, so visible Viewer/key input remain operator-required. No formal demo file was created.
+- Cable Viewer teleop input fix: nine non-GUI action/state cases passed. An earlier headless shell lacked pynput, but this is superseded for the desktop operator runtime by later human logs validating pynput key states and correctly signed actions. Formal output remained empty.
+- Cable action pipeline diagnosis: action scale is 0.001 m; magnitude 0.05 changes target by 0.05 mm/step. Target/mocap changed exactly, ctrl/qpos/TCP responded, and 20 negative-X steps moved true TCP X by -1.167 mm. Recorder debug output was reading `[gripper,tcp_x,tcp_y]` as TCP because it used flattened `state[:3]`.
+- Cable teleop minimal fix: syntax/import/zero-action smoke passed; `TCP_POS_REAL=[0.3080,-0.0001,0.4440]` matched the pinch site and no formal file was written. Operator motion tests were not run.
+- Cable key-event suppression: pynput 1.8.2 exposes `Listener(..., suppress=True)` and its X11 backend implements suppression. Syntax/import, suppressed-listener construction, normal cleanup, and exception cleanup passed without a GUI; operator Viewer suppression remains required.
+- Cable premature-reset diagnosis: registration `max_episode_steps=500` and native `time_limit=10.0s` at `control_dt=0.02s` both caused truncation near step 500. Project-side configuration inspection confirmed both recorder-instance limits change to 20000/400.0s; no formal Demo was recorded.
+- Cable Gear speed: static/non-GUI tests confirmed default Gear 3, key selection for all gears, 1/2/5 real step counts, one transition per step, and immediate stop on terminal output. No formal Demo was recorded.
+- First real Cable Demo: `cable_routing_01_demos_2026-08-21_07-14-17.pkl`, 2629 transitions, one episode, one success, `TEST_ONLY=False`; existing validator result PASS is confirmed. SHA256 is `415b2adf5c2453db6532a6c5b9347b6ba6c2b97b393331c98c956e9ef71e54e0`.
+- Cable cleanup fix: syntax and listener lifecycle tests confirm clean exit, post-save timeout warning without raise, and pre-save timeout error behavior.
+- Cable initial-state audit: 20 reset-only samples, seeds 0–19, zero actions. Every measured component had exact span 0.0; classification `FIXED_INITIAL_STATE`. The subsequent five-demo milestone validated all five formal files.
+- Cable five-demo validation: all validator invocations PASS; total 10,521 transitions and 5 successes. Real SERL population/memory-efficient replay insertion PASS with expected size 10,526. In-memory concat PASS with five intact terminal boundaries. No merged file was written.
+- Cable W&B preflight: local W&B 0.28.0/base URL verified without credential access; online/disabled mode selection, log call sites, metric inventory, and global-step semantics statically confirmed. Training and W&B run creation were not executed.
+- Cable project launcher dry run: all five SHA/schema checks passed sequentially with 10,521 transitions; real environment adapter returned `state/front/wrist`, action `(3,)`, replay capacity and output checks passed, and JAX exposed `TFRT_CPU_0`. Offline fake-W&B construction passed. W&B init and learner update were not called.
+- Real Cable smoke: W&B online run creation PASS; actor 500/500 PASS with clean shutdown; learner checkpoint save FAIL at displayed 0/100. Minimal debug reproduced TensorStore `assume_config` rejection/default Orbax non-return and validated legacy Flax save+restore. Smoke overall PARTIAL.
+
+## Next Milestone
+
+Remote next steps are three independent target-host gates and parallel training by Operators A/B/C. Exact local next milestone is MILESTONE 2 — Unified Skill API draft/integration using audited task differences; it must not claim trained-policy validation while remote results are pending.

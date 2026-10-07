@@ -38,9 +38,9 @@ runs/
 **/replay*/
 **/datasets/
 **/incoming/
-results/
-runtime/
-backups/
+/results/
+/runtime/
+/backups/
 
 *.pkl
 *.pickle

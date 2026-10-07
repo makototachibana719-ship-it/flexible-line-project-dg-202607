@@ -1,0 +1,63 @@
+{
+  "agent_values": "MATCH",
+  "learner_step": 123,
+  "actor_step": 17,
+  "online_replay_size": 4,
+  "online_replay_index": 4,
+  "online_replay_rng": "MATCH",
+  "sample_shapes": {
+    "observations": [
+      2,
+      20
+    ],
+    "next_observations": [
+      2,
+      20
+    ],
+    "actions": [
+      2,
+      7
+    ],
+    "rewards": [
+      2
+    ],
+    "masks": [
+      2
+    ],
+    "dones": [
+      2
+    ]
+  },
+  "demo_rebuild_size": 5512,
+  "wandb_identity": "MATCH",
+  "restored_inference": "PASS",
+  "next_checkpoint_step": 125,
+  "old_checkpoint_unchanged": true,
+  "failure_tests": {
+    "missing_replay_sidecar": {
+      "result": "FAIL_CLOSED",
+      "error": "FileNotFoundError"
+    },
+    "wrong_replay_hash": {
+      "result": "FAIL_CLOSED",
+      "error": "ValueError"
+    },
+    "wrong_demo_hash": {
+      "result": "FAIL_CLOSED",
+      "error": "ValueError"
+    },
+    "config_mismatch": {
+      "result": "FAIL_CLOSED",
+      "error": "ValueError"
+    },
+    "wandb_mismatch": {
+      "result": "FAIL_CLOSED",
+      "error": "ValueError"
+    },
+    "checkpoint_collision": {
+      "result": "FAIL_CLOSED",
+      "error": "FileExistsError"
+    }
+  },
+  "PEG_RESUME_GATE": "VALIDATED"
+}

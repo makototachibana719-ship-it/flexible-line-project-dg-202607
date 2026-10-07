@@ -1,0 +1,38 @@
+{
+  "format_version": 1,
+  "checkpoint_step": 125,
+  "learner_update_steps": 125,
+  "actor_steps": 17,
+  "seed": 0,
+  "environment": "AuboPegInsert-State-v0",
+  "algorithm": "RLPD_STYLE_SAC_PLUS_50_50_DEMO_REPLAY",
+  "observation": {
+    "shape": [
+      20
+    ],
+    "dtype": "float32"
+  },
+  "action": {
+    "shape": [
+      7
+    ],
+    "dtype": "float32",
+    "low": -1.0,
+    "high": 1.0
+  },
+  "demo_sha256": "44ee651768d9f231caccf81d5a58460c8f44bc17463de7e08ea157b3c2a53ce7",
+  "demo_transition_count": 5512,
+  "demo_manifest_hash": "b8b38e46393c9f0740fdc0f5e9dc417592e154af6396b01881c2f6c19bf6c6d8",
+  "config_hash": "395ccc112feb2384560f4552350c640d71abc87778d71f81785709b54f03fcd3",
+  "wandb_project": "flexible-line-peg-insertion",
+  "wandb_name": "peg_rlpd_baseline_seed0",
+  "wandb_run_id": "peg-resume-unit-run",
+  "online_replay_file": "checkpoint_125_online_replay.pkl",
+  "online_replay_sha256": "9d20e2d7d8851efa875244d214c3a482326e2bed7954c6ee71cfbdc62dbfab98",
+  "online_replay_size": 4,
+  "online_replay_capacity": 128,
+  "source_snapshot": {
+    "identifier": "resumed-next"
+  },
+  "created_at": "2026-08-22T22:24:20.712037+00:00"
+}

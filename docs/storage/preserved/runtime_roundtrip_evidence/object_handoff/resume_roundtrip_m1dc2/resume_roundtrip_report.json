@@ -1,0 +1,49 @@
+{
+  "restored_learner_step": 123,
+  "restored_actor_steps": 17,
+  "remaining_random_steps": 483,
+  "agent_structure_value_match": true,
+  "online_replay_size": 5,
+  "online_replay_index_match": true,
+  "online_replay_rng_match": true,
+  "online_replay_resume": "VALIDATED",
+  "sample_batch": "PASS",
+  "demo_raw_transitions": 2000,
+  "demo_replay_size": 2001,
+  "demo_replay_rebuilt": "VALIDATED",
+  "wandb_project": "flexible-line-object-grasp",
+  "wandb_name": "object_baseline_seed0",
+  "wandb_run_id": "object-resume-unit-run",
+  "wandb_resume": "must",
+  "next_checkpoint_step": 125,
+  "old_checkpoint_unchanged": true,
+  "collision_protection": "PASS",
+  "failure_tests": {
+    "missing_replay": {
+      "result": "FAIL_CLOSED",
+      "error": "FileNotFoundError"
+    },
+    "wrong_replay_hash": {
+      "result": "FAIL_CLOSED",
+      "error": "ValueError"
+    },
+    "wrong_demo_hash": {
+      "result": "FAIL_CLOSED",
+      "error": "ValueError"
+    },
+    "config_mismatch": {
+      "result": "FAIL_CLOSED",
+      "error": "ValueError"
+    },
+    "wandb_run_mismatch": {
+      "result": "FAIL_CLOSED",
+      "error": "ValueError"
+    },
+    "existing_checkpoint_collision": {
+      "result": "FAIL_CLOSED",
+      "error": "FileExistsError"
+    }
+  },
+  "restored_policy_inference": "PASS",
+  "object_resume_gate": "VALIDATED"
+}

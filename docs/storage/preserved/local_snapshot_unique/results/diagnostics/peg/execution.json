@@ -1,0 +1,13 @@
+{
+  "stop_reason": "EXCEPTION: RuntimeError('dangerous initial penetration')",
+  "steps": 0,
+  "simulator_diagnostic_started": true,
+  "training_data_eligible": false,
+  "demo_recording_started": false,
+  "training_started": false,
+  "checkpoint_resumed": false,
+  "requested_axial": 0.0,
+  "realized_axial": 0.0,
+  "production_hashes_unchanged": true,
+  "retry_count": 0
+}
