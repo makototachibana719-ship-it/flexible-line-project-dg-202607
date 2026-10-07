@@ -1,0 +1,180 @@
+"""Experiment-local visual wrapper for the frozen Peg V2 environment."""
+
+from __future__ import annotations
+
+from contextlib import contextmanager
+from pathlib import Path
+import sys
+import xml.etree.ElementTree as ET
+
+import gym
+import mujoco
+import numpy as np
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PEG_EXAMPLE = (
+    PROJECT_ROOT
+    / "external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim"
+)
+PEG_ENV_PARENT = PROJECT_ROOT / "external/packages/peg_insertion/peg_insertion/code/env"
+for path in (PEG_EXAMPLE, PEG_ENV_PARENT):
+    if str(path) not in sys.path:
+        sys.path.insert(0, str(path))
+
+from peg_env_adapter import make_peg_state_env  # noqa: E402
+from training.peg_insertion.peg_runtime_adapter import portable_peg_runtime  # noqa: E402
+
+
+FRONT_CAMERA_NAME = "frontview"
+WRIST_CAMERA_NAME = "peg_wrist_cam_v1"
+
+
+def _add_experiment_camera(xml_path: Path) -> None:
+    """Add one moving wrist camera to the staged XML, never to source assets."""
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+    existing = root.find(f".//camera[@name='{WRIST_CAMERA_NAME}']")
+    if existing is not None:
+        return
+    eef = root.find(".//body[@name='eef']")
+    if eef is None:
+        raise RuntimeError("generated Peg XML has no eef body for wrist camera")
+    ET.SubElement(
+        eef,
+        "camera",
+        {
+            "name": WRIST_CAMERA_NAME,
+            "mode": "targetbody",
+            "target": "hole",
+            "pos": "0.035 0 0.055",
+            "fovy": "75",
+        },
+    )
+    tree.write(xml_path, encoding="utf-8", xml_declaration=True)
+
+
+@contextmanager
+def experiment_peg_runtime(project_root: Path = PROJECT_ROOT):
+    """Stage the frozen runtime and apply only the experiment-local camera edit."""
+    with portable_peg_runtime(project_root) as paths:
+        from mujoco_env.tasks import base_task
+
+        cls = base_task.RobotAssembler
+        staged_build = cls.build_robot_scene
+
+        def build(self, scene_name, robot_config, output_dir):
+            xml_path = Path(staged_build(self, scene_name, robot_config, output_dir))
+            _add_experiment_camera(xml_path)
+            return xml_path
+
+        cls.build_robot_scene = build
+        try:
+            yield paths
+        finally:
+            cls.build_robot_scene = staged_build
+
+
+class PegVisionDrQEnvV1(gym.Env):
+    """Obs20 + front/wrist RGB, with unchanged Action7 and one physics step."""
+
+    metadata = {"render_modes": ["rgb_array"]}
+
+    def __init__(
+        self,
+        *,
+        max_episode_steps: int = 500,
+        width: int = 128,
+        height: int = 128,
+    ) -> None:
+        super().__init__()
+        self.state_env = make_peg_state_env(
+            render_mode="rgb_array", max_episode_steps=max_episode_steps
+        )
+        self.action_space = self.state_env.action_space
+        self.observation_space = gym.spaces.Dict(
+            {
+                "state": gym.spaces.Box(
+                    low=-np.inf, high=np.inf, shape=(20,), dtype=np.float32
+                ),
+                "images": gym.spaces.Dict(
+                    {
+                        "front": gym.spaces.Box(
+                            low=0,
+                            high=255,
+                            shape=(height, width, 3),
+                            dtype=np.uint8,
+                        ),
+                        "wrist": gym.spaces.Box(
+                            low=0,
+                            high=255,
+                            shape=(height, width, 3),
+                            dtype=np.uint8,
+                        ),
+                    }
+                ),
+            }
+        )
+        model = self.state_env.env.model
+        available = {
+            mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_CAMERA, idx)
+            for idx in range(model.ncam)
+        }
+        for name in (FRONT_CAMERA_NAME, WRIST_CAMERA_NAME):
+            if name not in available:
+                raise RuntimeError(f"required camera missing from staged model: {name}")
+        self._front_renderer = mujoco.Renderer(model, height=height, width=width)
+        self._wrist_renderer = mujoco.Renderer(model, height=height, width=width)
+
+    @property
+    def model(self):
+        return self.state_env.env.model
+
+    @property
+    def data(self):
+        return self.state_env.env.data
+
+    def _render_camera(self, renderer: mujoco.Renderer, camera: str) -> np.ndarray:
+        renderer.update_scene(self.data, camera=camera)
+        image = np.asarray(renderer.render())
+        if image.shape != (128, 128, 3) or image.dtype != np.uint8:
+            raise RuntimeError(f"invalid {camera} render contract: {image.shape} {image.dtype}")
+        return image.copy()
+
+    def _observation(self, state: np.ndarray) -> dict:
+        return {
+            "state": np.asarray(state, dtype=np.float32),
+            "images": {
+                "front": self._render_camera(self._front_renderer, FRONT_CAMERA_NAME),
+                "wrist": self._render_camera(self._wrist_renderer, WRIST_CAMERA_NAME),
+            },
+        }
+
+    def reset(self, *, seed=None, options=None):
+        state, info = self.state_env.reset(seed=seed, options=options)
+        return self._observation(state), info
+
+    def step(self, action):
+        state, reward, terminated, truncated, info = self.state_env.step(action)
+        return (
+            self._observation(state),
+            reward,
+            terminated,
+            truncated,
+            info,
+        )
+
+    def close(self):
+        self._front_renderer.close()
+        self._wrist_renderer.close()
+        self.state_env.close()
+
+
+def make_object_contract_env(**kwargs):
+    """Apply the exact Object wrapper sequence and validated chunk length T=1."""
+    from serl_launcher.wrappers.chunking import ChunkingWrapper
+    from serl_launcher.wrappers.serl_obs_wrappers import SERLObsWrapper
+
+    env = PegVisionDrQEnvV1(**kwargs)
+    env = SERLObsWrapper(env)
+    return ChunkingWrapper(env, obs_horizon=1, act_exec_horizon=None)

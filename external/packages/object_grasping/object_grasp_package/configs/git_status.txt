@@ -1,0 +1,18 @@
+ M examples/async_drq_sim/async_drq_sim.py
+ M examples/async_drq_sim/run_actor.sh
+ M examples/async_drq_sim/run_learner.sh
+ M examples/async_sac_state_sim/async_sac_state_sim.py
+ M examples/async_sac_state_sim/run_actor.sh
+ M franka_sim/franka_sim/envs/panda_pick_gym_env.py
+?? checkpoints/
+?? examples/async_drq_sim/async_drq_sim.py.bak_indent
+?? examples/async_drq_sim/async_drq_sim_before_success.py
+?? examples/async_drq_sim/eval_1000_seed0_run2.csv
+?? examples/async_drq_sim/eval_reward_1000_seed0_run2.png
+?? examples/async_drq_sim/run_actor_working.sh
+?? examples/async_drq_sim/run_learner_working.sh
+?? examples/async_drq_sim/train_1000_seed0_run2.csv
+?? franka_sim/franka_sim/envs/panda_pick_gym_env.py.bak_camera
+?? franka_sim/franka_sim/envs/panda_pick_gym_env.py.bak_renderers
+?? franka_sim/franka_sim/envs/panda_pick_gym_env_before_success.py
+?? franka_sim/franka_sim/envs/panda_pick_gym_env_working.py

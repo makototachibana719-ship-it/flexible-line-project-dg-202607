@@ -1,0 +1,63 @@
+environment: AuboPegInsert-State-v0
+algorithm: RLPD_STYLE_SAC_PLUS_50_50_DEMO_REPLAY_WITH_TRAINING_INTERVENTION
+seed: 0
+fresh_initialization: true
+load_legacy_checkpoint: false
+runtime:
+  conda_environment: serl_peg_gpu
+  mujoco_gl: egl
+  xla_python_client_preallocate: false
+  xla_flags: --xla_gpu_enable_triton_gemm=false
+demo:
+  observation_contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  path: SERL_PAPER_FIDELITY_AUBO_PEG_V2/PAPER_FIDELITY_20_DEMO_V1/paper_fidelity_20_demo_v1.pkl
+  manifest: SERL_PAPER_FIDELITY_AUBO_PEG_V2/PAPER_FIDELITY_20_DEMO_V1/manifest.json
+  sha256: d4c625b243420460a48cad68fa6d75cd987f306099f0d4ad7c18cd1404135bc3
+  episodes: 20
+  transitions: 3627
+production_expert:
+  path: results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl
+  sha256: 4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878
+  transitions: 1921
+  binding: nearest normalized Obs20 accepted production-Demo action
+  support_threshold: 7.41773975814
+  trigger: exact restored-state one-step policy lookahead crosses validated D_DEMO support or creates unhealthy contact
+observation:
+  contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  shape: [20]
+  dtype: float32
+action:
+  shape: [7]
+  dtype: float32
+  low: -1.0
+  high: 1.0
+  representation: AUBO_COMPATIBLE_RELATIVE_INCREMENTAL
+training:
+  online_batch_size: 32
+  demo_batch_size: 32
+  total_batch_size: 64
+  demo_fraction: 0.5
+  critic_actor_ratio: 1
+  utd_ratio: 8
+  training_starts: 64
+  random_steps: 0
+  replay_capacity: 1000000
+  demo_replay_capacity: 1000000
+  reset_randomization: true
+pilot:
+  learner_updates: 500
+  checkpoints: [100, 250, 500]
+  canonical_episodes: 3
+  final_episodes: 5
+  process_timeout_seconds: 14400
+  decision_timeout_seconds: 1800
+  actor_max_steps: 1000000
+  update_timeout_seconds: 180
+wandb:
+  project: flexible-line-peg-insertion
+  run_name: hil-serl-automated-expert-intervention-v1
+  mode: disabled
+contracts:
+  reward: "-80*lateral_error -20*axial_error -2*orientation_error +2[lateral<0.01] +25[success]"
+  success: "lateral<=0.002 and axial<=0.003 and orientation<=0.05; force excluded"
+  formal_eval_reset: canonical

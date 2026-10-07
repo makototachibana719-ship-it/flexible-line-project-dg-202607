@@ -1,0 +1,178 @@
+"""Object-style Demo/online replay and AgentLace transport preflight."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import pickle
+from pathlib import Path
+import time
+
+import jax
+import numpy as np
+
+from agentlace.data.data_store import QueuedDataStore
+from agentlace.trainer import TrainerClient, TrainerConfig, TrainerServer
+from serl_launcher.data.data_store import MemoryEfficientReplayBufferDataStore
+
+from experiments.peg_vision_drq_demo_v1.peg_vision_env import (
+    PROJECT_ROOT,
+    experiment_peg_runtime,
+    make_object_contract_env,
+)
+
+
+def clone_obs(obs: dict) -> dict:
+    return {key: np.asarray(value).copy() for key, value in obs.items()}
+
+
+def shape_tree(value):
+    return jax.tree_util.tree_map(
+        lambda leaf: {"shape": list(np.shape(leaf)), "dtype": str(np.asarray(leaf).dtype)},
+        value,
+    )
+
+
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise RuntimeError(message)
+
+
+def make_object_replay(env, capacity: int, image_keys: list[str]):
+    """Construct the exact replay class used by Object without RLDS imports.
+
+    ``serl_launcher.utils.launcher`` imports TensorFlow solely for optional RLDS
+    loading.  Direct construction is the launcher's own implementation for the
+    memory-efficient branch and avoids a TensorFlow/OSMesa native-library crash.
+    """
+    return MemoryEfficientReplayBufferDataStore(
+        env.observation_space,
+        env.action_space,
+        capacity=capacity,
+        image_keys=image_keys,
+    )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--demo", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--port", type=int, default=5598)
+    args = parser.parse_args()
+    output = args.output.resolve()
+    require(PROJECT_ROOT in output.parents and not output.exists(), "fresh project output required")
+    output.mkdir(parents=True)
+    result = {
+        "PEG_VISION_DEMO_REPLAY_PREFLIGHT": "FAIL",
+        "RANDOM_ONLINE_REPLAY_PREFLIGHT": "FAIL",
+        "training_run": False,
+    }
+    server = client = env = None
+    try:
+        with args.demo.open("rb") as stream:
+            transitions = pickle.load(stream)
+        require(len(transitions) > 0, "empty Demo")
+
+        with experiment_peg_runtime():
+            env = make_object_contract_env(max_episode_steps=20)
+            image_keys = [key for key in env.observation_space.keys() if key != "state"]
+            require(image_keys == ["front", "wrist"], f"unexpected image keys: {image_keys}")
+            demo_buffer = make_object_replay(
+                env,
+                capacity=max(2000, len(transitions) + 1),
+                image_keys=image_keys,
+            )
+            for transition in transitions:
+                demo_buffer.insert(transition)
+            require(len(demo_buffer) == len(transitions), "Demo insert count mismatch")
+            demo_batch = demo_buffer.sample(batch_size=8, pack_obs_and_next_obs=True)
+            require(demo_batch["observations"]["state"].shape == (8, 1, 20), "state batch mismatch")
+            require(demo_batch["observations"]["front"].shape == (8, 2, 128, 128, 3), "front packed batch mismatch")
+            require(demo_batch["observations"]["wrist"].shape == (8, 2, 128, 128, 3), "wrist packed batch mismatch")
+            require(demo_batch["actions"].shape == (8, 7), "action batch mismatch")
+            require(demo_batch["rewards"].shape == (8,), "reward batch mismatch")
+            require(demo_batch["masks"].shape == (8,), "mask batch mismatch")
+            require(demo_batch["dones"].shape == (8,), "done batch mismatch")
+            device_batch = jax.device_put(demo_batch)
+            jax.block_until_ready(device_batch)
+            result["PEG_VISION_DEMO_REPLAY_PREFLIGHT"] = "PASS"
+            result["demo_replay"] = {
+                "implementation": type(demo_buffer).__name__,
+                "size": len(demo_buffer),
+                "image_keys": image_keys,
+                "sample": shape_tree(demo_batch),
+                "device": str(jax.tree_util.tree_leaves(device_batch)[0].device),
+            }
+
+            online_buffer = make_object_replay(
+                env,
+                capacity=100,
+                image_keys=image_keys,
+            )
+            actor_queue = QueuedDataStore(100)
+            config = TrainerConfig(
+                port_number=args.port,
+                broadcast_port=args.port + 1,
+                request_types=["send-stats"],
+            )
+            server = TrainerServer(config)
+            server.register_data_store("actor", online_buffer)
+            server.start(threaded=True)
+            client = TrainerClient(
+                "actor",
+                "127.0.0.1",
+                config,
+                data_store=actor_queue,
+                wait_for_server=True,
+                timeout_ms=2000,
+            )
+
+            obs, _ = env.reset(seed=0)
+            for step in range(8):
+                # Deterministic bounded action; all components remain well inside
+                # the normalized Action7 limits and avoid full-scale random moves.
+                action = np.zeros(7, dtype=np.float32)
+                action[0] = np.float32(0.01 if step % 2 == 0 else -0.01)
+                next_obs, reward, terminated, truncated, _ = env.step(action)
+                actor_queue.insert(
+                    {
+                        "observations": clone_obs(obs),
+                        "actions": action,
+                        "next_observations": clone_obs(next_obs),
+                        "rewards": np.float32(reward),
+                        "masks": np.float32(1.0 - float(terminated)),
+                        "dones": np.bool_(terminated or truncated),
+                    }
+                )
+                obs = next_obs
+            require(client.update(), "TrainerClient update failed")
+            deadline = time.monotonic() + 5.0
+            while len(online_buffer) < 8 and time.monotonic() < deadline:
+                time.sleep(0.05)
+            require(len(online_buffer) == 8, f"server replay size mismatch: {len(online_buffer)}")
+            online_batch = online_buffer.sample(batch_size=4, pack_obs_and_next_obs=True)
+            require(online_batch["actions"].shape == (4, 7), "online action batch mismatch")
+            result["RANDOM_ONLINE_REPLAY_PREFLIGHT"] = "PASS"
+            result["online_replay"] = {
+                "actor_datastore": type(actor_queue).__name__,
+                "trainer_client": type(client).__name__,
+                "trainer_server": type(server).__name__,
+                "server_replay": type(online_buffer).__name__,
+                "safe_transitions_sent": 8,
+                "server_replay_size": len(online_buffer),
+                "sample": shape_tree(online_batch),
+            }
+    finally:
+        if client is not None:
+            client.stop()
+        if server is not None:
+            server.stop()
+        if env is not None:
+            env.close()
+        (output / "result.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

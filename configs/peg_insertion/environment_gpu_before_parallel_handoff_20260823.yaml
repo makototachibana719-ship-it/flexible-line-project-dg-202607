@@ -1,0 +1,29 @@
+reference_runtime: serl_mujoco
+python: 3.10.20
+validated_current:
+  jax: 0.4.35
+  jaxlib: 0.4.35
+  flax: 0.8.5
+  optax: 0.2.3
+  gym: 0.26.2
+  gymnasium: 1.3.0
+  mujoco: 3.10.0
+  wandb: 0.28.0
+  orbax_checkpoint: 0.6.4
+  tensorstore: 0.1.78
+package_evidence:
+  jax: 0.4.35
+  jaxlib: 0.4.35
+  flax: 0.8.5
+  optax: 0.2.3
+  gym: 0.23.1
+  gymnasium: 1.1.1
+  mujoco: 3.1.5
+  wandb: 0.28.1
+  orbax_checkpoint: 0.6.4
+  tensorstore: 0.1.78
+gpu_jaxlib_policy: select a JAX-supported CUDA wheel compatible with the target WSL2 NVIDIA driver; do not copy a CPU wheel mechanically
+required_gates:
+  - nvidia-smi
+  - "python -c 'import jax; print(jax.devices()); print(jax.default_backend())' reports gpu"
+checkpoint_backend: project-scoped legacy Flax state file plus replay and metadata sidecars

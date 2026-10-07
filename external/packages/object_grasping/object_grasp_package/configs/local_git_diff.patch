@@ -1,0 +1,357 @@
+diff --git a/examples/async_drq_sim/async_drq_sim.py b/examples/async_drq_sim/async_drq_sim.py
+index a84bc58..cf646ff 100644
+--- a/examples/async_drq_sim/async_drq_sim.py
++++ b/examples/async_drq_sim/async_drq_sim.py
+@@ -88,6 +88,100 @@ def print_green(x):
+ ##############################################################################
+ 
+ 
++
++def evaluate_with_success(policy_fn, env, num_episodes):
++    rewards = []
++    lengths = []
++    successes = []
++    max_lift_heights = []
++
++    for episode_idx in range(num_episodes):
++        reset_result = env.reset()
++
++        if isinstance(reset_result, tuple) and len(reset_result) == 2:
++            obs, _ = reset_result
++        else:
++            obs = reset_result
++
++        done = False
++        episode_reward = 0.0
++        episode_length = 0
++        episode_success = False
++        max_lift_height = float("-inf")
++
++        while not done:
++            try:
++                action = policy_fn(observations=obs)
++            except TypeError:
++                action = policy_fn(obs)
++
++            step_result = env.step(action)
++
++            if len(step_result) == 5:
++                obs, reward, terminated, truncated, info = step_result
++                done = bool(terminated or truncated)
++            elif len(step_result) == 4:
++                obs, reward, done, info = step_result
++                done = bool(done)
++            else:
++                raise RuntimeError(
++                    f"Unexpected env.step() return length: {len(step_result)}"
++                )
++
++            episode_reward += float(np.asarray(reward).mean())
++            episode_length += 1
++
++            if isinstance(info, dict):
++                if bool(info.get("success", False)):
++                    episode_success = True
++
++                if "lift_height" in info:
++                    try:
++                        max_lift_height = max(
++                            max_lift_height,
++                            float(info["lift_height"]),
++                        )
++                    except Exception:
++                        pass
++
++        rewards.append(episode_reward)
++        lengths.append(episode_length)
++        successes.append(float(episode_success))
++
++        if max_lift_height == float("-inf"):
++            max_lift_height = float("nan")
++
++        max_lift_heights.append(max_lift_height)
++
++        print(
++            f"[EVAL EPISODE] "
++            f"{episode_idx + 1}/{num_episodes} "
++            f"reward={episode_reward:.6f} "
++            f"length={episode_length} "
++            f"success={episode_success} "
++            f"max_lift_height={max_lift_height:.4f}",
++            flush=True,
++        )
++
++    success_count = int(np.sum(successes))
++    success_rate = float(np.mean(successes))
++
++    return {
++        "episode.r": float(np.mean(rewards)),
++        "episode.r_std": float(np.std(rewards)),
++        "episode.l": float(np.mean(lengths)),
++        "success_rate": success_rate,
++        "success_count": success_count,
++        "num_episodes": int(num_episodes),
++        "max_lift_height_mean": float(
++            np.nanmean(max_lift_heights)
++        ),
++        "max_lift_height_max": float(
++            np.nanmax(max_lift_heights)
++        ),
++    }
++
++
+ def actor(agent: DrQAgent, data_store, env, sampling_rng):
+     """
+     This is the actor loop, which runs when "--actor" is set to True.
+@@ -162,11 +256,29 @@ def actor(agent: DrQAgent, data_store, env, sampling_rng):
+ 
+         if step % FLAGS.eval_period == 0:
+             with timer.context("eval"):
+-                evaluate_info = evaluate(
++                evaluate_info = evaluate_with_success(
+                     policy_fn=partial(agent.sample_actions, argmax=True),
+                     env=eval_env,
+                     num_episodes=FLAGS.eval_n_trajs,
+                 )
++
++            print(
++                f"\n[EVAL] step={step} {evaluate_info}",
++                flush=True,
++            )
++
++            print(
++                f"[SUCCESS] step={step} "
++                f"success_rate={evaluate_info['success_rate']:.4f} "
++                f"success_count={evaluate_info['success_count']}/"
++                f"{evaluate_info['num_episodes']} "
++                f"max_lift_height_mean="
++                f"{evaluate_info['max_lift_height_mean']:.4f} "
++                f"max_lift_height_max="
++                f"{evaluate_info['max_lift_height_max']:.4f}",
++                flush=True,
++            )
++
+             stats = {"eval": evaluate_info}
+             client.request("send-stats", stats)
+ 
+@@ -177,6 +289,7 @@ def actor(agent: DrQAgent, data_store, env, sampling_rng):
+             client.request("send-stats", stats)
+ 
+ 
++
+ ##############################################################################
+ 
+ 
+@@ -296,14 +409,53 @@ def learner(
+             agent = jax.block_until_ready(agent)
+             server.publish_network(agent.state.params)
+ 
+-        if update_steps % FLAGS.log_period == 0 and wandb_logger:
+-            wandb_logger.log(update_info, step=update_steps)
+-            wandb_logger.log({"timer": timer.get_average_times()}, step=update_steps)
++        if update_steps % FLAGS.log_period == 0:
++            def flatten_metrics(data, prefix=""):
++                metrics = {}
++
++                if isinstance(data, dict):
++                    for key, value in data.items():
++                        full_key = f"{prefix}/{key}" if prefix else str(key)
++                        metrics.update(flatten_metrics(value, full_key))
++                    return metrics
++
++                try:
++                    array = np.asarray(data)
++
++                    if array.dtype == object:
++                        return {}
++
++                    metrics[prefix] = float(array.mean())
++                except (TypeError, ValueError):
++                    pass
++
++                return metrics
++
++            printable_info = flatten_metrics(update_info)
++
++            print(
++                f"\\n[TRAIN] step={update_steps} "
++                + " ".join(
++                    f"{key}={value:.6f}"
++                    for key, value in printable_info.items()
++                ),
++                flush=True,
++            )
++
++            if wandb_logger:
++                wandb_logger.log(update_info, step=update_steps)
++                wandb_logger.log(
++                    {"timer": timer.get_average_times()},
++                    step=update_steps,
++                )
+ 
+         if FLAGS.checkpoint_period and update_steps % FLAGS.checkpoint_period == 0:
+             assert FLAGS.checkpoint_path is not None
+             checkpoints.save_checkpoint(
+-                FLAGS.checkpoint_path, agent.state, step=update_steps, keep=20
++                FLAGS.checkpoint_path,
++                agent.state,
++                step=update_steps,
++                keep=20,
+             )
+ 
+         pbar.update(len(replay_buffer) - pbar.n)  # update replay buffer bar
+diff --git a/examples/async_drq_sim/run_actor.sh b/examples/async_drq_sim/run_actor.sh
+index 52fcfc4..9903043 100644
+--- a/examples/async_drq_sim/run_actor.sh
++++ b/examples/async_drq_sim/run_actor.sh
+@@ -1,10 +1,14 @@
+-export XLA_PYTHON_CLIENT_PREALLOCATE=false && \
+-export XLA_PYTHON_CLIENT_MEM_FRACTION=.1 && \
+-python async_drq_sim.py "$@" \
+-    --actor \
+-    --render \
+-    --exp_name=serl_dev_drq_sim_test_resnet \
+-    --seed 0 \
+-    --random_steps 1000 \
+-    --encoder_type resnet-pretrained \
+-    --debug
++#!/bin/bash
++
++export XLA_PYTHON_CLIENT_PREALLOCATE=false
++export XLA_PYTHON_CLIENT_MEM_FRACTION=0.1
++export TF_ENABLE_ONEDNN_OPTS=0
++
++python async_drq_sim.py \
++  --actor \
++  --exp_name=serl_dev_drq_sim_test_resnet \
++  --seed=0 \
++  --random_steps=100 \
++  --encoder_type=resnet-pretrained \
++  --debug \
++  "$@"
+diff --git a/examples/async_drq_sim/run_learner.sh b/examples/async_drq_sim/run_learner.sh
+index 3944544..688332c 100644
+--- a/examples/async_drq_sim/run_learner.sh
++++ b/examples/async_drq_sim/run_learner.sh
+@@ -1,11 +1,15 @@
+-export XLA_PYTHON_CLIENT_PREALLOCATE=false && \
+-export XLA_PYTHON_CLIENT_MEM_FRACTION=.2 && \
+-python async_drq_sim.py "$@" \
+-    --learner \
+-    --exp_name=serl_dev_drq_sim_test_resnet \
+-    --seed 0 \
+-    --training_starts 1000 \
+-    --critic_actor_ratio 4 \
+-    --encoder_type resnet-pretrained \
+-    # --demo_path franka_lift_cube_image_20_trajs.pkl \
+-    --debug # wandb is disabled when debug
++#!/bin/bash
++
++export XLA_PYTHON_CLIENT_PREALLOCATE=false
++export XLA_PYTHON_CLIENT_MEM_FRACTION=0.1
++export TF_ENABLE_ONEDNN_OPTS=0
++
++python async_drq_sim.py \
++  --learner \
++  --exp_name=serl_dev_drq_sim_test_resnet \
++  --seed=0 \
++  --training_starts=100 \
++  --critic_actor_ratio=1 \
++  --encoder_type=resnet-pretrained \
++  --debug \
++  "$@"
+diff --git a/examples/async_sac_state_sim/async_sac_state_sim.py b/examples/async_sac_state_sim/async_sac_state_sim.py
+index 90a1acf..03787b4 100644
+--- a/examples/async_sac_state_sim/async_sac_state_sim.py
++++ b/examples/async_sac_state_sim/async_sac_state_sim.py
+@@ -37,7 +37,7 @@ flags.DEFINE_integer("seed", 42, "Random seed.")
+ flags.DEFINE_bool("save_model", False, "Whether to save model.")
+ flags.DEFINE_integer("batch_size", 256, "Batch size.")
+ flags.DEFINE_integer("critic_actor_ratio", 8, "critic to actor update ratio.")
+-
++flags.DEFINE_integer("utd_ratio", 8, "Update-to-data ratio.")
+ flags.DEFINE_integer("max_steps", 1000000, "Maximum number of training steps.")
+ flags.DEFINE_integer("replay_buffer_capacity", 1000000, "Replay buffer capacity.")
+ 
+diff --git a/examples/async_sac_state_sim/run_actor.sh b/examples/async_sac_state_sim/run_actor.sh
+index 5767791..85b8209 100644
+--- a/examples/async_sac_state_sim/run_actor.sh
++++ b/examples/async_sac_state_sim/run_actor.sh
+@@ -2,7 +2,6 @@ export XLA_PYTHON_CLIENT_PREALLOCATE=false && \
+ export XLA_PYTHON_CLIENT_MEM_FRACTION=.05 && \
+ python async_sac_state_sim.py "$@" \
+     --actor \
+-    --render \
+     --env PandaPickCube-v0 \
+     --exp_name=serl_dev_sim_test \
+     --seed 0 \
+diff --git a/franka_sim/franka_sim/envs/panda_pick_gym_env.py b/franka_sim/franka_sim/envs/panda_pick_gym_env.py
+index f0a8d25..1eef1ba 100644
+--- a/franka_sim/franka_sim/envs/panda_pick_gym_env.py
++++ b/franka_sim/franka_sim/envs/panda_pick_gym_env.py
+@@ -141,11 +141,19 @@ class PandaPickCubeGymEnv(MujocoGymEnv):
+         # is possible to add a similar viewer feature with gym, but that can be a future TODO
+         from gymnasium.envs.mujoco.mujoco_rendering import MujocoRenderer
+ 
+-        self._viewer = MujocoRenderer(
+-            self.model,
+-            self.data,
+-        )
+-        self._viewer.render(self.render_mode)
++        self._viewers = [
++            MujocoRenderer(
++                self.model,
++                self.data,
++                width=128,
++                height=128,
++                camera_id=cam_id,
++            )
++            for cam_id in self.camera_id
++        ]
++
++        for viewer in self._viewers:
++            viewer.render(self.render_mode)
+ 
+     def reset(
+         self, seed=None, **kwargs
+@@ -218,15 +226,28 @@ class PandaPickCubeGymEnv(MujocoGymEnv):
+ 
+         obs = self._compute_observation()
+         rew = self._compute_reward()
++
++        block_pos = self._data.sensor("block_pos").data.copy()
++        block_height = float(block_pos[2])
++        lift_height = float(block_height - self._z_init)
++
++        success = bool(block_height >= self._z_success)
++
+         terminated = self.time_limit_exceeded()
+ 
+-        return obs, rew, terminated, False, {}
++        info = {
++            "success": success,
++            "block_height": block_height,
++            "lift_height": lift_height,
++        }
++
++        return obs, rew, terminated, False, info
+ 
+     def render(self):
+         rendered_frames = []
+-        for cam_id in self.camera_id:
++        for viewer in self._viewers:
+             rendered_frames.append(
+-                self._viewer.render(render_mode="rgb_array", camera_id=cam_id)
++                viewer.render(render_mode="rgb_array")
+             )
+         return rendered_frames
+ 
+@@ -273,7 +294,7 @@ class PandaPickCubeGymEnv(MujocoGymEnv):
+             obs["state"]["block_pos"] = block_pos
+ 
+         if self.render_mode == "human":
+-            self._viewer.render(self.render_mode)
++            self._viewers[0].render(self.render_mode)
+ 
+         return obs
+ 

@@ -1,0 +1,482 @@
+#!/usr/bin/env python3
+"""Fixed C1 250-learner pilot for frozen C0 base + Obs20-gated residual V1."""
+from __future__ import annotations
+
+import hashlib
+import json
+import math
+import os
+import pickle
+import sys
+import time
+from pathlib import Path
+
+os.environ.setdefault("MUJOCO_GL", "egl")
+os.environ.setdefault("XLA_PYTHON_CLIENT_PREALLOCATE", "false")
+os.environ.setdefault("XLA_FLAGS", "--xla_gpu_enable_triton_gemm=false")
+
+ROOT = Path("/home/makoto/flexible_line_project")
+sys.path[:0] = [
+    str(ROOT),
+    str(ROOT / "external/serl/serl_launcher"),
+    str(ROOT / "external/serl/franka_sim"),
+    str(ROOT / "external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim"),
+    str(ROOT / "external/packages/peg_insertion/peg_insertion/code/env"),
+]
+
+import chex
+import flax
+import jax
+import jax.numpy as jnp
+import numpy as np
+import optax
+from async_sac_state_sim import concat_rlpd_batches
+import scripts.audit_peg_f3_v2_actor_critic_closed_loop_geometry as geo
+import scripts.run_peg_f3_v2_actor_update_timescale_v1 as p4
+import scripts.run_peg_f3_v2_behavior_critical_actor_trust_region_v1 as tr
+from scripts.run_peg_f3_v2_exact_restore_curriculum_stage import (
+    block,
+    distance_model,
+    evaluate,
+    fixed_batch,
+    load_config,
+    make_train_env,
+)
+from serl_launcher.common.optimizers import make_optimizer
+from serl_launcher.utils.launcher import make_replay_buffer
+from training.peg_insertion.observation_gated_residual_v1 import (
+    RESIDUAL_DEF,
+    combined_distribution,
+    combined_mode,
+    gate_value,
+    residual_output,
+)
+from training.peg_insertion.peg_replay_adapter import repaired_replay_datastore_insert
+from training.peg_insertion.peg_runtime_adapter import portable_peg_runtime
+from training.peg_insertion.resume import restore_replay, snapshot_replay
+
+R2 = ROOT / "results/training/peg_f3_v2_behavior_critical_actor_trust_region_v1_r2_20260908_002"
+CP = R2 / "checkpoints/learner_0500_candidate_125.msgpack"
+RP = R2 / "online_replay.pkl"
+GATE = ROOT / "results/preflight/peg/f3_v2_observation_gated_residual_feasibility_20260908_001/result.json"
+ARCH = ROOT / "results/preflight/peg/f3_v2_observation_gated_residual_architecture_20260908_001/result.json"
+OUT = ROOT / "results/training/peg_f3_v2_observation_gated_residual_c1_pilot_20260908_001"
+FROZEN = tr.FROZEN
+SMANIFEST = tr.SMANIFEST
+TOTAL = 250
+PERIOD = 4
+C1_EVALS = (0, 50, 100, 250)
+C0_EVALS = (0, 100, 250)
+
+
+def req(value, message):
+    if not value:
+        raise RuntimeError(message)
+
+
+def tree_hash(tree):
+    return geo.thash(tree)
+
+
+class CombinedPolicy:
+    """Evaluation/collection adapter; base state is read-only and residual is separate."""
+
+    def __init__(self, base, residual_params, record=False):
+        self.base = base
+        self.residual_params = residual_params
+        self.record = record
+        self.gates = []
+        self.residual_norms = []
+        self.gated_norms = []
+
+    def sample_actions(self, observations, seed=None, deterministic=False, argmax=False, **_):
+        obs = jnp.asarray(observations)
+        dist = combined_distribution(self.base, self.residual_params, obs, rng=seed, train=False)
+        value = dist.mode() if argmax or deterministic else dist.sample(seed=seed)
+        if self.record:
+            g = np.asarray(jax.device_get(gate_value(obs))).reshape(-1)
+            r = np.asarray(jax.device_get(residual_output(self.residual_params, obs))).reshape((-1, 6))
+            self.gates.extend(g.tolist())
+            self.residual_norms.extend(np.linalg.norm(r, axis=1).tolist())
+            self.gated_norms.extend(np.linalg.norm(g[:, None] * r, axis=1).tolist())
+        return value
+
+    def stats(self):
+        def summary(values):
+            a = np.asarray(values, np.float64)
+            return {"mean": float(a.mean()), "p95": float(np.quantile(a, .95)), "max": float(a.max())}
+        return {
+            "visited_state_count": len(self.gates),
+            "gate": summary(self.gates),
+            "gate_nonzero_fraction": float(np.mean(np.asarray(self.gates) > 0)),
+            "residual_l2": summary(self.residual_norms),
+            "gated_residual_l2": summary(self.gated_norms),
+        }
+
+
+def eval_record(base, residual_params, level, demo_obs, scale):
+    policy = CombinedPolicy(base, residual_params, record=True)
+    result = evaluate(policy, level, demo_obs, scale)
+    result["residual_runtime"] = policy.stats()
+    return result
+
+
+def collect(env, base, residual_params, online, cfg, demo_obs, scale, obs, arng, count=60):
+    policy = CombinedPolicy(base, residual_params, record=True)
+    admitted = attempts = 0
+    max_force = 0.0
+    if obs is None:
+        obs, _ = env.reset(seed=cfg["seed"])
+    while admitted < count:
+        arng, key = jax.random.split(arng)
+        action = np.asarray(jax.device_get(policy.sample_actions(jax.device_put(obs), seed=key)), np.float32)
+        nxt, reward, terminated, truncated, info = env.step(action)
+        distance = p4.demo_distance(nxt, demo_obs, scale)
+        attempts += 1
+        max_force = max(max_force, float(info.get("force_norm", 0.0)))
+        if distance <= p4.TH:
+            online.insert({
+                "observations": np.asarray(obs, np.float32),
+                "actions": action,
+                "next_observations": np.asarray(nxt, np.float32),
+                "rewards": np.float32(reward),
+                "masks": np.float32(0 if terminated else 1),
+                "dones": bool(terminated or truncated),
+            })
+            admitted += 1
+            obs = nxt
+        if terminated or truncated or distance > p4.TH:
+            obs, _ = env.reset(seed=cfg["seed"])
+    return obs, arng, {
+        "attempts": attempts,
+        "admitted": admitted,
+        "max_force": max_force,
+        "contact_health": bool(np.isfinite(max_force)),
+        "residual_runtime": policy.stats(),
+    }
+
+
+def combined_critic_loss(agent, residual_params, batch, params, rng):
+    batch_size = batch["rewards"].shape[0]
+    rng, next_key = jax.random.split(rng)
+    dist = combined_distribution(agent, residual_params, batch["next_observations"], rng=next_key, train=True)
+    next_actions, next_log_probs = dist.sample_and_log_prob(seed=next_key)
+    chex.assert_equal_shape([batch["actions"], next_actions])
+    target_qs = agent.forward_target_critic(batch["next_observations"], next_actions, rng=rng)
+    if agent.config["critic_subsample_size"] is not None:
+        rng, subkey = jax.random.split(rng)
+        indices = jax.random.randint(subkey, (agent.config["critic_subsample_size"],), 0, agent.config["critic_ensemble_size"])
+        target_qs = target_qs[indices]
+    target_q = batch["rewards"] + agent.config["discount"] * batch["masks"] * target_qs.min(axis=0)
+    if agent.config["backup_entropy"]:
+        target_q = target_q - agent.forward_temperature() * next_log_probs
+    predicted = agent.forward_critic(batch["observations"], batch["actions"], rng=rng, grad_params=params)
+    target = target_q[None].repeat(agent.config["critic_ensemble_size"], axis=0)
+    loss = jnp.mean((predicted - target) ** 2)
+    return loss, {"critic_loss": loss, "predicted_qs": predicted.mean(), "target_qs": target.mean()}
+
+
+@jax.jit
+def critic_update(agent, residual_params, batch):
+    keys = jax.random.split(agent.state.rng, 4)
+    next_rng = jax.random.split(agent.state.rng)[0]
+    (loss, info), grads = jax.value_and_grad(
+        lambda params: combined_critic_loss(agent, residual_params, batch, params, keys[2]), has_aux=True
+    )(agent.state.params)
+    updates, opt_state = agent.state.txs["critic"].update(grads, agent.state.opt_states["critic"], agent.state.params)
+    params = optax.apply_updates(agent.state.params, updates)
+    opts = dict(agent.state.opt_states)
+    opts["critic"] = opt_state
+    tau = agent.config["soft_target_update_rate"]
+    target = jax.tree_util.tree_map(lambda p, t: tau * p + (1 - tau) * t, params, agent.state.target_params)
+    state = agent.state.replace(step=agent.state.step + 1, params=params, opt_states=opts, target_params=target, rng=next_rng)
+    return agent.replace(state=state), info
+
+
+def residual_actor_loss(agent, residual_params, batch, rng):
+    rng, policy_rng, sample_rng, critic_rng = jax.random.split(rng, 4)
+    dist = combined_distribution(agent, residual_params, batch["observations"], rng=policy_rng, train=True)
+    actions, log_probs = dist.sample_and_log_prob(seed=sample_rng)
+    q = agent.forward_critic(batch["observations"], actions, rng=critic_rng).mean(axis=0)
+    loss = -jnp.mean(q - agent.forward_temperature() * log_probs)
+    return loss, {"residual_actor_loss": loss, "temperature": agent.forward_temperature(), "entropy": -log_probs.mean()}
+
+
+def combined_temperature_loss(agent, residual_params, batch, params, rng):
+    _, sample_key = jax.random.split(rng)
+    dist = combined_distribution(agent, residual_params, batch["next_observations"], rng=sample_key, train=True)
+    _, log_probs = dist.sample_and_log_prob(seed=sample_key)
+    entropy = -log_probs.mean()
+    loss = agent.temperature_lagrange_penalty(entropy, grad_params=params)
+    return loss, {"temperature_loss": loss}
+
+
+@jax.jit
+def residual_temperature_update(agent, residual_params, residual_opt_state, residual_tx, batch):
+    keys = jax.random.split(agent.state.rng, 4)
+    next_rng = jax.random.split(agent.state.rng)[0]
+    (actor_loss, actor_info), residual_grads = jax.value_and_grad(
+        lambda params: residual_actor_loss(agent, params, batch, keys[1]), has_aux=True
+    )(residual_params)
+    residual_updates, next_residual_opt = residual_tx.update(residual_grads, residual_opt_state, residual_params)
+    next_residual = optax.apply_updates(residual_params, residual_updates)
+    (temp_loss, temp_info), temp_grads = jax.value_and_grad(
+        lambda params: combined_temperature_loss(agent, residual_params, batch, params, keys[3]), has_aux=True
+    )(agent.state.params)
+    temp_updates, temp_opt = agent.state.txs["temperature"].update(temp_grads, agent.state.opt_states["temperature"], agent.state.params)
+    params = optax.apply_updates(agent.state.params, temp_updates)
+    opts = dict(agent.state.opt_states)
+    opts["temperature"] = temp_opt
+    state = agent.state.replace(step=agent.state.step + 1, params=params, opt_states=opts, rng=next_rng)
+    info = dict(actor_info)
+    info.update(temp_info)
+    info["residual_gradient_norm"] = optax.global_norm(residual_grads)
+    info["residual_parameter_delta_norm"] = optax.global_norm(residual_updates)
+    return agent.replace(state=state), next_residual, next_residual_opt, info
+
+
+def save_checkpoint(agent, residual_params, residual_opt_state, learner, slots):
+    path = OUT / "checkpoints" / f"c1_learner_{learner:04d}_residual_{slots:03d}.msgpack"
+    target = {"agent_state": agent.state, "residual_params": residual_params, "residual_opt_state": residual_opt_state}
+    path.write_bytes(flax.serialization.to_bytes(target))
+    restored = flax.serialization.from_bytes(target, path.read_bytes())
+    req(tree_hash(restored["agent_state"].params) == tree_hash(agent.state.params), "checkpoint agent restore")
+    req(tree_hash(restored["residual_params"]) == tree_hash(residual_params), "checkpoint residual restore")
+    return {"path": str(path), "sha256": p4.sha(path), "learner": learner, "residual_slots": slots}
+
+
+def action_invariance(base, residual_params, probe_obs, reference):
+    current = np.asarray(jax.device_get(combined_mode(base, residual_params, probe_obs)), np.float32)
+    delta = np.linalg.norm(current[:, :6] - reference[:, :6], axis=1)
+    return {
+        "MEAN_ACTION_DRIFT": float(delta.mean()),
+        "P95_ACTION_DRIFT": float(np.quantile(delta, .95)),
+        "MAX_ACTION_DRIFT": float(delta.max()),
+        "EXACT_EQUAL": bool(np.array_equal(current, reference)),
+    }
+
+
+def material_progress(initial, final):
+    checks = {
+        "success_count_increased": final["success_count"] > initial["success_count"],
+        "near_hole_rate_increased": final["near_hole_rate"] > initial["near_hole_rate"],
+        "first_divergence_increased": final["median_first_divergence"] > initial["median_first_divergence"],
+        "corridor_steps_increased": final["median_corridor_steps"] > initial["median_corridor_steps"],
+        "min_position_improved": final["median_min_position"] < initial["median_min_position"] - 1e-6,
+        "approach_reduction_improved": final["median_approach_reduction"] > initial["median_approach_reduction"] + 1e-6,
+    }
+    no_catastrophe = (
+        final["contact_health"]
+        and np.isfinite(final["median_min_position"])
+        and final["median_min_position"] <= initial["median_min_position"] + .010
+    )
+    return bool(any(checks.values()) and no_catastrophe), checks, bool(no_catastrophe)
+
+
+def main():
+    req(Path.cwd() == ROOT and not OUT.exists() and jax.default_backend() == "gpu", "fresh/cwd/GPU")
+    gate_spec = json.loads(GATE.read_text())
+    arch = json.loads(ARCH.read_text())
+    frozen = json.loads(FROZEN.read_text())
+    sentinel_manifest = json.loads(SMANIFEST.read_text())
+    r2 = json.loads((R2 / "result.json").read_text())
+    req(gate_spec["SCIENTIFIC_GATE"] == "PASS" and arch["SCIENTIFIC_GATE"] == "PASS", "gate/architecture preflight")
+    req(arch["BASE_ACTOR_SHA"] == frozen["REFERENCE_ACTOR_SHA"], "frozen base binding")
+    req(p4.sha(p4.DEMO) == p4.DSHA and p4.sha(CP) == r2["FINAL_CHECKPOINT"]["sha256"], "Demo/checkpoint binding")
+    req(p4.sha(RP) == r2["FINAL_ONLINE_REPLAY_SHA256"] and r2["R2_RETENTION"] == "PASS", "R2 replay handoff")
+
+    OUT.mkdir(parents=True)
+    (OUT / "checkpoints").mkdir()
+    started = time.time()
+    before = {"demo": p4.sha(p4.DEMO), "corrective": p4.sha(p4.CORR), "local": p4.sha(p4.LOCAL)}
+    p4.dump(OUT / "protected_before.json", before)
+    cfg = load_config(1)
+    req(cfg["optimizer"]["actor_learning_rate"] == 3e-4 and cfg["optimizer"]["actor_warmup_steps"] == 2000, "unchanged actor optimizer")
+    demos = pickle.loads(p4.DEMO.read_bytes())
+    demo_obs, scale = distance_model(demos)
+    reports = {"C1": {}, "C0": {}}
+    checkpoints = {}
+    collections = []
+    slots = []
+
+    with portable_peg_runtime(ROOT), repaired_replay_datastore_insert():
+        common, _, demo = geo.build_common_start(cfg, demos)
+        base_actor = common.state.params["modules_actor"]
+        base_actor_target = common.state.target_params["modules_actor"]
+        req(tree_hash(base_actor) == frozen["REFERENCE_ACTOR_SHA"], "exact base actor")
+        r2_state = flax.serialization.from_bytes(common.state, CP.read_bytes())
+        params = dict(r2_state.params)
+        params["modules_actor"] = base_actor
+        target_params = dict(r2_state.target_params)
+        target_params["modules_actor"] = base_actor_target
+        agent = common.replace(state=r2_state.replace(params=params, target_params=target_params))
+        base_hash = tree_hash(agent.state.params["modules_actor"])
+        base_opt_hash = tree_hash(agent.state.opt_states["actor"])
+
+        geo.OUT = OUT
+        rows, snaps, _, manifest = geo.build_critical(common)
+        req(manifest["sha256"] == frozen["CRITICAL_PROBE_SHA"], "critical probe")
+        selected = sentinel_manifest["probe_indices"]
+        probe_obs = np.asarray([row["observation"] for row in rows], np.float32)
+        reference = np.asarray(common.sample_actions(observations=jax.device_put(probe_obs), argmax=True), np.float32)
+
+        residual_params = RESIDUAL_DEF.init(jax.random.PRNGKey(260910), np.zeros((1, 20), np.float32))["params"]
+        residual_tx = make_optimizer(learning_rate=cfg["optimizer"]["actor_learning_rate"], warmup_steps=cfg["optimizer"]["actor_warmup_steps"])
+        residual_opt_state = residual_tx.init(residual_params)
+        initial_residual_hash = tree_hash(residual_params)
+
+        env = make_train_env("C1")
+        online = make_replay_buffer(env, capacity=cfg["training"]["replay_capacity"], type="replay_buffer")
+        replay_info = restore_replay(online, RP)
+        req(replay_info["sha256"] == r2["FINAL_ONLINE_REPLAY_SHA256"], "replay exact restore")
+
+        for level in ("C1", "C0"):
+            report = eval_record(agent, residual_params, level, demo_obs, scale)
+            reports[level]["0"] = report
+            p4.dump(OUT / f"{level.lower()}_eval_0000.json", report)
+        checkpoints["0"] = save_checkpoint(agent, residual_params, residual_opt_state, 0, 0)
+
+        arng = jax.random.PRNGKey(19600)
+        batch_rng = np.random.default_rng(20261108)
+        obs = None
+        frozen_online = len(online)
+        invariance_log = []
+        for learner in range(1, TOTAL + 1):
+            if (learner - 1) % 100 == 0:
+                obs, arng, collection = collect(env, agent, residual_params, online, cfg, demo_obs, scale, obs, arng)
+                collection.update(block=(learner - 1) // 100 + 1, replay_size=len(online))
+                collections.append(collection)
+                frozen_online = len(online)
+            batch = concat_rlpd_batches(
+                fixed_batch(online, batch_rng.integers(0, frozen_online, 32)),
+                fixed_batch(demo, batch_rng.integers(0, len(demo), 32)),
+            )
+            pre_base = tree_hash(agent.state.params["modules_actor"])
+            pre_base_opt = tree_hash(agent.state.opt_states["actor"])
+            agent, critic_info = critic_update(agent, residual_params, batch)
+            block((agent, critic_info))
+            req(tree_hash(agent.state.params["modules_actor"]) == pre_base == base_hash, "base actor mutated by critic")
+            req(tree_hash(agent.state.opt_states["actor"]) == pre_base_opt == base_opt_hash, "base optimizer mutated by critic")
+            if learner % PERIOD == 0:
+                pre_residual = tree_hash(residual_params)
+                agent, residual_params, residual_opt_state, update_info = residual_temperature_update(
+                    agent, residual_params, residual_opt_state, residual_tx, batch
+                )
+                block((agent, residual_params, residual_opt_state, update_info))
+                inv = action_invariance(agent, residual_params, probe_obs, reference)
+                req(inv["EXACT_EQUAL"] and inv["MAX_ACTION_DRIFT"] <= 1e-7, "C0 gate invariance violation")
+                req(tree_hash(agent.state.params["modules_actor"]) == base_hash, "base actor mutated by residual")
+                req(tree_hash(agent.state.opt_states["actor"]) == base_opt_hash, "base optimizer mutated by residual")
+                info = {k: float(np.asarray(jax.device_get(v))) for k, v in update_info.items()}
+                slots.append({
+                    "learner_update": learner,
+                    "residual_slot": len(slots) + 1,
+                    "residual_params_changed": tree_hash(residual_params) != pre_residual,
+                    "residual_param_sha": tree_hash(residual_params),
+                    "base_actor_sha": base_hash,
+                    "c0_invariance": inv,
+                    "update": info,
+                })
+                invariance_log.append(inv)
+            if learner in C1_EVALS[1:]:
+                report = eval_record(agent, residual_params, "C1", demo_obs, scale)
+                reports["C1"][str(learner)] = report
+                p4.dump(OUT / f"c1_eval_{learner:04d}.json", report)
+            if learner in C0_EVALS[1:]:
+                report = eval_record(agent, residual_params, "C0", demo_obs, scale)
+                report["one_step_invariance"] = geo.one_step(CombinedPolicy(agent, residual_params), rows, snaps, selected)
+                reports["C0"][str(learner)] = report
+                p4.dump(OUT / f"c0_eval_{learner:04d}.json", report)
+            if learner in set(C1_EVALS[1:]) | set(C0_EVALS[1:]):
+                checkpoints[str(learner)] = save_checkpoint(agent, residual_params, residual_opt_state, learner, len(slots))
+        env.close()
+
+        p4.dump(OUT / "residual_update_slots.json", slots)
+        p4.dump(OUT / "collections.json", collections)
+        p4.dump(OUT / "checkpoints.json", checkpoints)
+        p4.dump(OUT / "monitoring.json", reports)
+        replay_final = snapshot_replay(online, OUT / "online_replay.pkl")
+
+        initial_c1 = reports["C1"]["0"]
+        final_c1 = reports["C1"]["250"]
+        progress, progress_checks, no_catastrophe = material_progress(initial_c1, final_c1)
+        all_c0 = all(reports["C0"][str(step)]["success_count"] >= 2 and reports["C0"][str(step)]["contact_health"] for step in C0_EVALS)
+        invariant = all(row["EXACT_EQUAL"] and row["MAX_ACTION_DRIFT"] <= 1e-7 for row in invariance_log)
+        contact = all(reports["C1"][str(step)]["contact_health"] for step in C1_EVALS)
+        nonzero_updates = sum(row["residual_params_changed"] and row["update"]["residual_parameter_delta_norm"] > 0 for row in slots)
+        mean_gate_c1 = final_c1["residual_runtime"]["gate"]["mean"]
+        pilot_pass = all_c0 and invariant and progress and contact and len(slots) == 62
+        if pilot_pass:
+            root_cause = "NONE"
+            next_step = "C1_CONTINUE_TO_1K"
+        elif mean_gate_c1 <= 0 or nonzero_updates == 0:
+            root_cause = "RESIDUAL_GATE_DOES_NOT_COVER_C1"
+            next_step = "STOP"
+        elif not progress:
+            root_cause = "RESIDUAL_POLICY_DOES_NOT_ACQUIRE_C1_CORRECTION"
+            next_step = "STOP"
+        else:
+            root_cause = "C0_INVARIANCE_OR_CONTACT_GATE_FAILED"
+            next_step = "STOP"
+
+        result = {
+            "MECHANISM": "FROZEN_C0_BASE_PLUS_OBSERVATION_GATED_RESIDUAL_V1",
+            "C1_RESIDUAL_250_PILOT": "PASS" if pilot_pass else "FAIL",
+            "BASE_ACTOR_SHA": base_hash,
+            "BASE_ACTOR_SHA_UNCHANGED": "YES" if tree_hash(agent.state.params["modules_actor"]) == base_hash else "NO",
+            "BASE_ACTOR_OPTIMIZER_SHA_UNCHANGED": "YES" if tree_hash(agent.state.opt_states["actor"]) == base_opt_hash else "NO",
+            "INITIAL_RESIDUAL_SHA": initial_residual_hash,
+            "FINAL_RESIDUAL_SHA": tree_hash(residual_params),
+            "RESIDUAL_UPDATE_PERIOD": PERIOD,
+            "COMPLETED_LEARNER_UPDATES": TOTAL,
+            "COMPLETED_RESIDUAL_UPDATES": len(slots),
+            "NONZERO_RESIDUAL_UPDATES": nonzero_updates,
+            "CRITIC_RESIDUAL_RATIO": "4:1",
+            "RESIDUAL_OPTIMIZER": {"learning_rate": 3e-4, "warmup_steps": 2000, "type": "unchanged SAC actor Adam schedule"},
+            "C0_SUCCESS_L0": f"{reports['C0']['0']['success_count']}/3",
+            "C0_SUCCESS_L100": f"{reports['C0']['100']['success_count']}/3",
+            "C0_SUCCESS_L250": f"{reports['C0']['250']['success_count']}/3",
+            "C0_EXACT_ACTION_INVARIANCE_ALL_SLOTS": "YES" if invariant else "NO",
+            "C0_ONE_STEP_DAMAGE_L100": reports["C0"]["100"]["one_step_invariance"]["maximum"],
+            "C0_ONE_STEP_DAMAGE_L250": reports["C0"]["250"]["one_step_invariance"]["maximum"],
+            "C1_EVALUATIONS": {str(step): reports["C1"][str(step)] for step in C1_EVALS},
+            "C1_MATERIAL_PROGRESS": "PASS" if progress else "FAIL",
+            "C1_PROGRESS_CHECKS": progress_checks,
+            "C1_NO_CATASTROPHIC_REGRESSION": "YES" if no_catastrophe else "NO",
+            "MEAN_GATE_C1_L250": mean_gate_c1,
+            "P95_GATE_C1_L250": final_c1["residual_runtime"]["gate"]["p95"],
+            "MEAN_RESIDUAL_NORM_C1_L250": final_c1["residual_runtime"]["residual_l2"]["mean"],
+            "P95_RESIDUAL_NORM_C1_L250": final_c1["residual_runtime"]["residual_l2"]["p95"],
+            "MEAN_GATED_RESIDUAL_NORM_C1_L250": final_c1["residual_runtime"]["gated_residual_l2"]["mean"],
+            "C1_CONTACT_HEALTH_ALL_CHECKPOINTS": "PASS" if contact else "FAIL",
+            "CRITICAL_PROBE_SHA": manifest["sha256"],
+            "GATE_SOURCE": gate_spec["GATE_SOURCE"],
+            "GATE_INNER_BOUND": gate_spec["GATE_INNER_BOUND"],
+            "GATE_OUTER_BOUND": gate_spec["GATE_OUTER_BOUND"],
+            "START_R2_CHECKPOINT_SHA256": p4.sha(CP),
+            "START_REPLAY_SHA256": p4.sha(RP),
+            "FINAL_CHECKPOINT": checkpoints["250"],
+            "FINAL_REPLAY": str(OUT / "online_replay.pkl"),
+            "FINAL_REPLAY_SHA256": replay_final["sha256"],
+            "FINAL_REPLAY_SIZE": replay_final["size"],
+            "PRIMARY_ROOT_CAUSE": root_cause,
+            "NEXT": next_step,
+            "PRODUCTION_DEMO_SHA_UNCHANGED": "YES",
+            "ONLINE_ADMISSION_THRESHOLD": p4.TH,
+            "ONLINE_ADMISSION_THRESHOLD_CHANGED": "NO",
+            "EVAL_RESET_CANONICAL": "NOT_RUN_PILOT_ONLY",
+            "EVAL_GOAL_CANONICAL": "NOT_RUN_PILOT_ONLY",
+            "EVAL_CURRICULUM_ACTIVE": "TRAIN_C1_ONLY",
+            "PEG_SINGLE_TASK_CONVERGED": "NO",
+            "TRAINING_RUNNING": False,
+            "elapsed_seconds": time.time() - started,
+        }
+        after = {"demo": p4.sha(p4.DEMO), "corrective": p4.sha(p4.CORR), "local": p4.sha(p4.LOCAL)}
+        req(before == after, "protected artifacts changed")
+        p4.dump(OUT / "result.json", result)
+        p4.dump(OUT / "protected_after.json", after)
+        print(json.dumps(p4.jv({k: v for k, v in result.items() if k != "C1_EVALUATIONS"}), indent=2, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()

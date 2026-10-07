@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "checks": {
+    "required_fields": true,
+    "dataset_windows_sha": true,
+    "dataset_wsl_sha": true,
+    "stage_a_protected_hashes_unchanged": true,
+    "stage_b_protected_hashes_unchanged": true,
+    "stage_a_all_checkpoints_restore_finite": true,
+    "stage_b_all_checkpoints_restore_finite": true,
+    "stage_a_evidence_valid": true,
+    "stage_b_evidence_valid": true,
+    "no_residual_branch_process": true
+  },
+  "dataset_sha256": "d4c625b243420460a48cad68fa6d75cd987f306099f0d4ad7c18cd1404135bc3"
+}

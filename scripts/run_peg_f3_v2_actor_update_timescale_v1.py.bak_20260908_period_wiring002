@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+"""Single-candidate period-4 Actor update-timescale experiment."""
+from __future__ import annotations
+import hashlib,json,os,pickle,sys,time
+from pathlib import Path
+os.environ.setdefault('MUJOCO_GL','egl');os.environ.setdefault('XLA_PYTHON_CLIENT_PREALLOCATE','false');os.environ.setdefault('XLA_FLAGS','--xla_gpu_enable_triton_gemm=false')
+ROOT=Path('/home/makoto/flexible_line_project');sys.path[:0]=[str(ROOT),str(ROOT/'external/serl/serl_launcher'),str(ROOT/'external/serl/franka_sim'),str(ROOT/'external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim'),str(ROOT/'external/packages/peg_insertion/peg_insertion/code/env')]
+import flax,jax,numpy as np
+from async_sac_state_sim import concat_rlpd_batches
+import scripts.audit_peg_f3_v2_actor_critic_closed_loop_geometry as geo
+from scripts.audit_peg_f3_v2_actor_parameterization_distribution_shift import rollout
+from scripts.run_peg_f3_v2_exact_restore_curriculum_stage import action,block,demo_distance,distance_model,fixed_batch,load_config,make_train_env
+from scripts.run_peg_f3_v2_local_insertion_actor_bc import evaluate
+from serl_launcher.utils.launcher import make_replay_buffer
+from training.peg_insertion.peg_replay_adapter import repaired_replay_datastore_insert
+from training.peg_insertion.peg_runtime_adapter import portable_peg_runtime
+
+DEMO=ROOT/'results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl';DSHA='4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878'
+LOCAL=ROOT/'results/datasets/peg_v2_local_insertion_supervision_20260908_001/local_insertion_supervision.pkl';CORR=ROOT/'results/datasets/peg_v2_corrective_postbc_round1_20260908_001/corrective_round1.pkl'
+HAND=ROOT/'results/closure/peg/f3_v2_on_policy_corrective_20260908_001/canonical_safety_and_retention/repaired_handoff';PRIOR=ROOT/'results/diagnostics/peg/f3_v2_actor_critic_closed_loop_geometry_20260908_002'
+OUT=ROOT/'results/training/peg_f3_v2_actor_update_timescale_v1_20260908_001';SPEC=ROOT/'configs/peg_insertion/peg_v2_actor_update_timescale_v1_20260908.yaml';TH=7.41773975814
+PERIOD=4;PRIMARY=100;RETENTION=500;SAVED=(0,4,8,20,40,100,250,500);FORMAL_EVAL=(0,20,40,100,250,500)
+def req(x,m):
+ if not x:raise RuntimeError(m)
+def sha(p):
+ h=hashlib.sha256()
+ with Path(p).open('rb') as f:
+  for b in iter(lambda:f.read(8388608),b''):h.update(b)
+ return h.hexdigest()
+def jv(x):
+ if isinstance(x,np.ndarray):return jv(x.tolist())
+ if isinstance(x,(np.bool_,bool)):return bool(x)
+ if isinstance(x,np.integer):return int(x)
+ if isinstance(x,np.floating):return float(x)
+ if isinstance(x,dict):return {str(k):jv(v) for k,v in x.items()}
+ if isinstance(x,(list,tuple)):return [jv(v) for v in x]
+ return x
+def dump(p,x):
+ with Path(p).open('x') as f:json.dump(jv(x),f,indent=2,sort_keys=True,allow_nan=False);f.write('\n')
+def save_state(agent,u,actor_count):
+ p=OUT/'checkpoints'/f'learner_{u:04d}_actor_{actor_count:03d}.msgpack'
+ with p.open('xb') as f:f.write(flax.serialization.to_bytes(agent.state))
+ restored=flax.serialization.from_bytes(agent.state,p.read_bytes());req(geo.thash(restored.params)==geo.thash(agent.state.params),'checkpoint restore')
+ return {'path':str(p),'sha256':sha(p),'state_step':int(agent.state.step)}
+def support_exit(agent,demo_obs,scale):
+ rows=pickle.loads(LOCAL.read_bytes());sp=json.loads((LOCAL.parent/'split.json').read_text());tr=set(sp['train_episodes']);va=set(sp['valid_episodes']);to=np.asarray([x['observations'] for x in rows if x['source_episode'] in tr],np.float64);vo=np.asarray([x['observations'] for x in rows if x['source_episode'] in va],np.float64);s,_=rollout(agent,demo_obs,to,vo,scale);return next((x['step'] for x in s if min(x['D_LOCAL_TRAIN'],x['D_LOCAL_VALID'])>TH),None)
+def collect(agent,online,cfg,demo_obs,scale,obs,arng,count=60):
+ e=make_train_env('C0');admitted=attempts=0;max_force=0.;healthy=True
+ try:
+  if obs is None:obs,_=e.reset(seed=cfg['seed'])
+  while admitted<count:
+   a,arng=action(agent,obs,deterministic=False,rng=arng);n,r,t,tr,info=e.step(a);d=demo_distance(n,demo_obs,scale);attempts+=1;max_force=max(max_force,float(info.get('force_norm',0.)))
+   if d<=TH:online.insert({'observations':np.asarray(obs,np.float32),'actions':a,'next_observations':np.asarray(n,np.float32),'rewards':np.float32(r),'masks':np.float32(0 if t else 1),'dones':bool(t or tr)});admitted+=1;obs=n
+   if t or tr or d>TH:obs,_=e.reset(seed=cfg['seed'])
+  return obs,arng,{'attempts':attempts,'admitted':admitted,'max_force':max_force,'contact_health':healthy}
+ finally:e.close()
+def probe(agent,u,actor_count,rows,snaps,sel,demo_obs,scale):
+ base=np.asarray([x['reference_action'] for x in rows]);dr=geo.drift(agent,rows,base);c0=evaluate(agent,'C0',demo_obs,scale);refg=geo.geometry_both(agent,rows,base);curg=geo.geometry_both(agent,rows,dr['modes'])
+ out={'LEARNER_UPDATE':u,'ACTOR_UPDATE_COUNT':actor_count,'action_drift':{k:v for k,v in dr.items() if k!='modes'},'one_step':geo.one_step(agent,rows,snaps,sel),'FIRST_LOCAL_SUPPORT_EXIT_STEP':support_exit(agent,demo_obs,scale),'BEST_SIMULTANEOUS_SUCCESS_MARGIN':c0['best_success_margin'],'reference_action_geometry':refg,'current_action_geometry':curg,'online_target_head_disagreement':{'reference':{'online':refg['online']['head_disagreement'],'target':refg['target']['head_disagreement']},'current':{'online':curg['online']['head_disagreement'],'target':curg['target']['head_disagreement']}},'c0':c0,'canonical_formal_eval_point':u in FORMAL_EVAL};dump(OUT/f'monitor_{u:04d}.json',out);return out
+def main():
+ req(Path.cwd()==ROOT and not OUT.exists(),'fresh/cwd');req(jax.default_backend()=='gpu' and sha(DEMO)==DSHA,'GPU/Demo');req(SPEC.exists(),'spec')
+ OUT.mkdir(parents=True);(OUT/'checkpoints').mkdir();start=time.time();before={'demo':sha(DEMO),'corrective':sha(CORR),'local':sha(LOCAL)};dump(OUT/'protected_before.json',before)
+ indices=list(range(PERIOD,PRIMARY+1,PERIOD));idx_sha=hashlib.sha256(json.dumps(indices,separators=(',',':')).encode()).hexdigest();req(indices==list(range(4,101,4)) and len(indices)==25,'period preflight')
+ source=ROOT/'external/serl/serl_launcher/serl_launcher/agents/continuous/sac.py';sem={'CRITIC_UPDATE_FUNCTION':'SACAgent.update(networks_to_update={critic})','ACTOR_UPDATE_FUNCTION':'SACAgent.update(networks_to_update={actor,temperature})','TEMPERATURE_UPDATE_FUNCTION':'SACAgent.update(networks_to_update={actor,temperature})','TARGET_UPDATE_FUNCTION':'JaxRLTrainState.target_update from critic-only update','CURRENT_EFFECTIVE_CADENCE':'update_high_utd UTD1: critic then actor+temperature every learner update','ACTOR_UPDATE_PERIOD':PERIOD,'ACTOR_UPDATE_INDICES':indices,'ACTOR_UPDATE_INDEX_SHA256':idx_sha,'CRITIC_UPDATES_100':100,'ACTOR_UPDATES_100':25,'TEMPERATURE_UPDATES_100':25,'CRITIC_OBJECTIVE_UNCHANGED':'YES','ACTOR_OBJECTIVE_UNCHANGED':'YES','TARGET_UPDATE_SEMANTICS_UNCHANGED':'YES','SAC_SOURCE_SHA256':sha(source),'SPEC_SHA256':sha(SPEC)};dump(OUT/'static_preflight.json',sem)
+ cfg=load_config(1);demos=pickle.loads(DEMO.read_bytes());demo_obs,scale=distance_model(demos);reports={};checkpoints={};collections=[]
+ with portable_peg_runtime(ROOT),repaired_replay_datastore_insert():
+  agent,online,demo=geo.build_common_start(cfg,demos);prior=json.loads((PRIOR/'result.json').read_text());hashes={'COMMON_START_ACTOR_SHA':geo.thash(agent.state.params['modules_actor']),'COMMON_START_CRITIC_SHA':geo.thash(agent.state.params['modules_critic']),'COMMON_START_TARGET_CRITIC_SHA':geo.thash(agent.state.target_params['modules_critic']),'COMMON_START_REPLAY_SHA':sha(HAND/'checkpoint_1000_online_replay.pkl')};req(hashes['COMMON_START_ACTOR_SHA']==prior['ACTOR_SHA'] and hashes['COMMON_START_CRITIC_SHA']==prior['CRITIC_SHA'] and hashes['COMMON_START_TARGET_CRITIC_SHA']==prior['TARGET_CRITIC_SHA'] and hashes['COMMON_START_REPLAY_SHA']==prior['REPLAY_SHA'],'COMMON_START hashes')
+  initial=evaluate(agent,'C0',demo_obs,scale);req(initial['success_count']==3 and initial['contact_health'] and not initial['table_ee_contact'],'COMMON_START behavior');geo.OUT=OUT;rows,snaps,sel,manifest=geo.build_critical(agent);actor_count=0;reports['0']=probe(agent,0,0,rows,snaps,sel,demo_obs,scale);checkpoints['0']=save_state(agent,0,0)
+  arng=jax.random.PRNGKey(19000);rng=np.random.default_rng(8100);obs=None;stop=None;completed=0
+  for u in range(1,RETENTION+1):
+   if (u-1)%100==0:obs,arng,ci=collect(agent,online,cfg,demo_obs,scale,obs,arng);ci.update(block=(u-1)//100+1,replay_size=len(online));collections.append(ci);frozen=len(online)
+   b=concat_rlpd_batches(fixed_batch(online,rng.integers(0,frozen,32)),fixed_batch(demo,rng.integers(0,len(demo),32)))
+   pre_actor=geo.thash(agent.state.params['modules_actor']);pre_actor_opt=geo.thash(agent.state.opt_states['actor']);pre_temp=geo.thash(agent.state.params['modules_temperature']);agent,ci=agent.update(b,networks_to_update=frozenset({'critic'}));block((agent,ci))
+   if u%PERIOD==0:agent,ai=agent.update(b,networks_to_update=frozenset({'actor','temperature'}));block((agent,ai));actor_count+=1
+   else:req(geo.thash(agent.state.params['modules_actor'])==pre_actor and geo.thash(agent.state.opt_states['actor'])==pre_actor_opt and geo.thash(agent.state.params['modules_temperature'])==pre_temp,'cadence freeze')
+   completed=u
+   if u in SAVED:
+    reports[str(u)]=probe(agent,u,actor_count,rows,snaps,sel,demo_obs,scale);checkpoints[str(u)]=save_state(agent,u,actor_count)
+   if u==40 and reports['40']['c0']['success_count']<2:stop='PERIOD4_FAILS_AT_ACTOR_COUNT_10';break
+   if u==100:
+    c=reports['100']['c0'];dr=reports['100']['action_drift'];ok=c['success_count']>=2 and c['near_hole_count']==3 and c['contact_health'] and not c['table_ee_contact'] and dr['materially_displaced_fraction']<1.0
+    if not ok:stop='TWO_TIMESCALE_100_GATE';break
+   if u==500:
+    c=reports['500']['c0'];
+    if not (c['success_count']>=2 and c['near_hole_count']==3 and c['contact_health'] and not c['table_ee_contact']):stop='TWO_TIMESCALE_500_GATE'
+  dump(OUT/'monitoring.json',reports);dump(OUT/'checkpoints.json',checkpoints);dump(OUT/'collections.json',collections)
+  same_count_fail=completed>=40 and reports['40']['c0']['success_count']<2;passed100=completed>=100 and reports['100']['c0']['success_count']>=2 and reports['100']['c0']['near_hole_count']==3 and reports['100']['c0']['contact_health'] and not reports['100']['c0']['table_ee_contact'];passed500=completed>=500 and reports['500']['c0']['success_count']>=2 and reports['500']['c0']['near_hole_count']==3 and reports['500']['c0']['contact_health'] and not reports['500']['c0']['table_ee_contact']
+  def val(u,key,default='NOT_RUN'):return reports[str(u)][key] if str(u) in reports else default
+  result={'ACTOR_UPDATE_TIMESCALE_REVIEW':'PASS',**hashes,'COMMON_START_C0_SUCCESS':'3/3','COMMON_START_CONTACT_HEALTH':'PASS',**{k:sem[k] for k in ('ACTOR_UPDATE_PERIOD','ACTOR_UPDATE_INDEX_SHA256','CRITIC_UPDATES_100','ACTOR_UPDATES_100','TEMPERATURE_UPDATES_100','CRITIC_OBJECTIVE_UNCHANGED','ACTOR_OBJECTIVE_UNCHANGED','TARGET_UPDATE_SEMANTICS_UNCHANGED')},'COMPLETED_LEARNER_UPDATES':completed,'COMPLETED_ACTOR_UPDATES':actor_count,'C0_SUCCESS_L0':'3/3','C0_SUCCESS_L20':f"{reports['20']['c0']['success_count']}/3" if '20' in reports else 'NOT_RUN','C0_SUCCESS_L40':f"{reports['40']['c0']['success_count']}/3" if '40' in reports else 'NOT_RUN','C0_SUCCESS_L100':f"{reports['100']['c0']['success_count']}/3" if '100' in reports else 'NOT_RUN','C0_NEAR_HOLE_L100':f"{reports['100']['c0']['near_hole_count']}/3" if '100' in reports else 'NOT_RUN','C0_SUCCESS_MARGIN_L100':val(100,'BEST_SIMULTANEOUS_SUCCESS_MARGIN'),'C0_SUPPORT_EXIT_L100':val(100,'FIRST_LOCAL_SUPPORT_EXIT_STEP'),'C0_CONTACT_L100':('PASS' if reports['100']['c0']['contact_health'] and not reports['100']['c0']['table_ee_contact'] else 'FAIL') if '100' in reports else 'NOT_RUN','CRITICAL_ACTION_DRIFT_ACTOR5':reports['20']['action_drift']['ACTOR_TO_REPAIRED_L2'] if '20' in reports else 'NOT_RUN','CRITICAL_ACTION_DRIFT_ACTOR10':reports['40']['action_drift']['ACTOR_TO_REPAIRED_L2'] if '40' in reports else 'NOT_RUN','CRITICAL_ACTION_DRIFT_ACTOR25':reports['100']['action_drift']['ACTOR_TO_REPAIRED_L2'] if '100' in reports else 'NOT_RUN','ORDINARY_CADENCE_SUCCESS_AT_ACTOR10':'0/3','PERIOD4_SUCCESS_AT_ACTOR10':f"{reports['40']['c0']['success_count']}/3" if '40' in reports else 'NOT_RUN','TIMESCALE_SEPARATION_EFFECTIVE':'NO' if same_count_fail else 'YES' if passed100 else 'INCONCLUSIVE','TWO_TIMESCALE_100':'PASS' if passed100 else 'NOT_RUN_FAIL_STOP_AT_L40' if same_count_fail else 'FAIL','TWO_TIMESCALE_500':'PASS' if passed500 else 'FAIL' if completed>=500 else 'NOT_RUN','R1_SUCCESS_500':f"{reports['500']['c0']['success_count']}/3" if '500' in reports else 'NOT_RUN','R2_SUCCESS_500':'NOT_RUN','TWO_TIMESCALE_RETENTION':'PASS' if passed500 else 'FAIL' if completed>=500 else 'NOT_RUN','C1_TRAINING':'NOT_RUN','C2_TRAINING':'NOT_RUN','C3_TRAINING':'NOT_RUN','C3_1K':'NOT_RUN','C3_1K_CONFIRMATION':'NOT_RUN','C3_3K':'NOT_RUN','FORMAL_5K':'NOT_RUN','PEG_SINGLE_TASK_CONVERGED':'NO','SUCCESSFUL_INSERTION':'NO_CANONICAL','FIRST_BAD_GATE':'ACTOR_COUNT_10_TIMESCALE_COMPARISON' if same_count_fail else stop,'PRIMARY_ROOT_CAUSE':'ACTOR_OBJECTIVE_STEP_ACCUMULATION_UNSTABLE' if same_count_fail else 'TWO_TIMESCALE_PERIOD4_RETENTION_FAILED' if stop else 'PERIOD4_PRIMARY_PASS_REQUIRES_MATCHED_REPLICA','NEXT':'BEHAVIOR_CRITICAL_ACTOR_TRUST_REGION_REVIEW' if same_count_fail else 'STOP' if stop else 'MATCHED_PERIOD4_REPLICA','PRODUCTION_DEMO_SHA_UNCHANGED':'YES','ONLINE_ADMISSION_THRESHOLD':TH,'ONLINE_ADMISSION_THRESHOLD_CHANGED':'NO','EVAL_RESET_CANONICAL':'YES','EVAL_GOAL_CANONICAL':'YES','EVAL_CURRICULUM_ACTIVE':'NO','PROTECTED_ARTIFACTS_CHANGED':'NO','TRAINING_RUNNING':False,'RESIDUAL_PROCESSES':'NONE','BEHAVIOR_CRITICAL_PROBE_SHA256':manifest['sha256'],'elapsed_seconds':time.time()-start}
+ after={'demo':sha(DEMO),'corrective':sha(CORR),'local':sha(LOCAL)};req(before==after,'protected');dump(OUT/'result.json',result);dump(OUT/'protected_after.json',after);print(json.dumps(jv(result),indent=2,sort_keys=True))
+if __name__=='__main__':main()

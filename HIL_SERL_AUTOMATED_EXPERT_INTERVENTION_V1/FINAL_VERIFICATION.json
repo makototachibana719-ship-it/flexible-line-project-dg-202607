@@ -1,0 +1,27 @@
+{
+  "actor_steps_equal_online_replay": true,
+  "checkpoint_restore_finite": {
+    "100": true,
+    "250": true,
+    "500": true
+  },
+  "completed_learner_updates": 500,
+  "critic_updates": 4000,
+  "demo_online_batch_ratio": "32:32",
+  "formal_evaluation": {
+    "expert_call_count": 0,
+    "expert_provider": null,
+    "intervention_enabled": false,
+    "runtime_assertion": "PASS"
+  },
+  "intervention_steps_equal_intervention_buffer": true,
+  "losses_finite_all_500": true,
+  "online_replay_size": 3648,
+  "production_demo_sha256": "4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878",
+  "protected_hashes_equal_before_after": true,
+  "residual_gpu_jobs": 0,
+  "residual_processes": 0,
+  "stage_b_20_demo_sha256": "d4c625b243420460a48cad68fa6d75cd987f306099f0d4ad7c18cd1404135bc3",
+  "status": "PASS",
+  "utd_ratio": 8
+}

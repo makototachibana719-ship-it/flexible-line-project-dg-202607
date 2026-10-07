@@ -1,0 +1,9 @@
+/home/makoto/peg_insertion_package/configs/requirements.txt:95:-e /home/makoto/projects/mujoco_env
+/home/makoto/peg_insertion_package/configs/environment.yml:135:prefix: /home/makoto/miniconda3/envs/serl_peg
+/home/makoto/peg_insertion_package/code/example/async_rlpd_peg_sim/run_learner.sh:14:python async_sac_state_sim.py "$@" --learner --critic_actor_ratio=1 --env=AuboPegInsert-State-v0 --exp_name=serl_peg_insert_rlpd20_v3_10k_utd1 --seed=0 --max_steps=10000 --training_starts=100 --utd_ratio=1 --batch_size=64 --checkpoint_period=1000 --checkpoint_path=/home/makoto/serl_checkpoints/peg_insert_rlpd_v3_10k_utd1 --demo_path=/home/makoto/serl_data/peg_insert_20_demos_state.pkl
+/home/makoto/peg_insertion_package/code/example/async_rlpd_peg_sim/async_sac_state_sim.py:158:    "/home/makoto/serl_data/peg_insert_20_demos_state.pkl",
+/home/makoto/peg_insertion_package/code/example/bc_peg_state/train_peg_bc.py:100:            "/home/makoto/serl_data/"
+/home/makoto/peg_insertion_package/code/example/bc_peg_state/train_peg_bc.py:108:            "/home/makoto/serl_checkpoints/"
+/home/makoto/peg_insertion_package/code/example/bc_peg_state/train_peg_bc.py:116:            "/home/makoto/serl_results/"
+/home/makoto/peg_insertion_package/code/example/bc_peg_state/eval_peg_bc.py:14:    "/home/makoto/serl/examples/"
+/home/makoto/peg_insertion_package/code/example/async_sac_peg_sim/run_learner.sh:14:python async_sac_state_sim.py "$@" --learner --critic_actor_ratio 8 --env=AuboPegInsert-State-v0 --exp_name=serl_peg_state_smoke --seed=0 --max_steps=2000 --training_starts=300 --utd_ratio=1 --batch_size=64 --checkpoint_period=500 --checkpoint_path=/home/makoto/serl_checkpoints/peg_insert_sac_smoke

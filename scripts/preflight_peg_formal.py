@@ -1,0 +1,48 @@
+"""Read-only runtime preflight; no training, W&B init, or checkpoint writes."""
+import argparse
+import importlib
+import json
+import netrc
+from pathlib import Path
+import subprocess
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from training.peg_insertion.formal_policy import ROOT,RUNTIME,SOURCES,sha,validate_runtime,require_gate
+
+def check(candidate=False):
+    import yaml
+    from training.peg_insertion.observation_contract import validate_config
+    validate_config(yaml.safe_load((ROOT/SOURCES[3]).read_text()),for_training=True)
+    if not candidate:require_gate()
+    validate_runtime(not candidate)
+    import jax,jaxlib,yaml
+    cfg=yaml.safe_load((ROOT/SOURCES[3]).read_text())
+    checks={'python':Path(sys.executable).parent.parent.name=='serl_peg_gpu',
+            'jax':jax.__version__==jaxlib.__version__=='0.4.35',
+            'gpu':jax.default_backend()=='gpu' and len(jax.devices())==1,
+            'demo':sha(ROOT/cfg['demo']['path'])==cfg['demo']['sha256'],
+            'assets':(ROOT/'runtime/peg_insertion/assets').is_dir(),
+            'credentials_present':bool(netrc.netrc().authenticators('api.wandb.ai'))}
+    for name in ('serl_launcher','franka_sim','mujoco_env'):
+        importlib.import_module(name);checks[name]=True
+    pip=subprocess.run([sys.executable,'-m','pip','check'],capture_output=True,text=True,timeout=60)
+    checks['pip_check']=pip.returncode==0
+    if not candidate:
+        checks['formal_outputs_empty']=all(not (ROOT/cfg['outputs'][k]).exists() or not any((ROOT/cfg['outputs'][k]).iterdir()) for k in ('checkpoint_dir','log_dir','actor_log_dir'))
+    result=dict(checks=checks,status='PASS' if all(checks.values()) else 'FAIL',runtime=RUNTIME,
+                python=sys.executable,devices=[str(x) for x in jax.devices()],source_hashes={p:sha(ROOT/p) for p in SOURCES},
+                serl_commit='ARCHIVE: recorded 1fa2af7496be042e43d36120a7c8d1b71f1bfb59; no .git; not independently verified',
+                wandb_auth='credential presence only; online authentication checked by bounded run',pip_check=pip.stdout)
+    print(json.dumps(result,indent=2));print('PEG_FORMAL_PREFLIGHT='+result['status'])
+    if not all(checks.values()):raise RuntimeError('preflight failed')
+    return result
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('--candidate',action='store_true')
+    p.add_argument('--role',choices=('fresh_learner','actor_join','resume_learner','resume_actor'),default='fresh_learner')
+    p.add_argument('--checkpoint',type=Path);p.add_argument('--run-id');p.add_argument('--ip',default='localhost')
+    a=p.parse_args()
+    if a.candidate:check(True)
+    else:
+        from training.peg_insertion.formal_preflight import preflight
+        result=preflight(a.role,a.checkpoint,a.run_id,a.ip,check_cloud=True)
+        print(json.dumps(result,indent=2));print('PEG_FORMAL_PREFLIGHT_'+a.role.upper()+'=PASS')

@@ -1,0 +1,180 @@
+"""Opt-in passive observer. No controller monkeypatch, extra solve or mj_step.
+
+Usage (only in a separately authorized diagnostic):
+    observer = AxialTelemetry(adapter, new_output_directory)
+    result = observer.step(action)  # exactly one original adapter.step
+    observer.close()
+
+Python profiling copies already-computed values; it does not replace functions.
+Profiling is scoped to the calling thread and restored even on exceptions.
+"""
+import dataclasses
+import hashlib
+import inspect
+import json
+import os
+from pathlib import Path
+import sys
+import numpy as np
+
+V2='PEG_OBS_CONTRACT_V2_SENSOR_FIXED'
+
+def copy_value(value):
+    if isinstance(value,np.ndarray):return value.copy().tolist()
+    if isinstance(value,np.generic):return value.item()
+    if dataclasses.is_dataclass(value):return {f.name:copy_value(getattr(value,f.name)) for f in dataclasses.fields(value)}
+    if isinstance(value,(tuple,list)):return [copy_value(v) for v in value]
+    if isinstance(value,dict):return {str(k):copy_value(v) for k,v in value.items()}
+    if hasattr(value,'name'):return value.name
+    if value is None or isinstance(value,(str,int,float,bool)):return value
+    return str(value)
+
+def code_of(fn):return getattr(getattr(fn,'__func__',fn),'__code__',None)
+
+class AxialTelemetry:
+    def __init__(self,env,output=None,*,enabled=True,solver=None,contact_force_reader=None):
+        self.env=env;self.enabled=enabled;self.stream=None;self.count=0;self.last=None
+        if not enabled:return
+        if sys.getprofile() is not None:raise RuntimeError('existing profiler: refuse to replace')
+        if env.observation_contract_version!=V2:raise ValueError('V2 contract required')
+        self.raw=env.env;self.controller=self.raw.controller
+        if solver is None:
+            from mujoco.minimize import least_squares
+            solver=least_squares
+        self.solver=solver
+        if contact_force_reader is None:
+            from mujoco import mj_contactForce
+            contact_force_reader=mj_contactForce
+        self.contact_force_reader=contact_force_reader
+        self.codes={name:code_of(getattr(self.controller,name)) for name in
+                    ('solve_ik','compute_control','_ik_jacobian','compute_jacobian')}
+        self.codes['least_squares']=code_of(solver);self.codes['_set_action']=code_of(self.raw._set_action)
+        if any(v is None for v in self.codes.values()):raise ValueError('unsupported non-Python observer boundary')
+        files={Path(inspect.getsourcefile(type(self.controller))),Path(inspect.getsourcefile(type(self.raw))),
+               Path(inspect.getsourcefile(type(env))),Path(inspect.getsourcefile(solver)),Path(__file__)}
+        self.binding={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+        if output is not None:
+            path=Path(output);path.mkdir(parents=True,exist_ok=False)
+            (path/'binding.json').write_text(json.dumps(dict(schema='PEG_AXIAL_TELEMETRY_V1',files=self.binding,
+                observation_contract_version=V2,contacts_phase='pre_step and post_physics; not every physics substep',
+                jacobian_scope='existing evaluations only; q attached; last evaluated may differ from returned q',
+                training_data=False),indent=2))
+            self.stream=(path/'steps.jsonl').open('x')
+
+    def _joints(self):
+        m,d,c=self.raw.model,self.raw.data,self.controller
+        result=[]
+        for i in range(m.njnt):
+            qa=int(m.jnt_qposadr[i]);va=int(m.jnt_dofadr[i]);qn=int(m.jnt_qposadr[i+1]) if i+1<m.njnt else m.nq
+            vn=int(m.jnt_dofadr[i+1]) if i+1<m.njnt else m.nv
+            q=d.qpos[qa:qn].copy();bounds=m.jnt_range[i].copy()
+            scalar=len(q)==1;limited=bool(m.jnt_limited[i])
+            result.append(dict(id=i,name=m.joint(i).name,qpos_address=qa,qvel_address=va,
+                qpos=q.tolist(),qvel=d.qvel[va:vn].copy().tolist(),limited=limited,range=bounds.tolist(),
+                distance_lower=float(q[0]-bounds[0]) if scalar and limited else None,
+                distance_upper=float(bounds[1]-q[0]) if scalar and limited else None,
+                controller_arm_member=c.arm_qpos_adr<=qa<c.arm_qpos_adr+c.dof))
+        return result
+
+    def _contacts(self):
+        m,d=self.raw.model,self.raw.data;result=[]
+        for i in range(d.ncon):
+            ct=d.contact[i];g1,g2=int(ct.geom1),int(ct.geom2)
+            force=np.zeros(6,dtype=float);force_status='AVAILABLE'
+            try:self.contact_force_reader(m,d,i,force)
+            except Exception as e:force_status='UNAVAILABLE: '+repr(e);force=None
+            frame=np.array(ct.frame,copy=True).reshape(3,3)
+            result.append(dict(index=i,geom1_id=g1,geom1_name=m.geom(g1).name if g1>=0 else None,
+                geom2_id=g2,geom2_name=m.geom(g2).name if g2>=0 else None,
+                distance=float(ct.dist),normal=frame[0].tolist(),frame=frame.tolist(),position=np.array(ct.pos,copy=True).tolist(),
+                contact_force_torque_local=copy_value(force),force_status=force_status,impulse=None,
+                impulse_status='NOT_COMPUTED: instantaneous force is not an integrated impulse'))
+        return result
+
+    def _actuators(self):
+        m,d=self.raw.model,self.raw.data
+        # MuJoCo mjDSBL_CLAMPCTRL = 1<<7. Read named enum on real models.
+        clamp_disabled=False
+        if hasattr(m,'opt'):
+            from mujoco import mjtDisableBit
+            clamp_disabled=bool(int(m.opt.disableflags)&int(mjtDisableBit.mjDSBL_CLAMPCTRL))
+        result=[]
+        for i in range(m.nu):
+            lo,hi=map(float,m.actuator_ctrlrange[i]);v=float(d.ctrl[i]);limited=bool(m.actuator_ctrllimited[i])
+            result.append(dict(id=i,name=m.actuator(i).name,transmission_ids=copy_value(m.actuator_trnid[i]),
+              ctrl=v,ctrlrange=[lo,hi],ctrllimited=limited,clamp_disabled=clamp_disabled,
+              clip_flag=bool(limited and not clamp_disabled and (v<lo or v>hi)),
+              effective_ctrl_inferred=float(np.clip(v,lo,hi)) if limited and not clamp_disabled else v,
+              effective_ctrl_source='range inference; data.ctrl itself is not rewritten by observer'))
+        return result
+
+    def _snapshot(self):
+        return dict(qpos=copy_value(self.raw.data.qpos),qvel=copy_value(self.raw.data.qvel),
+                    ctrl=copy_value(self.raw.data.ctrl),joints=self._joints(),actuators=self._actuators(),contacts=self._contacts())
+
+    def _profile(self,frame,event,arg):
+        if event not in ('call','return'):return
+        code=frame.f_code;local=frame.f_locals;c=self.controller
+        try:
+            if code==self.codes['solve_ik'] and local.get('self') is c:
+                if event=='call':
+                    self._row['ik']=dict(input_position=copy_value(local['target_pos']),input_quaternion=copy_value(local['target_quat']),
+                        current_qpos=copy_value(self.raw.data.qpos[c.arm_qpos_adr:c.arm_qpos_adr+c.dof]),
+                        current_qvel=copy_value(self.raw.data.qvel[c.arm_dof_adr:c.arm_dof_adr+c.dof]),
+                        joint_limits=copy_value(c.joint_limits))
+                else:self._row['ik']['q_target']=copy_value(arg)
+            elif code==self.codes['least_squares'] and event=='return':
+                # Only accept a solver called directly by this controller's solve_ik.
+                if frame.f_back is None or frame.f_back.f_locals.get('self') is not c:return
+                status=copy_value(local.get('status'))
+                self._row['solver']=dict(status=status,success=(status in ('G_TOL','DX_TOL')) if status is not None else None,
+                    success_meaning='solver tolerance status, not insertion or pose acceptance',
+                    cost=copy_value(local.get('yfinal')),residual=copy_value(local.get('r')),
+                    nfev=copy_value(local.get('n_res')),njev=copy_value(local.get('n_jac')),
+                    returned=copy_value(arg),return_available=arg is not None)
+            elif code in (self.codes['_ik_jacobian'],self.codes['compute_jacobian']) and local.get('self') is c and event=='return':
+                self._row['jacobian_evaluations'].append(dict(kind='residual' if code==self.codes['_ik_jacobian'] else 'geometric',
+                    q=copy_value(local.get('q')),value=copy_value(arg)))
+            elif code==self.codes['compute_control'] and local.get('self') is c and event=='return':
+                self._row['controller_output']=copy_value(arg)
+            elif code==self.codes['_set_action'] and local.get('self') is self.raw:
+                self._row['ctrl_before_write' if event=='call' else 'ctrl_after_write']=copy_value(self.raw.data.ctrl)
+                if event=='call':self._row['absolute_action_after_env_clip']=copy_value(local['action'])
+        except Exception as e:
+            # Never throw into the solver's own exception/fallback path.
+            self._row['observer_errors'].append(repr(e))
+
+    def step(self,action):
+        if not self.enabled:return self.env.step(action)
+        if sys.getprofile() is not None:raise RuntimeError('existing profiler: refuse to replace')
+        self.count+=1
+        self._row=dict(step=self.count,action=copy_value(action),pre=self._snapshot(),jacobian_evaluations=[],observer_errors=[])
+        error=None
+        try:
+            sys.setprofile(self._profile)
+            result=self.env.step(action)
+            return result
+        except BaseException as exc:
+            error=repr(exc);raise
+        finally:
+            sys.setprofile(None)
+            # Post-processing only touches copied arrays, never controller/model state.
+            try:
+                self._row['post']=self._snapshot();self._row['step_exception']=error
+                for item in self._row['jacobian_evaluations']:
+                    if item['value'] is None:continue
+                    j=np.asarray(item['value'])
+                    if item['kind']=='geometric':j=np.vstack(j)
+                    item['singular_values']=np.linalg.svd(j,compute_uv=False).tolist()
+                ik=self._row.get('ik',{})
+                if ik.get('q_target') is not None:ik['q_target_minus_current_q']=(np.asarray(ik['q_target']).reshape(-1)-ik['current_qpos']).tolist()
+                self._row['complete']=all(k in self._row for k in ('ik','solver','controller_output','ctrl_before_write','ctrl_after_write')) and not self._row['observer_errors']
+                self.last=self._row
+                if self.stream:
+                    self.stream.write(json.dumps(self._row,allow_nan=False)+'\n');self.stream.flush();os.fsync(self.stream.fileno())
+            except Exception as exc:
+                self._row['observer_errors'].append(repr(exc));self._row['complete']=False;self.last=self._row
+                # Return/exception of the original control step remains unchanged.
+
+    def close(self):
+        if self.stream:self.stream.close();self.stream=None

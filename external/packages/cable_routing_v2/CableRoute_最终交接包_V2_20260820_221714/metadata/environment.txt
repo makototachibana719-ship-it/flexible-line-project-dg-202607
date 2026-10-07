@@ -1,0 +1,23 @@
+Generated: 2026年 08月 20日 星期四 22:17:17 CST
+
+SERL root:
+/home/maxiaoxi/serl
+
+Python:
+Python 3.10.20
+
+Python executable:
+/home/maxiaoxi/miniconda3/envs/serl/bin/python
+
+MuJoCo:
+2.3.7
+
+Gym:
+0.26.2
+
+Gymnasium:
+1.3.0
+
+JAX:
+0.4.35
+[CpuDevice(id=0)]

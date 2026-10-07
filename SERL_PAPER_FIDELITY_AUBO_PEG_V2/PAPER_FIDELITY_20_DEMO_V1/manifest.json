@@ -1,0 +1,94 @@
+{
+  "accepted_11_dataset_sha256": "4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878",
+  "accepted_11_source": "results/datasets/peg_v2_accepted_11_20260906",
+  "accepted_11_values_preserved": true,
+  "boundaries": [
+    {
+      "episode_index": 11,
+      "name": "standard_plus_y_start",
+      "start": 1921,
+      "stop_exclusive": 2098
+    },
+    {
+      "episode_index": 12,
+      "name": "standard_minus_y_start",
+      "start": 2098,
+      "stop_exclusive": 2278
+    },
+    {
+      "episode_index": 13,
+      "name": "plus_y_early_correction",
+      "start": 2278,
+      "stop_exclusive": 2466
+    },
+    {
+      "episode_index": 14,
+      "name": "plus_y_late_correction",
+      "start": 2466,
+      "stop_exclusive": 2658
+    },
+    {
+      "episode_index": 15,
+      "name": "minus_y_early_correction",
+      "start": 2658,
+      "stop_exclusive": 2847
+    },
+    {
+      "episode_index": 16,
+      "name": "minus_y_late_correction",
+      "start": 2847,
+      "stop_exclusive": 3040
+    },
+    {
+      "episode_index": 17,
+      "name": "roll_varied_start",
+      "start": 3040,
+      "stop_exclusive": 3233
+    },
+    {
+      "episode_index": 18,
+      "name": "pitch_early_correction",
+      "start": 3233,
+      "stop_exclusive": 3428
+    },
+    {
+      "episode_index": 19,
+      "name": "pitch_late_correction",
+      "start": 3428,
+      "stop_exclusive": 3627
+    }
+  ],
+  "coverage": [
+    "standard",
+    "+Y",
+    "-Y",
+    "roll",
+    "pitch",
+    "varied legitimate approach states",
+    "varied correction timing"
+  ],
+  "dataset_file": "paper_fidelity_20_demo_v1.pkl",
+  "dataset_sha256": "d4c625b243420460a48cad68fa6d75cd987f306099f0d4ad7c18cd1404135bc3",
+  "episode_counts": {
+    "lateral_minus": 4,
+    "lateral_plus": 4,
+    "rotation_pitch": 4,
+    "rotation_roll": 3,
+    "standard": 5
+  },
+  "episodes": 20,
+  "new_episode_all_action7_legal": true,
+  "new_episode_all_contact_health": true,
+  "new_episode_all_continuity": true,
+  "new_episode_all_success": true,
+  "new_episode_all_truncated_false": true,
+  "new_episode_all_v2": true,
+  "new_episode_count": 9,
+  "observation_contract_version": "PEG_OBS_CONTRACT_V2_SENSOR_FIXED",
+  "old_action_values_edited": false,
+  "schema": "PAPER_FIDELITY_20_DEMO_V1",
+  "status": "PASS",
+  "terminal_count": 20,
+  "transitions": 3627,
+  "v2_only": true
+}

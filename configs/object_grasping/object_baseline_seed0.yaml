@@ -1,0 +1,59 @@
+environment: PandaPickCubeVision-v0
+algorithm: DRQ_PLUS_DEMO_REPLAY
+team_reported_name: DPRL
+seed: 0
+fresh_initialization: true
+load_legacy_checkpoint: false
+runtime:
+  python: /home/ubuntu/miniconda3/envs/serl/bin/python
+  mujoco_gl: egl
+wandb:
+  project: flexible-line-object-grasp
+  run_name: object_baseline_seed0
+  smoke_run_name: object_gpu_smoke_seed0
+  mode: online
+demo:
+  path: external/packages/object_grasping/object_grasp_package/demos/franka_lift_cube_image_20_trajs.pkl
+  sha256: f5ea03a2534b1696f31520ff68386fafe20ab06618a39cd0cad18e899ddb0d64
+  size_bytes: 199111375
+  raw_transitions: 2000
+  expected_replay_size: 2001
+observation:
+  keys: [state, front, wrist]
+  state_shape: [1, 7]
+  front_shape: [1, 128, 128, 3]
+  wrist_shape: [1, 128, 128, 3]
+  state_dtype: float32
+  image_dtype: uint8
+action:
+  shape: [4]
+  dtype: float32
+  low: -1.0
+  high: 1.0
+training:
+  encoder_type: resnet-pretrained
+  batch_size: 8
+  online_batch_size: 4
+  demo_batch_size: 4
+  demo_fraction: 0.5
+  critic_actor_ratio: 1
+  utd_ratio: 1
+  replay_capacity: 10000
+  training_starts: 500
+  random_steps: 500
+  steps_per_update: 1
+  max_steps: 5000
+  checkpoint_period: 500
+  log_period: 50
+  eval_period: 500
+  eval_n_trajs: 10
+  learning_rates: make_drq_agent_defaults
+smoke:
+  learner_updates: 10
+  actor_steps: 520
+  checkpoint_period: 5
+outputs:
+  checkpoint_dir: results/checkpoints/object_baseline_seed0
+  log_dir: results/logs/object_baseline_seed0
+  smoke_checkpoint_dir: results/checkpoints/object_gpu_smoke_seed0
+  smoke_log_dir: results/logs/object_gpu_smoke_seed0

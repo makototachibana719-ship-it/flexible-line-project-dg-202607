@@ -1,0 +1,7 @@
+skill_id: peg_insertion
+adapter: skills.peg_insertion:PegInsertionSkill
+environment: AuboPegInsert-State-v0
+policy_artifact: null
+runtime: {seed: 0, timeout_steps: 500, control_dt_seconds: 0.02}
+evaluation: {episodes: 50, metrics: [lateral_error, axial_error, orientation_error, force_norm]}
+render: {mode: rgb_array}

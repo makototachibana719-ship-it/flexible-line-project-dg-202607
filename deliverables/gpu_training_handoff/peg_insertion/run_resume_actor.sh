@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+: "${CHECKPOINT_PATH:?}"; : "${WANDB_RUN_ID:?}"; : "${TRAINING_PROFILE:?set TRAINING_PROFILE to smoke or formal}"; ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"; PY="${PYTHON_BIN:-python}"; cd "$ROOT"
+if [[ "$TRAINING_PROFILE" != smoke && "$TRAINING_PROFILE" != formal ]]; then echo "TRAINING_PROFILE must be smoke or formal" >&2; exit 2; fi
+source "$ROOT/scripts/peg_runtime_policy.sh"
+ARGS=()
+if [[ "$TRAINING_PROFILE" == formal ]]; then
+ set -a
+ source "$ROOT/configs/peg_insertion/runtime_gpu_formal.env"
+ set +a
+ "$PY" scripts/preflight_peg_formal.py --role resume_actor --checkpoint "$CHECKPOINT_PATH" --run-id "$WANDB_RUN_ID" --ip "${LEARNER_IP:-localhost}"
+else
+ : "${ACTOR_STEP:?}"
+ ARGS+=(--resume-actor-step "$ACTOR_STEP")
+fi
+exec "$PY" -m training.peg_insertion.run_peg_training --profile "$TRAINING_PROFILE" --role actor --require-gpu --ip "${LEARNER_IP:-localhost}" --resume-from "$CHECKPOINT_PATH" --wandb-run-id "$WANDB_RUN_ID" "${ARGS[@]}"

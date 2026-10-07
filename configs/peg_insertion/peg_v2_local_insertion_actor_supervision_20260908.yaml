@@ -1,0 +1,22 @@
+experiment: peg_f3_v2_local_insertion_actor_supervision_20260908
+production_demo:
+  path: results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl
+  sha256: 4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878
+online_admission_threshold: 7.41773975814
+source_checkpoint:
+  directory: results/training/peg_f3_v2_exact_restore_curriculum_rlpd_20260907_001/replica1/C0_retry002/checkpoints
+  step: 1000
+local_subset:
+  near_hole_lateral: 0.010
+  near_hole_axial: 0.020
+  train_fraction_target: 0.8
+actor_only_bc:
+  seed: 20260908
+  batch_size: 64
+  updates: 1000
+  checkpoints: [100, 250, 500, 1000]
+  supervised_dimensions: [0, 1, 2, 3, 4, 5]
+  loss: equal_weight_bounded_action_mode_mse
+  actor_learning_rate: 0.0003
+  actor_warmup_steps: 2000
+

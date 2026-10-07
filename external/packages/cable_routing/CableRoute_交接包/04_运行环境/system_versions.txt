@@ -1,0 +1,20 @@
+Generated: 2026-08-14T17:45:56+08:00
+SERL_ROOT: /home/maxiaoxi/serl
+
+=== uname ===
+Linux competition-Ubuntu 6.8.0-136-generic #136~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul  3 16:29:11 UTC  x86_64 x86_64 x86_64 GNU/Linux
+
+=== Python ===
+/home/maxiaoxi/miniconda3/bin/python
+Python 3.14.6
+
+=== Selected package versions ===
+gym: NOT AVAILABLE (No module named 'gym')
+gymnasium: NOT AVAILABLE (No module named 'gymnasium')
+mujoco: NOT AVAILABLE (No module named 'mujoco')
+jax: NOT AVAILABLE (No module named 'jax')
+wandb: NOT AVAILABLE (No module named 'wandb')
+numpy: NOT AVAILABLE (No module named 'numpy')
+flax: NOT AVAILABLE (No module named 'flax')
+orbax: NOT AVAILABLE (No module named 'orbax')
+jax devices: ERROR No module named 'jax'

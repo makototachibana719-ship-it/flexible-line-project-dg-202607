@@ -1,0 +1,15 @@
+name: flexible-line-object-gpu
+channels: [conda-forge]
+dependencies:
+  - python=3.10.20
+  - pip
+  - pip:
+      - flax==0.8.5
+      - gym==0.26.2
+      - gymnasium==1.3.0
+      - mujoco==2.3.7
+      - optax==0.2.3
+      - orbax-checkpoint==0.6.4
+      - tensorstore==0.1.51
+      - wandb==0.28.0
+      # Install JAX/JAXlib 0.4.35 separately for the host CUDA/driver.

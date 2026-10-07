@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Environments and local secrets
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+env/
+*.pem
+*.key
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+
+# Experiment trackers and transient output
+wandb/
+tmp/
+temp/
+logs/
+runs/
+
+# Large research assets: keep outside normal Git history
+**/checkpoints/
+**/checkpoint_*/
+**/demos/
+**/demo_data/
+**/replay*/
+**/datasets/
+**/incoming/
+results/
+runtime/
+backups/
+
+*.pkl
+*.pickle
+*.npz
+*.npy
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+

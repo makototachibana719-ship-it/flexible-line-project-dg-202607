@@ -1,0 +1,21 @@
+name: serl_peg_gpu
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.20
+  - pip
+  - pip:
+      - numpy==1.26.4
+      - flax==0.8.5
+      - optax==0.2.3
+      - gym==0.26.2
+      - gymnasium==1.3.0
+      - mujoco==3.10.0
+      - wandb==0.28.0
+      - orbax-checkpoint==0.6.4
+      - tensorstore==0.1.78
+      - PyYAML==6.0.3
+
+# Install a JAX/JAXlib 0.4.35 CUDA build compatible with the target WSL2
+# driver after creation. Install external/serl/serl_launcher and the available
+# mujoco_env source as editable local packages; do not use another task's env.

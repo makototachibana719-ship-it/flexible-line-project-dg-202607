@@ -1,0 +1,80 @@
+environment: AuboPegInsert-State-v0
+algorithm: RLPD_STYLE_SAC_PLUS_50_50_DEMO_REPLAY
+seed: 0
+fresh_initialization: true
+load_legacy_checkpoint: false
+runtime:
+  conda_environment: serl_peg_gpu
+  mujoco_gl: egl
+  xla_python_client_preallocate: false
+  xla_flags: --xla_gpu_enable_triton_gemm=false
+demo:
+  observation_contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  path: results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl
+  manifest: results/datasets/peg_v2_accepted_11_20260906/manifest.json
+  sha256: 4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878
+  episodes: 11
+  transitions: 1921
+observation:
+  contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  shape: [20]
+  dtype: float32
+action:
+  shape: [7]
+  dtype: float32
+  low: -1.0
+  high: 1.0
+optimizer:
+  actor_learning_rate: 0.0003
+  actor_warmup_steps: 2000
+  critic_learning_rate: 0.0001
+  critic_warmup_steps: 3000
+  temperature_learning_rate: 0.0003
+training:
+  online_batch_size: 32
+  demo_batch_size: 32
+  total_batch_size: 64
+  demo_fraction: 0.5
+  critic_actor_ratio: 1
+  utd_ratio: 1
+  training_starts: 64
+  random_steps: 0
+  replay_capacity: 1000000
+  checkpoint_period: 500
+algorithm_defaults:
+  discount: 0.99
+  soft_target_update_rate: 0.005
+  target_entropy: -3.5
+  backup_entropy: false
+  critic_ensemble_size: 10
+  critic_subsample_size: 2
+ablation:
+  identifier: PEG_F3_V2_QBIAS_CONFIG_ONLY_1K_SEED0
+  baseline_config: configs/peg_insertion/peg_v2_formal_5k_seed0.yaml
+  baseline_config_sha256: eee952a9e88f46cb173d9894d4ee7d90aa6155541fcc5f3cd5bdde64a99538de
+  config_diff_fields:
+    - critic_learning_rate
+    - critic_warmup_steps
+  target_updates: 1000
+  checkpoint_targets: [500, 1000]
+  q_bias_matched_baseline: 1.578540
+  q_bias_improved_below: 1.578540
+  q_bias_strong_pass_at_or_below: 0.5
+  q_bias_ideal_at_or_below: 0.0
+  policy_alignment_baseline_mae: 0.7133758664131165
+  policy_alignment_regression_tolerance_relative: 0.05
+  lateral_correction_baseline_mae: 0.7348634600639343
+  lateral_correction_action1_baseline_mae: 1.015701174736023
+  require_lateral_action1_improvement: true
+wandb:
+  project: flexible-line-peg-insertion
+  run_name: peg_f3_v2_qbias_ablation_1k_seed0
+  mode: disabled
+outputs:
+  run_dir: results/ablation/peg_f3_v2_qbias_ablation_1k_seed0
+  checkpoint_dir: results/ablation/peg_f3_v2_qbias_ablation_1k_seed0/run/checkpoints
+  log_dir: results/ablation/peg_f3_v2_qbias_ablation_1k_seed0/run/logs
+  actor_log_dir: results/ablation/peg_f3_v2_qbias_ablation_1k_seed0/run/actor
+contracts:
+  reward: "-80*lateral_error -20*axial_error -2*orientation_error +2[lateral<0.01] +25[success]"
+  success: "lateral<=0.002 and axial<=0.003 and orientation<=0.05; force excluded"

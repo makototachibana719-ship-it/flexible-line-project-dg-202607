@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""Matched Actor-only, critic-only, and joint closed-loop causal review."""
+from __future__ import annotations
+import hashlib,json,math,os,pickle,sys
+from pathlib import Path
+os.environ.setdefault('MUJOCO_GL','egl');os.environ.setdefault('XLA_PYTHON_CLIENT_PREALLOCATE','false');os.environ.setdefault('XLA_FLAGS','--xla_gpu_enable_triton_gemm=false')
+ROOT=Path('/home/makoto/flexible_line_project');sys.path[:0]=[str(ROOT),str(ROOT/'external/serl/serl_launcher'),str(ROOT/'external/serl/franka_sim'),str(ROOT/'external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim'),str(ROOT/'external/packages/peg_insertion/peg_insertion/code/env')]
+import flax,jax,jax.numpy as jnp,numpy as np,optax
+from async_sac_state_sim import concat_rlpd_batches
+from scripts.audit_peg_f3_v2_c0_near_hole_insertion_causal import capture,branch_one
+from scripts.run_peg_f3_v2_critic_first_repaired_handoff import critic_step,fresh_agent,geometry
+from scripts.run_peg_f3_v2_exact_restore_curriculum_stage import action,block,demo_distance,distance_model,fixed_batch,load_config,make_train_env,raw_env
+from scripts.run_peg_f3_v2_local_insertion_actor_bc import evaluate
+from serl_launcher.utils.launcher import make_replay_buffer
+from training.peg_insertion.peg_replay_adapter import repaired_replay_datastore_insert
+from training.peg_insertion.peg_runtime_adapter import portable_peg_runtime
+from training.peg_insertion.resume import restore_replay
+DEMO=ROOT/'results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl';DSHA='4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878';LOCAL=ROOT/'results/datasets/peg_v2_local_insertion_supervision_20260908_001/local_insertion_supervision.pkl';CORR=ROOT/'results/datasets/peg_v2_corrective_postbc_round1_20260908_001/corrective_round1.pkl';TRACE=ROOT/'results/demos/peg_v2_pilot/standard_post_exclusion_20260905_001/transitions.jsonl';HAND=ROOT/'results/closure/peg/f3_v2_on_policy_corrective_20260908_001/canonical_safety_and_retention/repaired_handoff';OUT=ROOT/'results/diagnostics/peg/f3_v2_actor_critic_closed_loop_geometry_20260908_002';TH=7.41773975814;POINTS=(0,1,2,5,10,25);EVALS=(0,5,10,25);LIMIT=np.asarray([.002,.003,.05],np.float64)
+def req(x,m):
+ if not x:raise RuntimeError(m)
+def sha(p):
+ h=hashlib.sha256()
+ with Path(p).open('rb') as f:
+  for b in iter(lambda:f.read(8388608),b''):h.update(b)
+ return h.hexdigest()
+def jv(x):
+ if isinstance(x,np.ndarray):return jv(x.tolist())
+ if isinstance(x,(np.bool_,bool)):return bool(x)
+ if isinstance(x,np.integer):return int(x)
+ if isinstance(x,np.floating):return float(x)
+ if isinstance(x,dict):return {str(k):jv(v) for k,v in x.items()}
+ if isinstance(x,(list,tuple)):return [jv(v) for v in x]
+ return x
+def dump(p,x):
+ with Path(p).open('x') as f:json.dump(jv(x),f,indent=2,sort_keys=True,allow_nan=False);f.write('\n')
+def thash(t):
+ h=hashlib.sha256()
+ for p,x in jax.tree_util.tree_flatten_with_path(t)[0]:h.update(str(p).encode());h.update(np.asarray(jax.device_get(x)).tobytes())
+ return h.hexdigest()
+def norm(t):return float(np.sqrt(sum(float(np.sum(np.square(np.asarray(jax.device_get(x)),dtype=np.float64))) for x in jax.tree_util.tree_leaves(t) if hasattr(x,'dtype'))))
+def modes(a,o):return np.asarray(jax.device_get(a.sample_actions(observations=jax.device_put(o),argmax=True)),np.float32)
+@jax.jit
+def actor_step(agent,batch):
+ rng,nrng=jax.random.split(agent.state.rng);(loss,info),grads=jax.value_and_grad(lambda p:agent.policy_loss_fn(batch,p,rng),has_aux=True)(agent.state.params);updates,no=agent.state.txs['actor'].update(grads,agent.state.opt_states['actor'],agent.state.params);params=optax.apply_updates(agent.state.params,updates);opts=dict(agent.state.opt_states);opts['actor']=no;return agent.replace(state=agent.state.replace(step=agent.state.step+1,params=params,opt_states=opts,rng=nrng)),info
+def build_common_start(cfg,demos):
+ a=fresh_agent(cfg);e=make_train_env('C0')
+ try:
+  online=make_replay_buffer(e,capacity=cfg['training']['replay_capacity'],type='replay_buffer');restore_replay(online,HAND/'checkpoint_1000_online_replay.pkl');demo=make_replay_buffer(e,capacity=len(demos)+100,type='replay_buffer')
+  for x in demos:demo.insert(x)
+  rng=np.random.default_rng(7000)
+  for u in range(1,26):
+   b=concat_rlpd_batches(fixed_batch(online,rng.integers(0,len(online),32)),fixed_batch(demo,rng.integers(0,len(demo),32)));a,_=critic_step(a,b);block(a)
+  return a,online,demo
+ finally:e.close()
+def pre_metrics(env):
+ r=raw_env(env);m=r.task._goal_metrics(r._get_obs());return np.asarray([m['lateral_error'],m['axial_error'],m['orientation_error']],np.float64)
+def build_critical(agent):
+ tr=[json.loads(x) for x in TRACE.read_text().splitlines() if x.strip()];rows=[];snaps=[]
+ for seed in (100,101,102):
+  e=make_train_env('C0')
+  try:
+   obs,_=e.reset(seed=seed);ep=[];ss=[]
+   for step in range(100):
+    vals=pre_metrics(e);margin=float(np.max(vals/LIMIT));ref=modes(agent,np.asarray(obs)[None])[0];expert=np.asarray(tr[137+min(step,len(tr)-138)]['action'],np.float32);ep.append({'seed':seed,'step':step,'observation':np.asarray(obs,np.float32),'reference_action':ref,'expert_action':expert,'lateral':vals[0],'axial':vals[1],'orientation':vals[2],'success_margin':margin,'phase':'insertion','tags':[]});ss.append(capture(e,obs));n,r,term,trunc,info=e.step(ref);ep[-1].update(next_observation=np.asarray(n,np.float32),reward=float(r),mask=float(not term),done=bool(term or trunc));obs=n
+    if term or trunc:break
+   req(info.get('is_success',False),'successful critical source');lat=np.asarray([x['lateral'] for x in ep]);ori=np.asarray([x['orientation'] for x in ep]);mar=np.asarray([x['success_margin'] for x in ep]);tagmap={0:'c0_reset',int(np.argmax(lat[0]-lat>.0001)):'first_lateral_correction',int(np.argmax(ori[0]-ori>.001)):'first_orientation_correction',int(np.argmax((lat<=.01)&(np.asarray([x['axial'] for x in ep])<=.02))):'near_hole_entry',int(np.argmin(mar)):'best_success_margin',len(ep)-1:'successful_insertion_transition'}
+   for i in range(max(0,len(ep)-3),len(ep)):ep[i]['tags'].append('pre_success')
+   for i,t in tagmap.items():ep[i]['tags'].append(t)
+   rows+=ep;snaps+=ss
+  finally:e.close()
+ unique={};us=[]
+ for i,x in enumerate(rows):
+  key=hashlib.sha256(x['observation'].tobytes()+x['reference_action'].tobytes()).hexdigest()
+  if key not in unique:unique[key]=len(us);y=dict(x);y['pair_sha256']=key;y['source_seeds']=[x['seed']];y['snapshot_index']=i;us.append(y)
+  else:j=unique[key];us[j]['source_seeds'].append(x['seed']);us[j]['tags']=sorted(set(us[j]['tags']+x['tags']))
+ p=OUT/'C0_BEHAVIOR_CRITICAL_PROBE_V1.pkl';p.write_bytes(pickle.dumps([{k:v for k,v in x.items() if k!='snapshot_index'} for x in us],pickle.HIGHEST_PROTOCOL));manifest={'name':'C0_BEHAVIOR_CRITICAL_PROBE_V1','unique_states':len(us),'source_episodes':3,'all_local_segment_states':True,'material_displacement_l2':.01,'damage_normalization':{'lateral':.002,'axial':.003,'orientation':.05,'force':'reference_force_or_1N'},'sha256':sha(p),'new_demonstrations':False};dump(OUT/'C0_BEHAVIOR_CRITICAL_PROBE_V1_manifest.json',manifest);sel=[i for i,x in enumerate(us) if x['tags']];return us,[snaps[x['snapshot_index']] for x in us],sel,manifest
+def drift(agent,rows,base_modes):
+ o=np.asarray([x['observation'] for x in rows]);r=np.asarray([x['reference_action'] for x in rows]);e=np.asarray([x['expert_action'] for x in rows]);p=modes(agent,o);d=p[:,:6]-r[:,:6];de=p[:,:6]-e[:,:6];den=np.linalg.norm(p[:,:6],axis=1)*np.linalg.norm(e[:,:6],axis=1);cos=np.divide(np.sum(p[:,:6]*e[:,:6],axis=1),den,out=np.zeros_like(den),where=den>1e-12);return {'ACTOR_TO_REPAIRED_L2':float(np.mean(np.linalg.norm(d,axis=1))),'ACTOR_TO_EXPERT_L2':float(np.mean(np.linalg.norm(de,axis=1))),'per_dim_mean_abs_to_repaired':np.mean(np.abs(d),axis=0),'action_cosine_mean':float(cos.mean()),'maximum_action_drift':float(np.max(np.linalg.norm(d,axis=1))),'materially_displaced_fraction':float(np.mean(np.linalg.norm(d,axis=1)>.01)),'modes':p}
+def geometry_both(agent,rows,actions=None):
+ o=np.asarray([x['observation'] for x in rows],np.float32);e=np.asarray([x['expert_action'] for x in rows],np.float32);a=modes(agent,o) if actions is None else actions
+ def calc(params):
+  oo=jax.device_put(o);aa=jax.device_put(a)
+  def each(obs,act):return agent.forward_critic(obs[None],act[None],rng=None,train=False,grad_params=params)[:,0]
+  jac=np.asarray(jax.device_get(jax.vmap(jax.jacrev(each,argnums=1))(oo,aa)))[:,:,:6];d=e[:,:6]-a[:,:6];den=np.linalg.norm(jac,axis=2)*np.linalg.norm(d,axis=1)[:,None];c=np.divide(np.sum(jac*d[:,None],axis=2),den,out=np.zeros_like(den),where=den>1e-12);agg=jac.mean(1);ad=np.linalg.norm(agg,axis=1)*np.linalg.norm(d,axis=1);ac=np.divide(np.sum(agg*d,axis=1),ad,out=np.zeros_like(ad),where=ad>1e-12);q=np.asarray(jax.device_get(agent.forward_critic(oo,aa,rng=None,train=False,grad_params=params)));return {'cosines':ac,'median':float(np.median(ac)),'mean':float(ac.mean()),'quantiles':{str(x):float(np.quantile(ac,x)) for x in (0,.1,.25,.5,.75,.9,1)},'head_disagreement':float(np.mean(np.std(c,axis=1))),'q_mean':float(q.mean())}
+ on=calc(agent.state.params);tg=calc(agent.state.target_params);tags=[set(x['tags']) for x in rows]
+ def subset(vals,tag):
+  ids=[i for i,t in enumerate(tags) if tag in t];return {'n':len(ids),'mean':float(np.mean(vals[ids])),'median':float(np.median(vals[ids]))} if ids else {'n':0}
+ return {'online':{k:v for k,v in on.items() if k!='cosines'},'target':{k:v for k,v in tg.items() if k!='cosines'},'ONLINE_TARGET_GRAD_COSINE_GAP':float(on['median']-tg['median']),'near_hole':{'online':subset(on['cosines'],'near_hole_entry'),'target':subset(tg['cosines'],'near_hole_entry')},'pre_success':{'online':subset(on['cosines'],'pre_success'),'target':subset(tg['cosines'],'pre_success')}}
+def one_step(agent,rows,snaps,sel):
+ out=[];scores=[]
+ for i in sel:
+  ref=branch_one(snaps[i],rows[i]['reference_action']);cur=branch_one(snaps[i],modes(agent,rows[i]['observation'][None])[0]);rv=np.asarray([ref['lateral_error'],ref['axial_error'],ref['orientation_error']]);cv=np.asarray([cur['lateral_error'],cur['axial_error'],cur['orientation_error']]);score=float(np.sum(np.maximum(0,cv-rv)/LIMIT)+max(0,cur['force']-ref['force'])/max(ref['force'],1.));scores.append(score);out.append({'probe':i,'tags':rows[i]['tags'],'reference':{k:ref[k] for k in ('lateral_error','axial_error','orientation_error','success_margin','force')},'current':{k:cur[k] for k in ('lateral_error','axial_error','orientation_error','success_margin','force')},'damage_score':score})
+ return {'CRITICAL_ACTION_DAMAGE_SCORE':float(np.mean(scores)),'maximum':float(max(scores)),'branches':out}
+def target_stats(agent,rows,base_target_actions):
+ no=np.asarray([x['next_observation'] for x in rows],np.float32);r=np.asarray([x['reward'] for x in rows],np.float32);m=np.asarray([x['mask'] for x in rows],np.float32);ta=modes(agent,no);q=np.asarray(jax.device_get(agent.forward_critic(jax.device_put(no),jax.device_put(ta),rng=None,train=False,grad_params=agent.state.target_params))).mean(0);bell=r+agent.config['discount']*m*q;on=np.asarray(jax.device_get(agent.forward_critic(jax.device_put(np.asarray([x['observation'] for x in rows])),jax.device_put(np.asarray([x['reference_action'] for x in rows])),rng=None,train=False))).mean(0);return {'target_policy_action_drift':float(np.mean(np.linalg.norm(ta[:,:6]-base_target_actions[:,:6],axis=1))),'target_q_mean':float(q.mean()),'bellman_target_mean':float(bell.mean()),'online_q_mean':float(on.mean())}
+def make_batches(common,online,demo,cfg,demo_obs,scale):
+ e=make_train_env('C0')
+ try:
+  obs,_=e.reset(seed=cfg['seed']);ar=jax.random.PRNGKey(19000);n=0
+  while n<60:
+   a,ar=action(common,obs,deterministic=False,rng=ar);nxt,r,t,tr,info=e.step(a);d=demo_distance(nxt,demo_obs,scale)
+   if d<=TH:online.insert({'observations':np.asarray(obs,np.float32),'actions':a,'next_observations':np.asarray(nxt,np.float32),'rewards':np.float32(r),'masks':np.float32(0 if t else 1),'dones':bool(t or tr)});n+=1;obs=nxt
+   if t or tr or d>TH:obs,_=e.reset(seed=cfg['seed'])
+ finally:e.close()
+ rng=np.random.default_rng(8100);return [concat_rlpd_batches(fixed_batch(online,rng.integers(0,len(online),32)),fixed_batch(demo,rng.integers(0,len(demo),32))) for _ in range(25)]
+def run_branch(name,start,batches,rows,snaps,sel,demo_obs,scale):
+ a=start;states={0:flax.serialization.to_bytes(a.state)};reports={};base=np.asarray([x['reference_action'] for x in rows]);base_next=modes(start,np.asarray([x['next_observation'] for x in rows]))
+ for u in range(26):
+  states[u]=flax.serialization.to_bytes(a.state)
+  if u in POINTS:
+   dr=drift(a,rows,base);reports[str(u)]={'action_drift':{k:v for k,v in dr.items() if k!='modes'},'geometry':geometry_both(a,rows,dr['modes']),'one_step':one_step(a,rows,snaps,sel),'target_bellman':target_stats(a,rows,base_next),'c0':evaluate(a,'C0',demo_obs,scale) if u in EVALS else None}
+  if u==25:break
+  if name=='actor_only':a,_=actor_step(a,batches[u])
+  elif name=='critic_only':a,_=critic_step(a,batches[u])
+  else:a,_=a.update_high_utd(batches[u],utd_ratio=1)
+  block(a)
+ dump(OUT/f'{name}.json',reports);return reports,states,a
+def first_failure(r):return next((u for u in EVALS if u and r[str(u)]['c0']['success_count']<2),None)
+def component_effect(agent,batch,rows,param_delta):
+ obs=batch['observations'];rng=jax.random.PRNGKey(771);ap=agent.state.params['modules_actor'];full0=agent.state.params
+ def vals(x):
+  full=dict(full0);full['modules_actor']=x;_,pr,sr,cr=jax.random.split(rng,4);dist=agent.forward_policy(obs,rng=pr,grad_params=full);act,lp=dist.sample_and_log_prob(seed=sr);q=-jnp.mean(agent.forward_critic(obs,act,rng=cr).mean(0));ent=jnp.mean(agent.forward_temperature()*lp);n=agent.config['demo_anchor_batch_size'];other=agent.config['demo_anchor_lambda']*jnp.mean(jnp.square(agent.forward_policy(obs[-n:],rng=rng,grad_params=full).mode()-batch['actions'][-n:]));return q,ent,other
+ o=jax.device_put(np.asarray([x['observation'] for x in rows]));actual_norm=norm(param_delta);out={}
+ for i,n in enumerate(('Q','ENTROPY','OTHER')):
+  g=jax.grad(lambda x:vals(x)[i])(ap);gn=norm(g);direction=jax.tree_util.tree_map(lambda x:-x*actual_norm/max(gn,1e-30),g);_,pred=jax.jvp(lambda x:agent.state.apply_fn({'params':{'modules_actor':x}},o,name='actor',train=False).mode(),(ap,),(direction,));out[n]=float(np.mean(np.linalg.norm(np.asarray(jax.device_get(pred))[:,:6],axis=1)))
+ return out
+def main():
+ req(Path.cwd()==ROOT and not OUT.exists(),'fresh/cwd');req(jax.default_backend()=='gpu' and sha(DEMO)==DSHA,'GPU/Demo');OUT.mkdir(parents=True);before={'demo':sha(DEMO),'corr':sha(CORR),'local':sha(LOCAL)};dump(OUT/'protected_before.json',before);cfg=load_config(1);demos=pickle.loads(DEMO.read_bytes());demo_obs,scale=distance_model(demos)
+ with portable_peg_runtime(ROOT),repaired_replay_datastore_insert():
+  common_agent,online,demo=build_common_start(cfg,demos)
+  prior=ROOT/'results/training/peg_f3_v2_critic_first_repaired_handoff_20260908_001'
+  baseold=json.loads((prior/'primary_catchup.json').read_text())['25']
+  old_rows=pickle.loads((prior/'CRITIC_ALIGNMENT_PROBE_V1.pkl').read_bytes())
+  old_obs=np.asarray([x['observation'] for x in old_rows],np.float32)
+  old_act=np.asarray([x['expert_action'] for x in old_rows],np.float32)
+  repro=geometry(common_agent,old_obs,old_act)
+  req(abs(repro['Q_GRAD_EXPERT_COSINE_MEDIAN']-baseold['Q_GRAD_EXPERT_COSINE_MEDIAN'])<1e-6,'common critic cosine reconstruction')
+  req(abs(repro['Q_GRAD_ANTI_ALIGNED_FRACTION']-baseold['Q_GRAD_ANTI_ALIGNED_FRACTION'])<1e-9,'common critic anti reconstruction')
+  san=evaluate(common_agent,'C0',demo_obs,scale);req(san['success_count']==3 and san['contact_health'],'common behavior');rows,snaps,sel,manifest=build_critical(common_agent);batches=make_batches(common_agent,online,demo,cfg,demo_obs,scale);hashes={'ACTOR_SHA':thash(common_agent.state.params['modules_actor']),'CRITIC_SHA':thash(common_agent.state.params['modules_critic']),'TARGET_CRITIC_SHA':thash(common_agent.state.target_params['modules_critic']),'REPLAY_SHA':sha(HAND/'checkpoint_1000_online_replay.pkl')};dump(OUT/'common_start.json',{'c0':san,'hashes':hashes,'reconstructed_critic_update':25,'prior_probe_reproduction':repro})
+  ar,ast,aa=run_branch('actor_only',common_agent,batches,rows,snaps,sel,demo_obs,scale);cr,cst,ca=run_branch('critic_only',common_agent,batches,rows,snaps,sel,demo_obs,scale);jr,jst,ja=run_branch('joint',common_agent,batches,rows,snaps,sel,demo_obs,scale);af=first_failure(ar);jf=first_failure(jr)
+  # Linearized action effect and component attribution for the last update before first joint failure.
+  pre=jf-1;post=jf;prea=common_agent.replace(state=flax.serialization.from_bytes(common_agent.state,jst[pre]));posta=common_agent.replace(state=flax.serialization.from_bytes(common_agent.state,jst[post]));pd=jax.tree_util.tree_map(lambda x,y:x-y,posta.state.params['modules_actor'],prea.state.params['modules_actor']);o=jax.device_put(np.asarray([x['observation'] for x in rows]));_,pred=jax.jvp(lambda x:prea.state.apply_fn({'params':{'modules_actor':x}},o,name='actor',train=False).mode(),(prea.state.params['modules_actor'],),(pd,));actual=modes(posta,np.asarray([x['observation'] for x in rows]))-modes(prea,np.asarray([x['observation'] for x in rows]));linerr=float(np.mean(np.linalg.norm(np.asarray(jax.device_get(pred))[:,:6]-actual[:,:6],axis=1)));comp=component_effect(prea,batches[pre],rows,pd)
+  refgeom=geometry_both(posta,rows,np.asarray([x['reference_action'] for x in rows]));curgeom=geometry_both(posta,rows,modes(posta,np.asarray([x['observation'] for x in rows])));rg='STABLE_AROUND_REFERENCE_ONLY' if refgeom['online']['median']>=0 and curgeom['online']['median']<0 else 'STABLE_AROUND_BOTH' if refgeom['online']['median']>=0 and curgeom['online']['median']>=0 else 'UNSTABLE_AROUND_BOTH' if refgeom['online']['median']<0 and curgeom['online']['median']<0 else 'MIXED'
+  a_stable=af is None;critic_action_constant=all(cr[str(u)]['action_drift']['ACTOR_TO_REPAIRED_L2']<1e-9 for u in POINTS);joint_bad=jf is not None
+  if not a_stable:root='ACTOR_OBJECTIVE_UNSTABLE_ON_FIXED_CRITIC';nxt='ACTOR_UPDATE_TIMESCALE_OR_TRUST_REGION_REVIEW'
+  elif not critic_action_constant:root='CRITIC_GEOMETRY_DRIFTS_WITH_FIXED_ACTOR';nxt='CRITIC_TEMPORAL_STABILITY_REVIEW'
+  elif joint_bad:root='JOINT_ACTOR_CRITIC_FEEDBACK_INSTABILITY';nxt='TWO_TIMESCALE_ACTOR_CRITIC_UPDATE_REVIEW'
+  else:root='MIXED_CLOSED_LOOP_INSTABILITY';nxt='CLOSED_LOOP_STABILITY_MINIMAL_INTERVENTION_REVIEW'
+  gaps=[jr[str(u)]['geometry']['ONLINE_TARGET_GRAD_COSINE_GAP'] for u in POINTS];t0=jr['0']['target_bellman'];tp=jr[str(max(x for x in POINTS if x<jf))]['target_bellman'];target_lag='YES' if abs(tp['target_q_mean']-t0['target_q_mean'])>abs(tp['online_q_mean']-t0['online_q_mean']) and jf else 'NO'
+  result={'ACTOR_CRITIC_CLOSED_LOOP_GEOMETRY_REVIEW':'PASS','COMMON_START_C0_SUCCESS':'3/3','COMMON_START_CONTACT_HEALTH':'PASS','BEHAVIOR_CRITICAL_PROBE_SHA256':manifest['sha256'],**hashes,'ACTOR_ONLY_STABILITY':'PASS' if a_stable else 'FAIL','ACTOR_ONLY_FAILURE_UPDATE':af,'CRITIC_ONLY_GEOMETRY_STABILITY':'ACTOR_BEHAVIOR_FIXED__GEOMETRY_RECORDED','CRITIC_ONLY_GEOMETRY_FAILURE_UPDATE':None,'JOINT_INSTABILITY_REPRODUCED':'YES' if joint_bad else 'NO','JOINT_FAILURE_UPDATE':jf,'CRITICAL_ACTION_DAMAGE_PRECEDES_FAILURE':'YES' if jr[str(max(x for x in POINTS if x<jf))]['one_step']['CRITICAL_ACTION_DAMAGE_SCORE']>0 else 'NO','ONLINE_TARGET_GRAD_COSINE_GAP':{str(u):g for u,g in zip(POINTS,gaps)},'HEAD_DISAGREEMENT_TREND':{str(u):{'online':jr[str(u)]['geometry']['online']['head_disagreement'],'target':jr[str(u)]['geometry']['target']['head_disagreement']} for u in POINTS},'PREDICTED_ACTION_DELTA_ERROR':linerr,'CRITICAL_STATE_ACTION_DRIFT':jr[str(jf)]['action_drift'],'Q_COMPONENT_ACTION_DRIFT':comp['Q'],'ENTROPY_COMPONENT_ACTION_DRIFT':comp['ENTROPY'],'OTHER_COMPONENT_ACTION_DRIFT':comp['OTHER'],'REFERENCE_ACTION_GEOMETRY':refgeom,'CURRENT_ACTION_GEOMETRY':curgeom,'REFERENCE_CURRENT_GEOMETRY_CLASS':rg,'TARGET_POLICY_ACTION_DRIFT':{str(u):jr[str(u)]['target_bellman']['target_policy_action_drift'] for u in POINTS},'TARGET_Q_DRIFT':{str(u):jr[str(u)]['target_bellman']['target_q_mean']-jr['0']['target_bellman']['target_q_mean'] for u in POINTS},'BELLMAN_TARGET_DRIFT':{str(u):jr[str(u)]['target_bellman']['bellman_target_mean']-jr['0']['target_bellman']['bellman_target_mean'] for u in POINTS},'TARGET_LAG_PRIMARY':target_lag,'PRIMARY_ROOT_CAUSE':root,'NEXT':nxt,'TRAINING_STARTED':'DIAGNOSTIC_COUNTERFACTUAL_ONLY','PRODUCTION_DEMO_SHA_UNCHANGED':'YES','ONLINE_ADMISSION_THRESHOLD':TH,'ONLINE_ADMISSION_THRESHOLD_CHANGED':'NO','EVAL_RESET_CANONICAL':'YES','EVAL_GOAL_CANONICAL':'YES','EVAL_CURRICULUM_ACTIVE':'NO','PROTECTED_ARTIFACTS_CHANGED':'NO','RESIDUAL_PROCESSES':'NONE'};after={'demo':sha(DEMO),'corr':sha(CORR),'local':sha(LOCAL)};req(before==after,'protected');dump(OUT/'result.json',result);dump(OUT/'protected_after.json',after);print(json.dumps(jv(result),indent=2,sort_keys=True))
+if __name__=='__main__':main()

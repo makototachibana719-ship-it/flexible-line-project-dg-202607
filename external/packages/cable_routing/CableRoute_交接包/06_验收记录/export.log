@@ -1,0 +1,18 @@
+[2026-08-14 17:45:53] SERL_ROOT=/home/maxiaoxi/serl
+[2026-08-14 17:45:53] COPIED: franka_sim/franka_sim/__init__.py
+[2026-08-14 17:45:53] COPIED: franka_sim/franka_sim/envs/__init__.py
+[2026-08-14 17:45:53] COPIED: franka_sim/franka_sim/envs/panda_cable_route_gym_env.py
+[2026-08-14 17:45:53] COPIED: franka_sim/franka_sim/envs/panda_pick_gym_env.py
+[2026-08-14 17:45:53] COPIED: franka_sim/franka_sim/envs/xmls/cable_route.xml
+[2026-08-14 17:45:53] COPIED: franka_sim/franka_sim/envs/xmls/arena.xml
+[2026-08-14 17:45:53] COPIED: franka_sim/franka_sim/envs/xmls/panda.xml
+[2026-08-14 17:45:53] COPIED: examples/async_cable_route_sim/async_drq_sim.py
+[2026-08-14 17:45:53] COPIED: examples/async_cable_route_sim/resnet10_params.pkl
+[2026-08-14 17:45:53] COPIED: examples/async_cable_route_sim/run_actor.sh
+[2026-08-14 17:45:53] COPIED: examples/async_cable_route_sim/run_learner.sh
+[2026-08-14 17:45:53] COPIED: examples/async_cable_route_sim/tmux_launch.sh
+[2026-08-14 17:45:53] COPIED: examples/async_cable_route_sim/tmux_rlpd_launch.sh
+[2026-08-14 17:45:54] COPIED CHECKPOINT DIR: checkpoints/cable_route_shutdown_test
+[2026-08-14 17:45:56] COPIED CHECKPOINT DIR: checkpoints/cable_route_smoke
+[2026-08-14 17:45:56] COPIED CHECKPOINT DIR: checkpoints/cable_route_v0
+[2026-08-14 17:45:56] COPIED CHECKPOINT DIR: checkpoints/cable_route_v0_20k

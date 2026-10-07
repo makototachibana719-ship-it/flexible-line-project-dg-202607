@@ -1,0 +1,72 @@
+environment: AuboPegInsert-State-v0
+factory: external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim/peg_env_adapter.py:make_peg_state_env
+algorithm: RLPD_STYLE_SAC_PLUS_50_50_DEMO_REPLAY
+seed: 0
+fresh_initialization: true
+load_legacy_checkpoint: false
+runtime:
+  conda_environment: serl_mujoco
+  mujoco_gl: egl
+  generated_xml_dir: runtime/peg_insertion/generated
+demo:
+  observation_contract_version: PEG_OBS_CONTRACT_V1_LEGACY
+  path: external/packages/peg_insertion/peg_insertion/demos/peg_insert_20_demos_state.pkl
+  sha256: 44ee651768d9f231caccf81d5a58460c8f44bc17463de7e08ea157b3c2a53ce7
+  episodes: 20
+  transitions: 5512
+observation:
+  contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  shape: [20]
+  dtype: float32
+action:
+  shape: [7]
+  dtype: float32
+  low: -1.0
+  high: 1.0
+training:
+  online_batch_size: 32
+  demo_batch_size: 32
+  total_batch_size: 64
+  demo_fraction: 0.5
+  critic_actor_ratio: 1
+  utd_ratio: 1
+  training_starts: 100
+  random_steps: 0
+  max_steps: 10000
+  replay_capacity: 1000000
+  checkpoint_period: 1000
+  actor_learning_rate: 0.0003
+  critic_learning_rate: 0.0003
+  temperature_learning_rate: 0.0003
+  discount: 0.99
+wandb:
+  project: flexible-line-peg-insertion
+  run_name: peg_rlpd_baseline_seed0
+  smoke_run_name: peg_rlpd_gpu_smoke_seed0
+  mode: online
+smoke:
+  actor_steps: 150
+  learner_updates: 10
+  checkpoint_period: 5
+formal_candidate:
+  learner_updates: 20
+  checkpoint_period: 19
+  update_timeout_seconds: 120
+  wandb_run_name: peg_rlpd_gpu_formal_candidate_seed0
+  replay_checkpoint: results/checkpoints/peg_rlpd_gpu_smoke_seed0/checkpoint_9
+  checkpoint_dir: results/checkpoints/peg_rlpd_gpu_formal_candidate_seed0
+  log_dir: results/logs/peg_rlpd_gpu_formal_candidate_seed0
+  result_dir: results/formal_candidate/peg_rlpd_gpu_formal_candidate_seed0
+outputs:
+  checkpoint_dir: results/checkpoints/peg_rlpd_baseline_seed0
+  log_dir: results/logs/peg_rlpd_baseline_seed0
+  actor_log_dir: results/logs/peg_rlpd_baseline_seed0_actor
+  smoke_checkpoint_dir: results/checkpoints/peg_rlpd_gpu_smoke_seed0
+  smoke_log_dir: results/logs/peg_rlpd_gpu_smoke_seed0
+  smoke_actor_log_dir: results/logs/peg_rlpd_gpu_smoke_seed0_actor
+contracts:
+  reward: "-80*lateral_error -20*axial_error -2*orientation_error +2[lateral<0.01] +25[success]"
+  success: "lateral<=0.002 and axial<=0.003 and orientation<=0.05; force excluded"
+legacy_checkpoint:
+  path: external/packages/peg_insertion/peg_insertion/checkpoints/rlpd_current_candidate/checkpoint_9000
+  policy: retained_nonblocking_not_loaded

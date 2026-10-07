@@ -1,0 +1,25 @@
+experiment: peg_f3_v2_actor_update_timescale_v1_20260908
+scientific_variable:
+  actor_update_period: 4
+critic_update_period: 1
+temperature_follows_actor: true
+learner_updates_primary: 100
+learner_updates_retention: 500
+checkpoints: [0, 4, 8, 20, 40, 100, 250, 500]
+evaluations: [0, 20, 40, 100, 250, 500]
+online_batch_size: 32
+demo_batch_size: 32
+total_batch_size: 64
+utd_ratio: 1
+online_admission_threshold: 7.41773975814
+candidate_grid: false
+alternate_periods_forbidden: [2, 8, 16]
+prohibitions:
+  actor_objective_change: true
+  critic_objective_change: true
+  target_update_change: true
+  trust_region_or_retention_loss: true
+  production_demo_mutation: true
+  threshold_change: true
+  canonical_eval_change: true
+

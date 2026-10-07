@@ -1,0 +1,304 @@
+"""One-shot post-exclusion axial diagnostic; never produces training data."""
+import json
+import os
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.run_peg_axial_bounded_diagnostic import durable_save, persist_initial_evidence_and_guard
+from training.peg_insertion.axial_telemetry import AxialTelemetry, V2
+from training.peg_insertion.v2_recorder import PKG, bindings, sha, snapshot, validate_snapshot
+
+OUT = ROOT / "results/diagnostics/peg/f3_axial_bounded_retry_20260905"
+OLD = ROOT / "results/demos/peg_v2_pilot/standard_20260905_001"
+SOURCE = PKG / "code/env/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml"
+GENERATED = ROOT / "runtime/peg_insertion/generated/aubo_i5_assemble_hole.xml"
+TARGET_PAIR = frozenset(("base_link", "shoulder_Link"))
+MAX_DIAGNOSTIC_STEPS = 126  # frozen reference ends here; <=160 authorization
+RESET_SEED = 0
+RESET_PROTOCOL = "fixed_reset_seed_0"
+EE_POSITION_ATOL_M = 5e-5
+EE_ORIENTATION_ATOL_RAD = 1e-4
+GOAL_POSITION_ATOL_M = 1e-6
+GOAL_ORIENTATION_ATOL_RAD = 1e-6
+
+
+def exclusions(path):
+    return [frozenset((node.get("body1"), node.get("body2"))) for node in ET.parse(path).findall(".//contact/exclude")]
+
+
+def enrich_contacts(raw, model):
+    result = []
+    for contact in raw:
+        item = dict(contact)
+        for side in (1, 2):
+            geom_id = int(item[f"geom{side}_id"])
+            body_id = int(model.geom_bodyid[geom_id])
+            data_id = int(model.geom_dataid[geom_id])
+            item[f"geom{side}_body_id"] = body_id
+            item[f"geom{side}_body_name"] = model.body(body_id).name
+            item[f"geom{side}_mesh_name"] = model.mesh(data_id).name if int(model.geom_type[geom_id]) == 7 and data_id >= 0 else None
+        result.append(item)
+    return result
+
+
+def link01(contact):
+    return frozenset((contact["geom1_body_name"], contact["geom2_body_name"])) == TARGET_PAIR
+
+
+def expected_task_contact(contact):
+    return "hole" in (contact["geom1_body_name"].lower(), contact["geom2_body_name"].lower())
+
+
+def finite_json(value):
+    json.dumps(value, allow_nan=False)
+
+
+def quaternion_angle(a, b):
+    qa = np.asarray(a, dtype=float)
+    qb = np.asarray(b, dtype=float)
+    if qa.shape != (4,) or qb.shape != (4,) or not np.isfinite(qa).all() or not np.isfinite(qb).all():
+        raise ValueError("finite quaternion required")
+    na = np.linalg.norm(qa)
+    nb = np.linalg.norm(qb)
+    if na == 0 or nb == 0:
+        raise ValueError("nonzero quaternion required")
+    dot = float(np.clip(abs(np.dot(qa / na, qb / nb)), 0.0, 1.0))
+    return float(2.0 * np.arccos(dot))
+
+
+def goal_pose(value):
+    obs = np.asarray(value["obs"], dtype=float)
+    actual = np.asarray(value["actual_ee_pose"], dtype=float)
+    if obs.shape != (20,) or actual.shape != (7,):
+        raise ValueError("obs20/pose7 required for goal reconstruction")
+    return np.concatenate((actual[:3] + obs[13:16], obs[16:20]))
+
+
+def validate_post_exclusion_invariants(live, reference, *, reset_seed, reset_protocol,
+                                       current_bindings, frozen_bindings,
+                                       link01_exclusion_exact, action_contract_unchanged):
+    if live.get("observation_contract_version") != V2:
+        raise ValueError("V2 observation contract required")
+    obs = np.asarray(live.get("obs"), dtype=float)
+    if obs.shape != (20,):
+        raise ValueError("observation shape must be (20,)")
+    if not np.isfinite(obs).all():
+        raise ValueError("observation must be finite")
+    actual = np.asarray(live.get("actual_ee_pose"), dtype=float)
+    old_actual = np.asarray(reference.get("actual_ee_pose"), dtype=float)
+    if actual.shape != (7,) or old_actual.shape != (7,) or not np.isfinite(actual).all():
+        raise ValueError("finite EE pose7 required")
+    if reset_seed != RESET_SEED or reset_protocol != RESET_PROTOCOL:
+        raise ValueError("fixed reset protocol mismatch")
+    if current_bindings != frozen_bindings:
+        raise ValueError("controller/IK/runtime/config/source binding mismatch")
+    if not link01_exclusion_exact:
+        raise ValueError("Link01 exclusion mismatch")
+    if not action_contract_unchanged:
+        raise ValueError("action contract/scales mismatch")
+
+    live_goal = goal_pose(live)
+    old_goal = goal_pose(reference)
+    goal_position_error = float(np.linalg.norm(live_goal[:3] - old_goal[:3]))
+    goal_orientation_error = quaternion_angle(live_goal[3:7], old_goal[3:7])
+    if goal_position_error > GOAL_POSITION_ATOL_M or goal_orientation_error > GOAL_ORIENTATION_ATOL_RAD:
+        raise ValueError("fixed goal mismatch")
+    ee_position_error = float(np.linalg.norm(actual[:3] - old_actual[:3]))
+    ee_orientation_error = quaternion_angle(actual[3:7], old_actual[3:7])
+    if ee_position_error > EE_POSITION_ATOL_M or ee_orientation_error > EE_ORIENTATION_ATOL_RAD:
+        raise ValueError("EE reset pose outside frozen tolerance")
+
+    old_ft = np.asarray(reference["obs"], dtype=float)[7:13]
+    new_ft = obs[7:13]
+    return dict(
+        status="PASS", observation_contract_version=V2, observation_shape=list(obs.shape), all_finite=True,
+        reset_seed=reset_seed, reset_protocol=reset_protocol,
+        fixed_goal_position_error_m=goal_position_error,
+        fixed_goal_orientation_error_rad=goal_orientation_error,
+        ee_position_error_m=ee_position_error, ee_position_atol_m=EE_POSITION_ATOL_M,
+        ee_orientation_error_rad=ee_orientation_error, ee_orientation_atol_rad=EE_ORIENTATION_ATOL_RAD,
+        bindings_unchanged=True, link01_exclusion_exact=True, action_contract_unchanged=True,
+        force_torque_policy="OBS_7_13_RECORDED_NOT_EQUALITY_GATED",
+        force_torque_old=old_ft.tolist(), force_torque_new=new_ft.tolist(),
+        force_torque_delta=(new_ft - old_ft).tolist())
+
+
+def run_pre_action_boundary(live, reference, out, *, reset_seed, reset_protocol,
+                            current_bindings, frozen_bindings, link01_exclusion_exact,
+                            action_contract_unchanged, safety_gate):
+    """Persist live reset first, then compatibility, then unchanged safety gate."""
+    durable_save(out / "live_reset_snapshot.json", dict(
+        snapshot=live, reset_seed=reset_seed, reset_protocol=reset_protocol,
+        training_data_eligible=False))
+    result = validate_post_exclusion_invariants(
+        live, reference, reset_seed=reset_seed, reset_protocol=reset_protocol,
+        current_bindings=current_bindings, frozen_bindings=frozen_bindings,
+        link01_exclusion_exact=link01_exclusion_exact,
+        action_contract_unchanged=action_contract_unchanged)
+    durable_save(out / "post_exclusion_invariant_gate.json", result)
+    return result, safety_gate()
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=False)
+    reference = json.loads((OLD / "episode.json").read_text())
+    actions = [json.loads(line) for line in (OLD / "transitions.jsonl").open()]
+    current_bindings = bindings()
+    telemetry_gate = json.loads((ROOT / "results/validation/peg/f3_axial_telemetry_20260905/binding.json").read_text())
+
+    if exclusions(SOURCE) != [TARGET_PAIR] or exclusions(GENERATED) != [TARGET_PAIR]:
+        raise RuntimeError("source/generated exclusion mismatch")
+    for filename, digest in telemetry_gate["telemetry_files"].items():
+        if sha(ROOT / filename) != digest:
+            raise RuntimeError("telemetry binding mismatch: " + filename)
+    if sha(telemetry_gate["installed_solver_file"]) != telemetry_gate["installed_solver_sha256"]:
+        raise RuntimeError("installed IK solver binding mismatch")
+    processes = subprocess.check_output(["ps", "-eo", "pid,args"], text=True)
+    forbidden = ("scripts/record_peg_v2_demo.py", "scripts/run_peg_training.py")
+    conflicts = [line for line in processes.splitlines() if any(token in line for token in forbidden)]
+    if conflicts:
+        raise RuntimeError("conflicting process: " + conflicts[0])
+
+    for line in (ROOT / "configs/peg_insertion/runtime_gpu_formal.env").read_text().splitlines():
+        if line.strip():
+            key, value = line.split("=", 1)
+            os.environ[key] = value
+    sys.path[:0] = [str(PKG / "code/example/async_rlpd_peg_sim"), str(PKG / "code/env")]
+    from mujoco import MjModel
+    MjModel.from_xml_path(str(GENERATED))
+
+    durable_save(OUT / "preflight.json", dict(
+        status="PASS", observation_contract_version=V2, current_bindings=current_bindings,
+        historical_action_source_sha256=sha(OLD / "transitions.jsonl"),
+        source_exclusions=[sorted(pair) for pair in exclusions(SOURCE)],
+        generated_exclusions=[sorted(pair) for pair in exclusions(GENERATED)],
+        generated_xml_compile="PASS", telemetry_binding=telemetry_gate,
+        max_diagnostic_steps=MAX_DIAGNOSTIC_STEPS, training_data_eligible=False,
+        no_conflicting_processes=True, runner_sha256=sha(__file__),
+        action_source="frozen failed-pilot action sequence; diagnostic replay only, not Demo recording"))
+
+    from peg_env_adapter import make_peg_state_env
+    from training.peg_insertion.peg_runtime_adapter import portable_peg_runtime
+
+    env = None
+    observer = None
+    rows = []
+    stop_reason = "NOT_STARTED"
+    requested = 0.0
+    realized = 0.0
+    started = False
+    initial_contacts = set()
+    link01_reappeared = False
+    try:
+        started = True
+        with portable_peg_runtime(ROOT):
+            env = make_peg_state_env(render_mode="rgb_array", max_episode_steps=500)
+        reset_result = env.reset(seed=RESET_SEED)
+        initial = snapshot(env)
+        def unchanged_safety_gate():
+            nonlocal observer
+            observer = AxialTelemetry(env, OUT / "telemetry")
+            return persist_initial_evidence_and_guard(observer, initial, OUT)
+        _, initial_contacts = run_pre_action_boundary(
+            initial, reference["initial"], OUT, reset_seed=RESET_SEED, reset_protocol=RESET_PROTOCOL,
+            current_bindings=bindings(), frozen_bindings=current_bindings,
+            link01_exclusion_exact=(exclusions(SOURCE) == [TARGET_PAIR] and exclusions(GENERATED) == [TARGET_PAIR]),
+            action_contract_unchanged=(bindings() == current_bindings), safety_gate=unchanged_safety_gate)
+
+        cartesian_path = OUT / "cartesian.jsonl"
+        with cartesian_path.open("x", encoding="utf-8") as stream:
+            for historical in actions[:MAX_DIAGNOSTIC_STEPS]:
+                action = np.asarray(historical["action"], dtype=np.float32)
+                before = snapshot(env)
+                returned = observer.step(action)  # the sole environment step dispatch
+                after = snapshot(env)
+                telemetry = observer.last
+                step = int(historical["step"])
+                phase = historical["phase"]
+                axial_delta = float(action[0] * 0.002) if phase == "insertion" else 0.0
+                realized_delta = float(after["actual_ee_pose"][0] - before["actual_ee_pose"][0]) if phase == "insertion" else 0.0
+                requested += axial_delta
+                realized += realized_delta
+                post_contacts = enrich_contacts(telemetry.get("post", {}).get("contacts", []) if telemetry else [], env.env.model)
+                link01_reappeared = link01_reappeared or any(link01(contact) for contact in post_contacts)
+                row = dict(
+                    step=step, phase=phase, action=action.tolist(), before=before, after=after,
+                    reward=float(returned[1]), terminated=bool(returned[2]), truncated=bool(returned[3]),
+                    requested_axial_delta=axial_delta, cumulative_requested_axial=requested,
+                    realized_ee_axial_delta=realized_delta, cumulative_realized_axial=realized,
+                    target_actual_error=float(np.linalg.norm(np.asarray(after["target_pose"][:3]) - np.asarray(after["actual_ee_pose"][:3]))),
+                    contacts=post_contacts, training_data_eligible=False)
+                if telemetry and telemetry.get("ik", {}).get("q_target") is not None:
+                    row["joint_actual_progress"] = (np.asarray(telemetry["post"]["qpos"]) - np.asarray(telemetry["pre"]["qpos"])).tolist()
+                    solver = telemetry.get("solver", {})
+                    residual = solver.get("residual")
+                    returned_solver = solver.get("returned")
+                    if residual is not None and returned_solver is not None and np.array_equal(
+                            np.asarray(returned_solver[0]).reshape(-1), np.asarray(telemetry["ik"]["q_target"]).reshape(-1)):
+                        row["ik_implied_axial_progress"] = float(
+                            telemetry["ik"]["input_position"][0] + np.asarray(residual).reshape(-1)[0] - before["actual_ee_pose"][0])
+                    else:
+                        row["ik_implied_axial_progress"] = None
+                else:
+                    row["joint_actual_progress"] = None
+                    row["ik_implied_axial_progress"] = None
+                finite_json(row)
+                rows.append(row)
+                stream.write(json.dumps(row, allow_nan=False) + "\n")
+                stream.flush()
+                os.fsync(stream.fileno())
+
+                stop_reason = None
+                if not telemetry or not telemetry.get("complete") or telemetry.get("observer_errors") or telemetry.get("step_exception"):
+                    stop_reason = "TELEMETRY_INCOMPLETE"
+                else:
+                    solver = telemetry.get("solver", {})
+                    if not solver.get("return_available") or any(solver.get(key) is None for key in ("status", "residual", "cost", "nfev")):
+                        stop_reason = "SOLVER_DATA_UNAVAILABLE"
+                    elif not solver.get("success"):
+                        stop_reason = "IK_SOLVER_NON_SUCCESS_" + str(solver.get("status"))
+                    elif any(actuator["clip_flag"] for actuator in telemetry["post"]["actuators"]):
+                        stop_reason = "UNEXPECTED_CONTROL_CLAMP"
+                    elif any(link01(contact) for contact in post_contacts):
+                        stop_reason = "LINK01_CONTACT_REAPPEARED"
+                    elif any(contact["distance"] < -0.005 for contact in post_contacts):
+                        stop_reason = "DANGEROUS_CONTACT_PENETRATION"
+                    elif any(not expected_task_contact(contact) for contact in post_contacts):
+                        stop_reason = "UNEXPECTED_NON_TASK_CONTACT"
+                validate_snapshot(after)
+                if requested >= 0.010 and realized <= 0.001:
+                    stop_reason = stop_reason or "AXIAL_NONRESPONSE_THRESHOLD"
+                if returned[2] or returned[3]:
+                    stop_reason = stop_reason or "ENV_TERMINAL"
+                print(json.dumps(dict(step=step, phase=phase, solver=(telemetry or {}).get("solver", {}).get("status"),
+                    requested=requested, realized=realized, tracking_error=row["target_actual_error"], stop=stop_reason)), flush=True)
+                if stop_reason:
+                    break
+        if not stop_reason:
+            stop_reason = "BOUNDED_ACTIONS_EXHAUSTED"
+    except BaseException as exc:
+        stop_reason = "EXCEPTION: " + repr(exc)
+        print(stop_reason, flush=True)
+    finally:
+        if observer:
+            observer.close()
+        if env:
+            env.close()
+        durable_save(OUT / "execution.json", dict(
+            stop_reason=stop_reason, steps=len(rows), simulator_diagnostic_started=started,
+            training_data_eligible=False, demo_recording_started=False, training_started=False,
+            checkpoint_resumed=False, cumulative_requested_axial=requested,
+            cumulative_realized_axial=realized, link01_contact_reappeared=link01_reappeared,
+            initial_contact_pairs=[list(pair) for pair in sorted(initial_contacts)],
+            production_bindings_unchanged=(bindings() == current_bindings), retry_count=0))
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,7 @@
+skill_id: cable_routing
+adapter: skills.cable_routing:CableRoutingSkill
+environment: PandaCableRouteVision-v0
+policy_artifact: null
+runtime: {seed: 0, timeout_steps: 500}
+evaluation: {episodes: 50, metric: distance_to_slot}
+render: {mode: rgb_array}

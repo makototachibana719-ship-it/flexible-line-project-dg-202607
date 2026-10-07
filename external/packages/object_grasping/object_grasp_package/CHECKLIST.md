@@ -1,0 +1,11 @@
+# 提交前自检
+- [ ] 完整 Example 目录已复制
+- [ ] 完整 franka_sim 环境/XML/assets 已复制
+- [ ] Orbax checkpoint 整目录已复制
+- [ ] Demo 非空且已生成 demo_info_generated.txt
+- [ ] 环境版本已导出
+- [ ] 5000 步 learner/actor 日志已复制
+- [ ] MANIFEST 已按 git diff 核对
+- [ ] 正式 success rate 未做时明确写“未评测”
+- [ ] 没有把 reward 当 success rate
+- [ ] best checkpoint 按正式 success rate 选择

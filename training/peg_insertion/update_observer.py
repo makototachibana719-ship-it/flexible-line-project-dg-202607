@@ -1,0 +1,61 @@
+"""Observation only: no device transfers, RNG replacement or training changes."""
+import faulthandler
+import json
+import os
+import subprocess
+import threading
+import time
+
+
+class UpdateObserver:
+    def __init__(self, directory, index, jax):
+        self.directory, self.index, self.jax = directory, index, jax
+        self.phase = 'created'
+        self.started = time.perf_counter()
+        self.timers = []
+
+    def mark(self, phase, **fields):
+        self.phase = phase
+        event = dict(index=self.index, phase=phase, pid=os.getpid(),
+                     elapsed_seconds=time.perf_counter()-self.started,
+                     monotonic=time.perf_counter(), **fields)
+        with (self.directory/'phases.jsonl').open('a') as stream:
+            stream.write(json.dumps(event, sort_keys=True)+'\n')
+            stream.flush()
+        print('F0_OBSERVE_PHASE: '+json.dumps(event, sort_keys=True), flush=True)
+
+    def signature(self, name, tree):
+        leaves, structure = self.jax.tree_util.tree_flatten_with_path(tree)
+        rows = []
+        for path, value in leaves:
+            # Metadata access only: never np.asarray/device_get/block here.
+            rows.append(dict(path=str(path), type=type(value).__module__+'.'+type(value).__name__,
+                             shape=list(value.shape) if hasattr(value,'shape') else None,
+                             dtype=str(getattr(value,'dtype',None)),
+                             weak_type=getattr(value,'weak_type',None),
+                             sharding=str(getattr(value,'sharding',None)),
+                             devices=sorted(str(d) for d in value.devices()) if hasattr(value,'devices') else []))
+        with (self.directory/f'update_{self.index}_{name}.json').open('x') as stream:
+            json.dump(dict(structure=str(structure),leaf_count=len(rows),leaves=rows),stream,indent=2)
+
+    def snapshot(self, delay=30):
+        prefix=self.directory/f'update_{self.index}_{delay}s'
+        with prefix.with_suffix('.stack.txt').open('x') as stream:
+            stream.write('phase='+self.phase+'\n');stream.flush()
+            faulthandler.dump_traceback(file=stream,all_threads=True)
+        for label, command in (
+            ('gpu',['nvidia-smi']),
+            ('cpu',['ps','-L','-p',str(os.getpid()),'-o','pid,tid,psr,pcpu,stat,wchan:32,comm'])):
+            with prefix.with_suffix('.'+label+'.txt').open('x') as stream:
+                try:subprocess.run(command,stdout=stream,stderr=subprocess.STDOUT,timeout=8,check=False)
+                except Exception as exc:stream.write(repr(exc))
+
+    def arm(self, delays=(30,)):
+        for delay in delays:
+            timer=threading.Timer(delay,self.snapshot,args=(delay,))
+            timer.daemon=True
+            self.timers.append(timer)
+            timer.start()
+
+    def close(self):
+        for timer in self.timers:timer.cancel()

@@ -1,0 +1,129 @@
+"""Role-aware formal safety checks. No JAX, learner or W&B initialization."""
+import json
+import os
+import pickle
+import socket
+from contextlib import contextmanager
+from pathlib import Path
+import yaml
+from training.peg_insertion import formal_policy as policy
+
+ROLES=('fresh_learner','actor_join','resume_learner','resume_actor')
+PROJECT='flexible-line-peg-insertion'
+RUN_NAME='peg_rlpd_baseline_seed0'
+
+def config():return yaml.safe_load((policy.ROOT/'configs/peg_insertion/peg_rlpd_baseline_seed0.yaml').read_text())
+def canonical(value):
+    import hashlib
+    return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+def control():return policy.ROOT/'results/coordination/peg_formal'
+def lock_path(role):return control()/(role+'.lock')
+def active(role):
+    import fcntl
+    path=lock_path(role)
+    if not path.exists():return False
+    with path.open('r') as stream:
+        try:fcntl.flock(stream,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:return True
+        finally:
+            # Unlocking an unowned separate descriptor does not release another owner's lock.
+            fcntl.flock(stream,fcntl.LOCK_UN)
+    return False
+
+@contextmanager
+def role_lock(role):
+    import fcntl
+    control().mkdir(parents=True,exist_ok=True)
+    with lock_path(role).open('a+') as stream:
+        try:fcntl.flock(stream,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:raise RuntimeError('duplicate '+role)
+        try:yield
+        finally:fcntl.flock(stream,fcntl.LOCK_UN)
+
+def endpoint(value):
+    # Current trainer transport is localhost-only for this approved single-host GPU path.
+    if value not in ('localhost','127.0.0.1'):raise ValueError('unapproved learner endpoint')
+    return '127.0.0.1:5488'
+
+def bundle(cp,run_id,cfg,gate):
+    cp=Path(cp).resolve()
+    expected_dir=(policy.ROOT/cfg['outputs']['checkpoint_dir']).resolve()
+    if cp.parent!=expected_dir:raise ValueError('formal checkpoint directory binding')
+    mp=cp.with_name(cp.name+'_resume_metadata.json');rp=cp.with_name(cp.name+'_online_replay.pkl')
+    if not all(p.is_file() for p in (cp,mp,rp)):raise ValueError('incomplete checkpoint bundle')
+    meta=json.loads(mp.read_text())
+    expected=dict(wandb_project=PROJECT,wandb_name=RUN_NAME,wandb_run_id=run_id,
+        config_hash=canonical(cfg),seed=cfg['seed'],environment=cfg['environment'],
+        algorithm=cfg['algorithm'],observation=cfg['observation'],action=cfg['action'],
+        demo_sha256=cfg['demo']['sha256'],demo_transition_count=cfg['demo']['transitions'],
+        demo_manifest_hash=gate['bindings']['demo_manifest_hash'])
+    if not run_id or any(meta.get(k)!=v for k,v in expected.items()):raise ValueError('bundle config/demo/run binding')
+    step=int(cp.name.removeprefix('checkpoint_'))
+    if cp.name!=f'checkpoint_{step}' or meta.get('checkpoint_step')!=step or meta.get('learner_update_steps')!=step:
+        raise ValueError('checkpoint global step mismatch')
+    if not 0<=step<cfg['training']['max_steps']-1:raise ValueError('no remaining learner budget')
+    if meta.get('model_sha256')!=policy.sha(cp) or meta.get('online_replay_sha256')!=policy.sha(rp):raise ValueError('bundle file hash mismatch')
+    binding=meta.get('source_snapshot',{}).get('formal_binding',{})
+    if binding!={'source_hashes':gate['source_hashes'],'bindings':gate['bindings']}:
+        raise ValueError('checkpoint source/runtime binding')
+    payload=pickle.loads(rp.read_bytes())
+    if payload.get('format_version')!=1 or payload.get('capacity')!=cfg['training']['replay_capacity']:raise ValueError('replay contract')
+    count=payload.get('actor_steps');size=payload.get('size');index=payload.get('insert_index');capacity=payload['capacity']
+    if not isinstance(count,int) or count<0 or size!=min(count,capacity) or index!=count%capacity:raise ValueError('replay counter invariant')
+    if meta.get('actor_steps')!=count or meta.get('online_replay_size')!=size or meta.get('online_replay_capacity')!=capacity:raise ValueError('metadata counter mismatch')
+    if not payload.get('rng_state'):raise ValueError('replay RNG missing')
+    return meta
+
+def cloud_resume_boundary(run_id,step):
+    import wandb
+    auth=wandb.Api(timeout=30)
+    run=auth.run(f'{auth.default_entity}/{PROJECT}/{run_id}')
+    if run.name!=RUN_NAME:raise ValueError('cloud run name binding')
+    rows=list(run.scan_history(keys=['_step'],page_size=1000,use_cache=False))
+    if any(row['_step']>step for row in rows):raise ValueError('cloud history ahead of checkpoint: explicit branch policy required')
+
+def preflight(role,checkpoint=None,run_id=None,ip='localhost',own_role=None,check_cloud=False):
+    if role not in ROLES:raise ValueError('unknown role')
+    gate=policy.require_gate();cfg=config();ep=endpoint(ip)
+    import sys
+    from importlib.metadata import version
+    if Path(sys.executable).parent.parent.name!='serl_peg_gpu' or version('jax')!='0.4.35' or version('jaxlib')!='0.4.35':raise ValueError('locked Python/JAX runtime mismatch')
+    if cfg['wandb']['project']!=PROJECT or cfg['wandb']['run_name']!=RUN_NAME:raise ValueError('formal W&B identity')
+    if gate['bindings']['demo_hash']!=cfg['demo']['sha256']:raise ValueError('Demo hash mismatch')
+    kind='learner' if role.endswith('learner') else 'actor'
+    if own_role!=kind and active(kind):raise ValueError('duplicate '+kind)
+    meta=None
+    if role.startswith('resume'):
+        if checkpoint is None:raise ValueError('resume checkpoint required')
+        meta=bundle(checkpoint,run_id,cfg,gate)
+    if role=='fresh_learner':
+        if checkpoint or run_id:raise ValueError('fresh learner cannot inherit resume identity')
+        if active('actor'):raise ValueError('existing actor')
+        for key in ('checkpoint_dir','log_dir','actor_log_dir'):
+            path=(policy.ROOT/cfg['outputs'][key]).resolve()
+            if policy.ROOT not in path.parents or (path.exists() and any(path.iterdir())):raise ValueError('fresh output not clean')
+    if kind=='actor':
+        if not active('learner'):raise ValueError('learner session not active')
+        session=json.loads((control()/'learner.json').read_text())
+        if not run_id:raise ValueError('actor WANDB_RUN_ID required')
+        expected=dict(project=PROJECT,run_name=RUN_NAME,run_id=run_id,environment=cfg['environment'],
+                      config_hash=gate['bindings']['config_hash'],source_hashes=gate['source_hashes'],endpoint=ep)
+        if any(session.get(k)!=v for k,v in expected.items()):raise ValueError('actor endpoint/run/env/config mismatch')
+        if session.get('pid_start')!=pid_start(session['pid']):raise ValueError('stale learner session')
+        if role=='resume_actor' and session.get('checkpoint')!=str(Path(checkpoint).resolve()):raise ValueError('actor/learner source mismatch')
+        if role=='actor_join' and session.get('checkpoint') is not None:raise ValueError('use resume_actor for resumed learner')
+        with socket.create_connection(('127.0.0.1',5488),timeout=2):pass
+    elif role=='resume_learner':
+        if active('actor'):raise ValueError('actor must be stopped before learner resume')
+        if check_cloud:cloud_resume_boundary(run_id,meta['checkpoint_step'])
+    return dict(status='PASS',role=role,actor_steps=meta['actor_steps'] if meta else None,
+                checkpoint_step=meta['checkpoint_step'] if meta else None,endpoint=ep)
+
+def pid_start(pid):return Path(f'/proc/{pid}/stat').read_text().split(') ',1)[1].split()[19]
+def publish_session(run_id,checkpoint,ip):
+    gate=policy.require_gate();cfg=config()
+    result=dict(project=PROJECT,run_name=RUN_NAME,run_id=run_id,environment=cfg['environment'],
+        config_hash=gate['bindings']['config_hash'],source_hashes=gate['source_hashes'],endpoint=endpoint(ip),
+        pid=os.getpid(),pid_start=pid_start(os.getpid()),checkpoint=str(Path(checkpoint).resolve()) if checkpoint else None)
+    path=control()/'learner.json';temp=path.with_suffix('.tmp')
+    temp.write_text(json.dumps(result,indent=2));os.replace(temp,path)

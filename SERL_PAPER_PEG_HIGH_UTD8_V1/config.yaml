@@ -1,0 +1,65 @@
+environment: AuboPegInsert-State-v0
+algorithm: RLPD_STYLE_SAC_PLUS_50_50_DEMO_REPLAY
+seed: 0
+fresh_initialization: true
+load_legacy_checkpoint: false
+runtime:
+  conda_environment: serl_peg_gpu
+  mujoco_gl: egl
+  xla_python_client_preallocate: false
+  xla_flags: --xla_gpu_enable_triton_gemm=false
+demo:
+  observation_contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  path: results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl
+  manifest: results/datasets/peg_v2_accepted_11_20260906/manifest.json
+  sha256: 4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878
+  episodes: 11
+  transitions: 1921
+observation:
+  contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  shape: [20]
+  dtype: float32
+action:
+  shape: [7]
+  dtype: float32
+  low: -1.0
+  high: 1.0
+training:
+  online_batch_size: 32
+  demo_batch_size: 32
+  total_batch_size: 64
+  demo_fraction: 0.5
+  critic_actor_ratio: 1
+  utd_ratio: 8
+  training_starts: 64
+  random_steps: 0
+  replay_capacity: 1000000
+stage_a:
+  mandatory_checkpoints: [250, 500, 750, 1000]
+  conditional_checkpoints: [1500, 2000]
+  canonical_episodes: 3
+  confirmation_episodes: 3
+  final_episodes: 5
+  process_timeout_seconds: 14400
+  decision_timeout_seconds: 1800
+  update_timeout_seconds: 180
+  actor_max_steps: 2000000
+  near_hole_position_m: 0.015
+  action_saturation_threshold: 0.98
+  contact_force_min_n: 0.1
+  contact_force_max_n: 100.0
+  clear_regression_position_ratio: 1.25
+  clear_regression_return_drop_fraction: 0.10
+smoke:
+  learner_updates: 2000
+  checkpoint_period: 250
+  actor_max_steps: 2000000
+  process_timeout_seconds: 14400
+  update_timeout_seconds: 180
+wandb:
+  project: flexible-line-peg-insertion
+  run_name: serl_paper_peg_high_utd8_v1
+  mode: disabled
+contracts:
+  reward: "-80*lateral_error -20*axial_error -2*orientation_error +2[lateral<0.01] +25[success]"
+  success: "lateral<=0.002 and axial<=0.003 and orientation<=0.05; force excluded"

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "process": "Cable Routing",
+  "base": "PROJECT_ROOT",
+  "files": [
+    {
+      "relative_path": "results/cable_demo/cable_routing_01_demos_2026-08-21_07-14-17.pkl",
+      "filename": "cable_routing_01_demos_2026-08-21_07-14-17.pkl",
+      "size_bytes": 517944804,
+      "sha256": "415b2adf5c2453db6532a6c5b9347b6ba6c2b97b393331c98c956e9ef71e54e0",
+      "transition_count": 2629,
+      "success_count": 1,
+      "validator_status": "PASS"
+    },
+    {
+      "relative_path": "results/cable_demo/cable_routing_01_demos_2026-08-21_07-37-47.pkl",
+      "filename": "cable_routing_01_demos_2026-08-21_07-37-47.pkl",
+      "size_bytes": 961221808,
+      "sha256": "16ce3c0f9978e3f7b10c5e9c11ccd37307cdcc01b83e2308a1f22c0516da253b",
+      "transition_count": 4879,
+      "success_count": 1,
+      "validator_status": "PASS"
+    },
+    {
+      "relative_path": "results/cable_demo/cable_routing_01_demos_2026-08-21_07-43-30.pkl",
+      "filename": "cable_routing_01_demos_2026-08-21_07-43-30.pkl",
+      "size_bytes": 249023422,
+      "sha256": "b4f3f835d62c97aab1add8ea0af1587a2d6e5a15166353c6a732b69d4063e7e7",
+      "transition_count": 1264,
+      "success_count": 1,
+      "validator_status": "PASS"
+    },
+    {
+      "relative_path": "results/cable_demo/cable_routing_01_demos_2026-08-21_07-46-57.pkl",
+      "filename": "cable_routing_01_demos_2026-08-21_07-46-57.pkl",
+      "size_bytes": 170612644,
+      "sha256": "30210b87f980621e7402ed03bc361f99bc1fa1fbf78f785e7ee29e3df19d4c60",
+      "transition_count": 866,
+      "success_count": 1,
+      "validator_status": "PASS"
+    },
+    {
+      "relative_path": "results/cable_demo/cable_routing_01_demos_2026-08-21_07-50-43.pkl",
+      "filename": "cable_routing_01_demos_2026-08-21_07-50-43.pkl",
+      "size_bytes": 173961848,
+      "sha256": "86935541b3da64a95146b1ede1967b90d00b4e06897eb8c4c292163bc031b27f",
+      "transition_count": 883,
+      "success_count": 1,
+      "validator_status": "PASS"
+    }
+  ],
+  "totals": {
+    "files": 5,
+    "transitions": 10521,
+    "successes": 5
+  },
+  "batch_validation": "VALIDATED",
+  "replay_compatibility": "VALIDATED",
+  "merge_compatible": true,
+  "copy_policy": "Reference canonical files; do not duplicate during handoff preparation. Recompute SHA256 before training."
+}

@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+"""Stage I: continue the passed residual C1 pilot from learner 250 to 1000."""
+from __future__ import annotations
+import json, os, pickle, sys, time
+from pathlib import Path
+os.environ.setdefault('MUJOCO_GL','egl');os.environ.setdefault('XLA_PYTHON_CLIENT_PREALLOCATE','false');os.environ.setdefault('XLA_FLAGS','--xla_gpu_enable_triton_gemm=false')
+ROOT=Path('/home/makoto/flexible_line_project');sys.path[:0]=[str(ROOT),str(ROOT/'external/serl/serl_launcher'),str(ROOT/'external/serl/franka_sim'),str(ROOT/'external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim'),str(ROOT/'external/packages/peg_insertion/peg_insertion/code/env')]
+import flax,jax,numpy as np
+from async_sac_state_sim import concat_rlpd_batches
+import scripts.audit_peg_f3_v2_actor_critic_closed_loop_geometry as geo
+import scripts.run_peg_f3_v2_actor_update_timescale_v1 as p4
+import scripts.run_peg_f3_v2_observation_gated_residual_c1_pilot as pilot
+from scripts.run_peg_f3_v2_exact_restore_curriculum_stage import block,distance_model,evaluate,fixed_batch,load_config,make_train_env
+from serl_launcher.utils.launcher import make_replay_buffer
+from training.peg_insertion.observation_gated_residual_v1 import RESIDUAL_DEF
+from training.peg_insertion.peg_replay_adapter import repaired_replay_datastore_insert
+from training.peg_insertion.peg_runtime_adapter import portable_peg_runtime
+from training.peg_insertion.resume import restore_replay,snapshot_replay
+
+SOURCE=ROOT/'results/training/peg_f3_v2_observation_gated_residual_c1_pilot_20260908_003'
+CP=SOURCE/'checkpoints/c1_learner_0250_residual_062.msgpack';RP=SOURCE/'online_replay.pkl'
+OUT=ROOT/'results/training/peg_f3_v2_observation_gated_residual_c1_1k_20260908_002'
+EVALS=(500,750,1000);PERIOD=4
+def req(x,m):
+ if not x:raise RuntimeError(m)
+def restore_bundle(common):
+ residual=RESIDUAL_DEF.init(jax.random.PRNGKey(260910),np.zeros((1,20),np.float32))['params'];opt=pilot.RESIDUAL_TX.init(residual);target={'agent_state':common.state,'residual_params':residual,'residual_opt_state':opt};return flax.serialization.from_bytes(target,CP.read_bytes())
+def main():
+ req(Path.cwd()==ROOT and not OUT.exists() and jax.default_backend()=='gpu','fresh/cwd/GPU');source=json.loads((SOURCE/'result.json').read_text());req(source['C1_RESIDUAL_250_PILOT']=='PASS' and p4.sha(CP)==source['FINAL_CHECKPOINT']['sha256'] and p4.sha(RP)==source['FINAL_REPLAY_SHA256'],'pilot handoff')
+ OUT.mkdir(parents=True);(OUT/'checkpoints').mkdir();started=time.time();before={'demo':p4.sha(p4.DEMO),'corrective':p4.sha(p4.CORR),'local':p4.sha(p4.LOCAL)};p4.dump(OUT/'protected_before.json',before);cfg=load_config(1);demos=pickle.loads(p4.DEMO.read_bytes());demo_obs,scale=distance_model(demos);reports={'C1':{},'C0':{}};checkpoints={};collections=[];slots=[]
+ with portable_peg_runtime(ROOT),repaired_replay_datastore_insert():
+  common,_,demo=geo.build_common_start(cfg,demos);loaded=restore_bundle(common);agent=common.replace(state=loaded['agent_state']);residual=loaded['residual_params'];resopt=loaded['residual_opt_state'];base_hash=pilot.tree_hash(agent.state.params['modules_actor']);base_opt_hash=pilot.tree_hash(agent.state.opt_states['actor']);base_target_hash=pilot.tree_hash(agent.state.target_params['modules_actor']);req(base_hash==source['BASE_ACTOR_SHA'],'base')
+  geo.OUT=OUT;rows,snaps,_,manifest=geo.build_critical(common);frozen=json.loads(pilot.FROZEN.read_text());sm=json.loads(pilot.SMANIFEST.read_text());req(manifest['sha256']==source['CRITICAL_PROBE_SHA'],'probe');sel=sm['probe_indices'];probe=np.asarray([x['observation'] for x in rows],np.float32);ref=np.asarray(common.sample_actions(observations=jax.device_put(probe),argmax=True),np.float32)
+  env=make_train_env('C1');online=make_replay_buffer(env,capacity=cfg['training']['replay_capacity'],type='replay_buffer');ri=restore_replay(online,RP);req(ri['sha256']==source['FINAL_REPLAY_SHA256'],'replay')
+  arng=jax.random.PRNGKey(19600)
+  for _ in range(sum(x['attempts'] for x in json.loads((SOURCE/'collections.json').read_text()))):arng,_=jax.random.split(arng)
+  rng=np.random.default_rng(20261108)
+  for learner in range(1,251):
+   prior_bound=964 if learner<=100 else 1024 if learner<=200 else 1084
+   rng.integers(0,prior_bound,32);rng.integers(0,len(demo),32)
+  obs=None;frozen_online=len(online)
+  for learner in range(251,1001):
+   if (learner-1)%100==0:
+    obs,arng,ci=pilot.collect(env,agent,residual,online,cfg,demo_obs,scale,obs,arng);ci.update(block=(learner-1)//100+1,replay_size=len(online),stage_boundary_reset=learner==301);collections.append(ci);frozen_online=len(online)
+   batch=concat_rlpd_batches(fixed_batch(online,rng.integers(0,frozen_online,32)),fixed_batch(demo,rng.integers(0,len(demo),32)));agent,ci=pilot.critic_update(agent,residual,batch);block((agent,ci));req(pilot.tree_hash(agent.state.params['modules_actor'])==base_hash and pilot.tree_hash(agent.state.opt_states['actor'])==base_opt_hash,'base freeze')
+   if learner%PERIOD==0:
+    pre=pilot.tree_hash(residual);agent,residual,resopt,info=pilot.residual_temperature_update(agent,residual,resopt,batch);block((agent,residual,resopt,info));inv=pilot.action_invariance(agent,residual,probe,ref);req(inv['EXACT_EQUAL'] and inv['MAX_ACTION_DRIFT']<=1e-7,'C0 invariance');slots.append({'learner_update':learner,'residual_slot':learner//4,'residual_params_changed':pilot.tree_hash(residual)!=pre,'residual_param_sha':pilot.tree_hash(residual),'base_actor_sha':base_hash,'c0_invariance':inv,'update':{k:float(np.asarray(jax.device_get(v))) for k,v in info.items()}})
+   if learner in EVALS:
+    c1=pilot.eval_record(agent,residual,'C1',demo_obs,scale);c0=pilot.eval_record(agent,residual,'C0',demo_obs,scale);c0['one_step_invariance']=geo.one_step(pilot.CombinedPolicy(agent,residual),rows,snaps,sel);reports['C1'][str(learner)]=c1;reports['C0'][str(learner)]=c0;p4.dump(OUT/f'c1_eval_{learner:04d}.json',c1);p4.dump(OUT/f'c0_eval_{learner:04d}.json',c0)
+    # Save locally because pilot.save_checkpoint is bound to the passed pilot directory.
+    path=OUT/'checkpoints'/f'c1_learner_{learner:04d}_residual_{learner//4:03d}.msgpack';target={'agent_state':agent.state,'residual_params':residual,'residual_opt_state':resopt};path.write_bytes(flax.serialization.to_bytes(target));checkpoints[str(learner)]={'path':str(path),'sha256':p4.sha(path),'learner':learner,'residual_slots':learner//4}
+  env.close();p4.dump(OUT/'residual_update_slots.json',slots);p4.dump(OUT/'collections.json',collections);p4.dump(OUT/'checkpoints.json',checkpoints);p4.dump(OUT/'monitoring.json',reports);replay=snapshot_replay(online,OUT/'online_replay.pkl')
+  initial=source['C1_EVALUATIONS']['0'];pilot250=source['C1_EVALUATIONS']['250'];final=reports['C1']['1000'];overall,overall_checks,overall_safe=pilot.material_progress(initial,final);incremental,incremental_checks,incremental_safe=pilot.material_progress(pilot250,final);c0ok=all(reports['C0'][str(u)]['success_count']>=2 and reports['C0'][str(u)]['contact_health'] for u in EVALS);contact=all(reports['C1'][str(u)]['contact_health'] for u in EVALS);invariant=all(x['c0_invariance']['EXACT_EQUAL'] for x in slots);passed=overall and incremental and c0ok and contact and invariant
+  result={'MECHANISM':'FROZEN_C0_BASE_PLUS_OBSERVATION_GATED_RESIDUAL_V1','C1_1K':'PASS' if passed else 'FAIL','SOURCE_PILOT':str(SOURCE),'SOURCE_CHECKPOINT_SHA256':p4.sha(CP),'SOURCE_REPLAY_SHA256':p4.sha(RP),'BASE_ACTOR_SHA':base_hash,'BASE_ACTOR_SHA_UNCHANGED':'YES' if pilot.tree_hash(agent.state.params['modules_actor'])==base_hash else 'NO','BASE_ACTOR_OPTIMIZER_SHA_UNCHANGED':'YES' if pilot.tree_hash(agent.state.opt_states['actor'])==base_opt_hash else 'NO','BASE_ACTOR_TARGET_SHA_UNCHANGED':'YES' if pilot.tree_hash(agent.state.target_params['modules_actor'])==base_target_hash else 'NO','COMPLETED_LEARNER_UPDATES':1000,'COMPLETED_RESIDUAL_UPDATES':250,'CONTINUATION_RESIDUAL_UPDATES':len(slots),'C0_SUCCESS_500':f"{reports['C0']['500']['success_count']}/3",'C0_SUCCESS_750':f"{reports['C0']['750']['success_count']}/3",'C0_SUCCESS_1000':f"{reports['C0']['1000']['success_count']}/3",'C0_EXACT_ACTION_INVARIANCE':'YES' if invariant else 'NO','C0_ONE_STEP_DAMAGE_1000':reports['C0']['1000']['one_step_invariance']['maximum'],'C1_EVALUATIONS':reports['C1'],'C1_MATERIALLY_BETTER_THAN_INITIAL':'YES' if overall else 'NO','C1_PROGRESS_FROM_250_TO_1000':'YES' if incremental else 'NO','OVERALL_PROGRESS_CHECKS':overall_checks,'INCREMENTAL_PROGRESS_CHECKS':incremental_checks,'CONTACT_HEALTH':'PASS' if contact else 'FAIL','MEAN_GATE_C1_1000':final['residual_runtime']['gate']['mean'],'P95_GATE_C1_1000':final['residual_runtime']['gate']['p95'],'MEAN_RESIDUAL_NORM_C1_1000':final['residual_runtime']['residual_l2']['mean'],'P95_RESIDUAL_NORM_C1_1000':final['residual_runtime']['residual_l2']['p95'],'FINAL_CHECKPOINT':checkpoints['1000'],'FINAL_REPLAY':str(OUT/'online_replay.pkl'),'FINAL_REPLAY_SHA256':replay['sha256'],'FINAL_REPLAY_SIZE':replay['size'],'PRIMARY_ROOT_CAUSE':'NONE' if passed else 'NO_PROGRESS_BETWEEN_PILOT_AND_1K' if not incremental else 'C1_1K_GATE_FAILED','NEXT':'MATCHED_C1_CONFIRMATION' if passed else 'STOP','PRODUCTION_DEMO_SHA_UNCHANGED':'YES','ONLINE_ADMISSION_THRESHOLD':p4.TH,'ONLINE_ADMISSION_THRESHOLD_CHANGED':'NO','PEG_SINGLE_TASK_CONVERGED':'NO','TRAINING_RUNNING':False,'elapsed_seconds':time.time()-started}
+  after={'demo':p4.sha(p4.DEMO),'corrective':p4.sha(p4.CORR),'local':p4.sha(p4.LOCAL)};req(before==after,'protected');p4.dump(OUT/'result.json',result);p4.dump(OUT/'protected_after.json',after);print(json.dumps(p4.jv({k:v for k,v in result.items() if k!='C1_EVALUATIONS'}),indent=2,sort_keys=True))
+if __name__=='__main__':main()

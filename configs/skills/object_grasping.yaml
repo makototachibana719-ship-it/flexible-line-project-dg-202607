@@ -1,0 +1,7 @@
+skill_id: object_grasping
+adapter: skills.object_grasping:ObjectGraspingSkill
+environment: PandaPickCubeVision-v0
+policy_artifact: null
+runtime: {seed: 0, timeout_steps: 500}
+evaluation: {episodes: 50, metrics: [lift_height, block_height]}
+render: {mode: rgb_array}

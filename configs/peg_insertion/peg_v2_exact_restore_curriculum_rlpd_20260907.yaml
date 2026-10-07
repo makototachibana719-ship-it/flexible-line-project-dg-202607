@@ -1,0 +1,101 @@
+environment: AuboPegInsert-State-v0
+algorithm: RLPD_STYLE_SAC_PLUS_50_50_DEMO_REPLAY
+seed: 0
+replica_seeds: [0, 1]
+fresh_initialization: true
+load_legacy_checkpoint: false
+runtime:
+  conda_environment: serl_peg_gpu
+  mujoco_gl: egl
+  xla_python_client_preallocate: false
+  xla_flags: --xla_gpu_enable_triton_gemm=false
+demo:
+  observation_contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  path: results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl
+  manifest: results/datasets/peg_v2_accepted_11_20260906/manifest.json
+  sha256: 4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878
+  episodes: 11
+  transitions: 1921
+observation:
+  contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  shape: [20]
+  dtype: float32
+action:
+  shape: [7]
+  dtype: float32
+  low: -1.0
+  high: 1.0
+optimizer:
+  actor_learning_rate: 0.0003
+  actor_warmup_steps: 2000
+  critic_learning_rate: 0.0003
+  critic_warmup_steps: 2000
+  temperature_learning_rate: 0.0003
+training:
+  online_batch_size: 32
+  demo_batch_size: 32
+  total_batch_size: 64
+  demo_fraction: 0.5
+  critic_actor_ratio: 1
+  utd_ratio: 1
+  training_starts: 64
+  random_steps: 0
+  replay_capacity: 1000000
+  checkpoint_period: 500
+  updates_per_level: 1000
+  updates_per_block: 100
+  admitted_transitions_per_block: 60
+  maximum_attempts_per_block: 6000
+algorithm_defaults:
+  discount: 0.99
+  soft_target_update_rate: 0.005
+  target_entropy: -3.5
+  backup_entropy: false
+  critic_ensemble_size: 10
+  critic_subsample_size: 2
+conservative_q:
+  enabled: true
+  scope: demo_tail
+  demo_batch_size: 32
+  loss: mean_relu_q_policy_minus_q_demo_plus_margin
+  margin: 0.0
+  lambda_small: 5.0
+  selected_lambda: 5.0
+demo_actor_anchor:
+  enabled: true
+  scope: all_demo
+  scope_source: fixed_rlpd_concat_demo_tail
+  demo_batch_size: 32
+  loss: mse_policy_mode_to_demo_action
+  lambda_small: 0.07
+  selected_lambda: 0.07
+curriculum:
+  mechanism: TRAINING_ONLY_EXACT_STATE_CURRICULUM
+  levels: [C0, C1, C2, C3]
+  snapshot_directory: results/closure/peg/f3_v2_exact_state_restore_20260907_001
+  snapshot_boundary: AFTER_ENV_STEP_RETURN_THEN_MJ_FORWARD_THEN_OBSERVATION
+  schedule_seed: 20260907
+  progression: hardest_current_level_only
+  c3_reset: original_canonical_reset
+online_admission:
+  metric: DEDUPLICATED_ACCEPTED_DEMO_LOO_MAX_P01_P99_NORMALIZED
+  state: next_observation
+  threshold: 7.41773975814
+  on_reject: discard_transition_and_reset_train_env
+evaluation:
+  environment_factory: peg_env_adapter.make_peg_state_env
+  reset: original_canonical_reset
+  curriculum_active: false
+  deterministic: true
+  stage_gate_seeds: [100, 101, 102]
+  confirmation_seeds: [200, 201, 202, 203, 204]
+wandb:
+  project: flexible-line-peg-insertion
+  run_name: peg_f3_v2_exact_restore_curriculum_rlpd_20260907
+  mode: disabled
+outputs:
+  run_dir: results/training/peg_f3_v2_exact_restore_curriculum_rlpd_20260907_001
+contracts:
+  reward: "-80*lateral_error -20*axial_error -2*orientation_error +2[lateral<0.01] +25[success]"
+  success: "lateral<=0.002 and axial<=0.003 and orientation<=0.05; force excluded"
+

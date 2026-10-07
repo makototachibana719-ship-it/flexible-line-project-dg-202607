@@ -1,0 +1,34 @@
+# RLPD v3 10k UTD1 实际配置
+
+env: AuboPegInsert-State-v0
+exp_name: serl_peg_insert_rlpd20_v3_10k_utd1
+seed: 0
+
+actor:
+  max_steps: 10000
+  random_steps: 0
+  debug: true
+
+learner:
+  max_steps: 10000
+  training_starts: 100
+  batch_size: 64
+  critic_actor_ratio: 1
+  utd_ratio: 1
+  checkpoint_period: 1000
+
+demo:
+  source: peg_insert_20_demos_state.pkl
+  episodes: 20
+  transitions: 5512
+
+mixed_batch:
+  online: 32
+  demo: 32
+  total: 64
+
+checkpoint_source:
+  peg_insert_rlpd_v3_10k_utd1
+
+evaluation_status:
+  not formally evaluated

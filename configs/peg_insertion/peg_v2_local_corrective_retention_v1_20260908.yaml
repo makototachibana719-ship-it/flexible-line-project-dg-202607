@@ -1,0 +1,22 @@
+experiment: peg_f3_v2_local_corrective_retention_v1_20260908
+mechanism: LOCAL_CORRECTIVE_RETENTION_CONSTRAINT_V1
+source: ORIGINAL_REPAIRED_C0_3_OF_3_CHECKPOINT
+retention_grad_ratio_target: 0.20
+lambda_candidates: 1
+lambda_success_tuning: false
+anchor:
+  name: LOCAL_RETENTION_ANCHOR_V1
+  virtual_only: true
+  batch_size: 64
+  supervised_dimensions: [0, 1, 2, 3, 4, 5]
+  objective: equal_weight_mode_mse
+training:
+  initial_gate_updates: 100
+  maximum_updates: 500
+  checkpoints: [10, 25, 50, 100, 250, 500]
+  evaluation_points: [0, 10, 25, 50, 100, 250, 500]
+  demo_online: '32:32'
+  total_batch_size: 64
+  utd_ratio: 1
+  admitted_transitions_per_block: 60
+online_admission_threshold: 7.41773975814

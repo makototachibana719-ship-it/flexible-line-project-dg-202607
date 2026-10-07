@@ -1,0 +1,41 @@
+{
+  "CURRENT_NEXT": "PEG_DELIVERY_ONLY",
+  "FINAL_ARCHIVE_SHA256": "8ff369e82249397536d357080ad28131c5b7fea5261c74ceeb5f4d55c070e30b",
+  "FINAL_MODEL_FREEZE": "YES",
+  "FINAL_PACKAGE_READY": "YES",
+  "FINAL_RETURN_DIRECTORY": "/home/makoto/flexible_line_project/results/final_packages/peg_training_return_20260909_005",
+  "FINAL_RETURN_MANIFEST_SHA": "c19c33fce0ae893fb0df9ec0794bea65accf408e53d0c20034614ce44018d704",
+  "FINAL_TRANSFER_ARCHIVE": "/home/makoto/flexible_line_project/results/final_packages/peg_training_return_20260909_005.tar.gz",
+  "PACKAGE_PORTABILITY": "PASS",
+  "PEG_SINGLE_TASK_CONVERGED": "YES",
+  "PEG_STATUS": "FINAL_FROZEN",
+  "PROJECT_NEXT": "PEG_DELIVERY_ONLY",
+  "RESIDUAL_PROCESSES": "NONE",
+  "TRAINING_RUNNING": false,
+  "authoritative_result": "/home/makoto/flexible_line_project/results/closure/peg/f3_v2_monotonic_obs20_option_formal5_20260909_001/result.json",
+  "current_hypothesis": null,
+  "current_stage": "FINAL_PACKAGE_READY",
+  "final_model_freeze": true,
+  "final_package": "/home/makoto/flexible_line_project/results/final_packages/peg_f3_v2_monotonic_obs20_option_20260909_001",
+  "final_package_ready": true,
+  "goal": "PEG_SINGLE_TASK_CONVERGED=YES_AND_FINAL_PACKAGE_READY",
+  "last_gate": "FORMAL_CANONICAL_5_EPISODES: 5/5 CONTACT_PASS",
+  "last_root_cause": "NONE",
+  "matched_result": "/home/makoto/flexible_line_project/results/diagnostics/peg/f3_v2_c3_monotonic_obs20_option_matched_adjudication_20260909_001/result.json",
+  "next_action": "NONE_FINAL_CLOSURE_COMPLETE",
+  "peg_single_task_converged": true,
+  "project": "/home/makoto/flexible_line_project",
+  "protected_artifacts": {
+    "c0_c1_c2_frozen": true,
+    "canonical_eval_immutable": true,
+    "online_admission_threshold": 7.41773975814,
+    "production_demo": {
+      "path": "/home/makoto/flexible_line_project/results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl",
+      "sha256": "4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878"
+    }
+  },
+  "residual_processes": "NONE",
+  "schema_version": 2,
+  "training_running": false,
+  "updated_at": "2026-09-09T16:51:21.817278+08:00"
+}

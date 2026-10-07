@@ -1,0 +1,102 @@
+"""Fail-closed Peg state-replay resume bundles."""
+from __future__ import annotations
+import copy,hashlib,json,os,pickle
+from threading import RLock
+from datetime import datetime,timezone
+from pathlib import Path
+from types import MethodType
+from typing import Any
+import numpy as np
+from training.peg_insertion.checkpoint import save_fresh_state,restore_fresh_state
+
+REQUIRED_METADATA={"checkpoint_step","learner_update_steps","actor_steps","seed","environment","algorithm","observation","action","demo_sha256","demo_transition_count","config_hash","wandb_project","wandb_name","wandb_run_id","online_replay_sha256","created_at","source_snapshot"}
+def sha256_file(path:Path)->str:
+ h=hashlib.sha256()
+ with path.open('rb') as f:
+  for b in iter(lambda:f.read(8*1024*1024),b''):h.update(b)
+ return h.hexdigest()
+def canonical_hash(value:Any)->str:return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+def sidecars(cp:Path):return cp.parent/f'{cp.name}_resume_metadata.json',cp.parent/f'{cp.name}_online_replay.pkl'
+def install_actor_step_tracking(buf,steps=0):
+ """Install before exposing the buffer to any producer/consumer threads.
+
+ SERL insert/sample already acquire _lock. Reentrancy lets the tracking
+ wrapper include both insertion and its counter increment in that same lock.
+ """
+ if hasattr(buf,'project_original_insert'):raise RuntimeError('tracking already installed')
+ buf._lock=RLock()
+ buf.project_actor_steps=int(steps);buf.project_original_insert=buf.insert
+ def tracked(self,data):
+  with self._lock:
+   self.project_original_insert(data)
+   self.project_actor_steps+=1
+ buf.insert=MethodType(tracked,buf)
+def _rng(buf):
+ r=buf.np_random;return {'kind':'generator','state':r.bit_generator.state} if hasattr(r,'bit_generator') else {'kind':'random_state','state':r.get_state()}
+def _set_rng(buf,s):
+ r=buf.np_random
+ if s['kind']=='generator' and hasattr(r,'bit_generator'):r.bit_generator.state=s['state']
+ elif s['kind']=='random_state' and hasattr(r,'set_state'):r.set_state(s['state'])
+ else:raise ValueError('replay RNG mismatch')
+def capture_replay_snapshot(buf):
+ """Detached, coherent replay cut; no disk/GPU operations under the lock."""
+ if not hasattr(buf,'project_original_insert'):raise RuntimeError('tracking must be installed before snapshot')
+ with buf._lock:
+  n=len(buf)
+  return {'format_version':1,'capacity':int(buf._capacity),'size':n,'insert_index':int(buf._insert_index),'dataset_dict':{k:np.asarray(v)[:n].copy() for k,v in buf.dataset_dict.items()},'rng_state':copy.deepcopy(_rng(buf)),'actor_steps':int(buf.project_actor_steps)}
+
+def write_replay_snapshot(payload,path:Path):
+ if path.exists():raise FileExistsError(path)
+ tmp=path.with_suffix(path.suffix+'.tmp')
+ with tmp.open('xb') as f:pickle.dump(payload,f,pickle.HIGHEST_PROTOCOL);f.flush();os.fsync(f.fileno())
+ os.replace(tmp,path);return {'sha256':sha256_file(path),'size':payload['size'],'capacity':payload['capacity'],'actor_steps':payload['actor_steps']}
+
+def snapshot_replay(buf,path:Path):
+ if path.exists():raise FileExistsError(path)
+ return write_replay_snapshot(capture_replay_snapshot(buf),path)
+def restore_replay(buf,path:Path):
+ p=pickle.loads(path.read_bytes())
+ if p.get('format_version')!=1 or int(p['capacity'])!=int(buf._capacity):raise ValueError('replay format/capacity mismatch')
+ n=int(p['size']);
+ if not 0<=n<=buf._capacity or set(p['dataset_dict'])!=set(buf.dataset_dict):raise ValueError('replay payload mismatch')
+ for k,v in p['dataset_dict'].items():
+  t=np.asarray(buf.dataset_dict[k]);s=np.asarray(v)
+  if t.shape[1:]!=s.shape[1:] or t.dtype!=s.dtype:raise ValueError(f'replay {k} mismatch')
+  t[:n]=s
+ buf._size=n;buf._insert_index=int(p['insert_index']);_set_rng(buf,p['rng_state']);install_actor_step_tracking(buf,p['actor_steps'])
+ return {'size':n,'insert_index':int(buf._insert_index),'actor_steps':int(p['actor_steps']),'sha256':sha256_file(path)}
+def save_bundle(directory:Path,state,replay,step:int,actor_steps:int,cfg:dict,manifest:Path,run_id:str,source:dict,*,keep_bundles:int=20)->Path:
+ from training.peg_insertion.observation_contract import validate_config
+ validate_config(cfg,for_training=True)
+ from training.peg_insertion.bundle_retention import save_transaction
+ return save_transaction(directory,step,lambda stage:_save_bundle_staged(stage,state,replay,step,actor_steps,cfg,manifest,run_id,source),keep_bundles)
+
+def _save_bundle_staged(directory:Path,state,replay,step:int,actor_steps:int,cfg:dict,manifest:Path,run_id:str,source:dict)->Path:
+ directory=directory.resolve();cp=directory/f'checkpoint_{step}';meta,rp=sidecars(cp)
+ for p in (cp,meta,rp):
+  if p.exists():raise FileExistsError(f'checkpoint collision: {p}')
+ # The caller's actor_steps argument is retained for API compatibility only.
+ # Capture before model I/O, while this learner's state is fixed at this step.
+ # Producers may proceed during serialization; never rewind their live counter.
+ captured=capture_replay_snapshot(replay)
+ cp=save_fresh_state(directory,state,step);ri=write_replay_snapshot(captured,rp)
+ actor_steps=ri['actor_steps']
+ payload={'format_version':1,'checkpoint_step':step,'learner_update_steps':step,'actor_steps':actor_steps,'seed':int(cfg['seed']),'environment':cfg['environment'],'algorithm':cfg['algorithm'],'observation':cfg['observation'],'action':cfg['action'],'demo_sha256':cfg['demo']['sha256'],'demo_transition_count':cfg['demo']['transitions'],'demo_manifest_hash':sha256_file(manifest),'config_hash':canonical_hash(cfg),'wandb_project':cfg['wandb']['project'],'wandb_name':cfg['wandb']['run_name'],'wandb_run_id':run_id,'online_replay_file':rp.name,'online_replay_sha256':ri['sha256'],'online_replay_size':ri['size'],'online_replay_capacity':ri['capacity'],'source_snapshot':source,'created_at':datetime.now(timezone.utc).isoformat()}
+ payload['model_sha256']=sha256_file(cp)
+ payload['observation_contract_version']=cfg['observation']['contract_version']
+ tmp=meta.with_suffix('.json.tmp');tmp.write_text(json.dumps(payload,indent=2)+'\n');os.replace(tmp,meta);return cp
+def load_bundle(cp:Path,cfg:dict,manifest:Path,run_id:str|None):
+ from training.peg_insertion.observation_contract import validate_config,checkpoint_preflight
+ validate_config(cfg,for_training=True);checkpoint_preflight(cp)
+ from training.peg_insertion.bundle_retention import JOURNAL
+ if (cp.resolve().parent/JOURNAL).exists():raise RuntimeError('pending bundle transaction; refuse resume')
+ cp=cp.resolve();meta,rp=sidecars(cp)
+ if not cp.is_file() or not meta.is_file() or not rp.is_file():raise FileNotFoundError('resume requires checkpoint + replay + metadata')
+ m=json.loads(meta.read_text());missing=REQUIRED_METADATA-set(m)
+ if missing:raise ValueError(f'missing metadata: {sorted(missing)}')
+ expected={'checkpoint_step':int(cp.name.split('_')[-1]),'learner_update_steps':int(cp.name.split('_')[-1]),'seed':int(cfg['seed']),'environment':cfg['environment'],'algorithm':cfg['algorithm'],'observation':cfg['observation'],'action':cfg['action'],'demo_sha256':cfg['demo']['sha256'],'demo_transition_count':cfg['demo']['transitions'],'demo_manifest_hash':sha256_file(manifest),'config_hash':canonical_hash(cfg),'wandb_project':cfg['wandb']['project'],'wandb_name':cfg['wandb']['run_name']}
+ for k,v in expected.items():
+  if m.get(k)!=v:raise ValueError(f'{k} mismatch')
+ if run_id and m['wandb_run_id']!=run_id:raise ValueError('W&B mismatch')
+ if sha256_file(rp)!=m['online_replay_sha256']:raise ValueError('replay hash mismatch')
+ m.update(checkpoint_path=cp,online_replay_path=rp);return m

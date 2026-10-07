@@ -1,0 +1,38 @@
+{
+  "bad_imports": [],
+  "checks": {
+    "CONFIG_PURE_RLPD": true,
+    "DEMO_CARDINALITY": true,
+    "DEMO_HASH": true,
+    "DEMO_ONLINE_50_50": true,
+    "FINITE": true,
+    "NO_CUSTOM_IMPORTS": true,
+    "NO_RESIDUAL_BASELINE_PROCESS": false,
+    "OBS20_ACTION7": true,
+    "ONE_POLICY": true,
+    "REPLAY_SCHEMA": true,
+    "UTD1_DECLARED_DEVIATION": true
+  },
+  "paper_deviations": [
+    "Obs20 state-only",
+    "Aubo Action7",
+    "fixed canonical reset",
+    "11 validated demos instead of 20",
+    "UTD=1 instead of high UTD"
+  ],
+  "paper_exact": false,
+  "protected_source_hashes": {
+    "external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim/async_sac_state_sim.py": "2d0e35ddb56ae92c3104cb34a01e05ad4aa4a1a6a3d258d22820bb0f72ebfa42",
+    "external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim/peg_env_adapter.py": "8a703941822d7c045dcf573e88580ec1bab5f08351d2a059083831f5668f0952",
+    "external/serl/serl_launcher/serl_launcher/agents/continuous/sac.py": "fd14dd24683fc897b0066b0caa36d63b96ecf1913cbcc448b33c18b05d8c83d8",
+    "external/serl/serl_launcher/serl_launcher/utils/launcher.py": "0ee3e652f17fcd402a9bf3131b9c90a232c49b8e63af80dcbd992e6ad8c71e02",
+    "results/datasets/peg_v2_accepted_11_20260906/manifest.json": "d3433db151a8346d9216a3dc87923a6efd0fbffe3eed6c382a202696e9a1ddd8",
+    "results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl": "4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878",
+    "training/peg_insertion/peg_replay_adapter.py": "c64e273f89ba2d63e4fd3dcdc994284d6032201350b1fd255eece955e8d3d2b5"
+  },
+  "residual_processes": [
+    "51188 bash -lc cd /home/makoto/flexible_line_project && /home/makoto/miniconda3/envs/serl_peg_gpu/bin/python -m py_compile SERL_PAPER_PEG_BASELINE_V1/*.py && /home/makoto/miniconda3/envs/serl_peg_gpu/bin/python SERL_PAPER_PEG_BASELINE_V1/audit_preflight.py && /home/makoto/miniconda3/envs/serl_peg_gpu/bin/python SERL_PAPER_PEG_BASELINE_V1/run_baseline.py --role preflight --updates 1000 --output SERL_PAPER_PEG_BASELINE_V1/runs/stage_1000"
+  ],
+  "status": "FAIL",
+  "training_started": false
+}

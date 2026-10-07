@@ -1,0 +1,11 @@
+{
+  "relative_path": "external/packages/object_grasping/object_grasp_package/demos/franka_lift_cube_image_20_trajs.pkl",
+  "size_bytes": 199111375,
+  "sha256": "f5ea03a2534b1696f31520ff68386fafe20ab06618a39cd0cad18e899ddb0d64",
+  "raw_transitions": 2000,
+  "schema": ["observations", "actions", "next_observations", "rewards", "masks", "dones"],
+  "schema_status": "VALIDATED",
+  "replay_validation_status": "VALIDATED",
+  "success_provenance": "UNVERIFIED",
+  "use_decision": "ACCEPTED_BY_PROJECT"
+}

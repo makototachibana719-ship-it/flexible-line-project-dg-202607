@@ -1,0 +1,152 @@
+"""One-shot diagnostic, never a Demo producer. <=126 historical actions, no retry."""
+import json,os,sys,subprocess
+import tempfile
+from datetime import datetime,timezone
+from pathlib import Path
+import numpy as np
+ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
+from training.peg_insertion.v2_recorder import bindings,sha,snapshot,validate_snapshot,PKG
+from training.peg_insertion.axial_telemetry import AxialTelemetry
+
+def save(path,value):path.write_text(json.dumps(value,indent=2,allow_nan=False))
+
+def normalize_json(value):
+    """Value-preserving JSON boundary; never stringify unknown objects."""
+    if isinstance(value,np.ndarray):return normalize_json(value.tolist())
+    if isinstance(value,np.bool_):return bool(value)
+    if isinstance(value,np.integer):return int(value)
+    if isinstance(value,np.floating):return float(value)
+    if value is None or type(value) in (bool,int,float,str):return value
+    if isinstance(value,dict):
+        if any(type(k) is not str for k in value):raise TypeError('JSON object keys must be strings')
+        return {k:normalize_json(v) for k,v in value.items()}
+    if isinstance(value,(list,tuple)):return [normalize_json(v) for v in value]
+    raise TypeError('Unsupported diagnostic JSON type: '+type(value).__name__)
+
+def sync_directory(path):
+    if os.name=='posix':
+        fd=os.open(path,os.O_RDONLY|os.O_DIRECTORY)
+        try:os.fsync(fd)
+        finally:os.close(fd)
+
+def durable_save(path,value):
+    """Serialize first; fsync temp file; atomic no-clobber hard-link publish."""
+    path=Path(path)
+    try:
+        if path.exists() or path.is_symlink():raise FileExistsError(str(path))
+        payload=json.dumps(normalize_json(value),indent=2,allow_nan=False).encode('utf-8')
+        fd,tmp=tempfile.mkstemp(prefix='.'+path.name+'.',suffix='.tmp',dir=path.parent)
+        try:
+            with os.fdopen(fd,'wb') as stream:
+                stream.write(payload);stream.flush();os.fsync(stream.fileno())
+            os.link(tmp,path)  # atomic exclusive publish; never replace an existing name
+            sync_directory(path.parent)
+        finally:
+            os.unlink(tmp)
+            sync_directory(path.parent)
+    except Exception as exc:
+        # Best-effort independent status; persistence errors always propagate.
+        status=dict(status='PERSISTENCE_FAILED',target=str(path),error_type=type(exc).__name__,
+                    error=str(exc),snapshot_complete_claimed=False,pid=os.getpid())
+        print(json.dumps(status),file=sys.stderr,flush=True)
+        try:
+            with path.with_name(path.name+'.failure.json').open('x',encoding='utf-8') as stream:
+                stream.write(json.dumps(status));stream.flush();os.fsync(stream.fileno())
+            sync_directory(path.parent)
+        except Exception:pass  # disk failure must not mask original error
+        raise
+
+def initial_guard(contacts):
+    # Same threshold and strict comparison as the original runner.
+    return next((c for c in contacts if c['distance']<-.005),None)
+
+def persist_initial_evidence_and_guard(observer,initial,out):
+    evidence=observer._snapshot()  # live passive read, never a reconstruction
+    evidence.update(initial=initial,controller_target_pose=initial['target_pose'],
+                    controller_target_source='adapter._target_pose',
+                    ik_q_target=None,ik_q_target_status='NOT_SOLVED_PRE_ACTION',
+                    timestamp=datetime.now(timezone.utc).isoformat(),pid=os.getpid(),
+                    pre_action=True,training_data_eligible=False)
+    durable_save(out/'initial_snapshot.json',evidence)
+    trigger=initial_guard(evidence['contacts'])  # only after successful fsync
+    if trigger is not None:
+        durable_save(out/'initial_guard_event.json',dict(
+            reason='dangerous initial penetration',threshold=-.005,comparison='<',unit='m',
+            triggering_pair=trigger,exact_distance=trigger['distance'],pre_action=True,
+            timestamp=datetime.now(timezone.utc).isoformat(),pid=os.getpid(),
+            snapshot_file='initial_snapshot.json',snapshot_sha256=sha(out/'initial_snapshot.json')))
+        raise RuntimeError('dangerous initial penetration')
+    return {(c['geom1_id'],c['geom2_id']) for c in evidence['contacts']}
+
+def main():
+    out=ROOT/'results/diagnostics/peg/f3_axial_bounded_20260905';out.mkdir(parents=True,exist_ok=False)
+    old=ROOT/'results/demos/peg_v2_pilot/standard_20260905_001'
+    reference=json.loads((old/'episode.json').read_text());actions=[json.loads(x) for x in (old/'transitions.jsonl').open()]
+    b=bindings();assert b==reference['hashes']
+    gate=json.loads((ROOT/'results/validation/peg/f3_axial_telemetry_20260905/binding.json').read_text())
+    for f,h in gate['telemetry_files'].items():assert sha(ROOT/f)==h
+    assert sha(gate['installed_solver_file'])==gate['installed_solver_sha256']
+    procs=subprocess.check_output(['ps','-eo','pid,args'],text=True)
+    for line in procs.splitlines():
+        if any(k in line for k in ('scripts/record_peg_v2_demo.py','scripts/run_peg_training.py')):raise RuntimeError('conflicting process: '+line)
+    save(out/'preflight.json',dict(status='PASS',binding=b,telemetry_binding=gate,action_source_sha256=sha(old/'transitions.jsonl'),
+        max_steps=126,training_data_eligible=False,processes=procs,runner_hash=sha(__file__),
+        contact_stop_policy='new contact pair relative to initial state or penetration beyond5mm: conservative diagnostic stop',
+        solver_stop_policy='missing return or status other than G_TOL/DX_TOL: stop, do not infer acceptable residual'))
+    for line in (ROOT/'configs/peg_insertion/runtime_gpu_formal.env').read_text().splitlines():
+        if line.strip():k,v=line.split('=',1);os.environ[k]=v
+    sys.path[:0]=[str(PKG/'code/example/async_rlpd_peg_sim'),str(PKG/'code/env')]
+    from peg_env_adapter import make_peg_state_env
+    from training.peg_insertion.peg_runtime_adapter import portable_peg_runtime
+    env=None;observer=None;rows=[];stop='NOT_STARTED';started=False;requested=0.;realized=0.
+    try:
+        started=True
+        with portable_peg_runtime(ROOT):env=make_peg_state_env(render_mode='rgb_array',max_episode_steps=500)
+        env.reset(seed=0);initial=snapshot(env);validate_snapshot(initial);save(out/'initial.json',initial)
+        np.testing.assert_array_equal(initial['obs'],reference['initial']['obs'])
+        observer=AxialTelemetry(env,out/'telemetry')
+        known=persist_initial_evidence_and_guard(observer,initial,out)
+        with (out/'cartesian.jsonl').open('x') as stream:
+            for historical in actions[:126]:
+                action=np.array(historical['action'],dtype=np.float32);before=snapshot(env)
+                returned=observer.step(action) # the only step call
+                after=snapshot(env);t=observer.last
+                row=dict(step=historical['step'],phase=historical['phase'],action=action.tolist(),before=before,after=after,
+                    reward=float(returned[1]),terminated=bool(returned[2]),truncated=bool(returned[3]),training_data_eligible=False)
+                if row['step']>=107:
+                    requested+=float(action[0]*.002);realized+=after['actual_ee_pose'][0]-before['actual_ee_pose'][0]
+                row.update(requested_axial_delta=float(action[0]*.002),realized_ee_axial_delta=after['actual_ee_pose'][0]-before['actual_ee_pose'][0],
+                           cumulative_requested_axial=requested,cumulative_realized_axial=realized,
+                           target_actual_error=float(np.linalg.norm(np.array(after['target_pose'][:3])-after['actual_ee_pose'][:3])),
+                           ik_implied_axial_progress=None,joint_actual_progress=None)
+                if t and t.get('ik',{}).get('q_target') is not None:
+                    row['joint_actual_progress']=(np.array(t['post']['qpos'])-t['pre']['qpos']).tolist()
+                    s=t.get('solver',{});res=s.get('residual');ret=s.get('returned')
+                    if res is not None and ret is not None and np.array_equal(np.array(ret[0]).reshape(-1),np.array(t['ik']['q_target']).reshape(-1)):
+                        # Production residual first3 = FK(q_solution)-IK target. No extra FK invoked.
+                        row['ik_implied_axial_progress']=float(t['ik']['input_position'][0]+np.array(res).reshape(-1)[0]-before['actual_ee_pose'][0])
+                rows.append(row);stream.write(json.dumps(row,allow_nan=False)+'\n');stream.flush();os.fsync(stream.fileno())
+                stop=None
+                if not t or not t.get('complete') or t.get('observer_errors') or t.get('step_exception'):stop='TELEMETRY_INCOMPLETE'
+                else:
+                    s=t.get('solver',{})
+                    if not s.get('return_available') or any(s.get(k) is None for k in ('status','residual','cost','nfev')):stop='SOLVER_DATA_UNAVAILABLE'
+                    elif not s.get('success'):stop='IK_SOLVER_NON_SUCCESS_'+str(s['status'])
+                    elif any(a['clip_flag'] for a in t['post']['actuators']):stop='UNEXPECTED_CONTROL_CLAMP'
+                    elif any((c['geom1_id'],c['geom2_id']) not in known or c['distance']<-.005 for c in t['post']['contacts']):stop='UNEXPECTED_CONTACT'
+                validate_snapshot(after)
+                if requested>=.010 and realized<=.001:stop=stop or 'AXIAL_NONRESPONSE_THRESHOLD'
+                if returned[2] or returned[3]:stop=stop or 'ENV_TERMINAL'
+                print(json.dumps(dict(step=row['step'],solver=t.get('solver',{}).get('status'),requested=requested,realized=realized,
+                                     tracking_error=row['target_actual_error'],stop=stop)),flush=True)
+                if stop:break
+            if not stop:stop='BOUNDED_ACTIONS_EXHAUSTED'
+    except BaseException as exc:
+        stop='EXCEPTION: '+repr(exc);print(stop,flush=True)
+    finally:
+        if observer:observer.close()
+        if env:env.close()
+        save(out/'execution.json',dict(stop_reason=stop,steps=len(rows),simulator_diagnostic_started=started,
+            training_data_eligible=False,demo_recording_started=False,training_started=False,checkpoint_resumed=False,
+            requested_axial=requested,realized_axial=realized,production_hashes_unchanged=bindings()==b,retry_count=0))
+if __name__=='__main__':main()

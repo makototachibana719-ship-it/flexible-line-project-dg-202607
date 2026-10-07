@@ -1,0 +1,60 @@
+"""Fail-closed launch policy; no GPU or training imports."""
+import hashlib
+import json
+import os
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[2]
+RUNTIME={'XLA_PYTHON_CLIENT_PREALLOCATE':'false','XLA_FLAGS':'--xla_gpu_enable_triton_gemm=false','MUJOCO_GL':'egl'}
+GATE=ROOT/'results/validation/peg/formal_readiness_v2.json'
+SOURCES=['training/peg_insertion/run_peg_training.py','training/peg_insertion/resume.py',
+         'training/peg_insertion/formal_policy.py','configs/peg_insertion/peg_rlpd_baseline_seed0.yaml',
+         'external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim/async_sac_state_sim.py']
+SOURCES += ['scripts/peg_runtime_policy.sh','scripts/preflight_peg_formal.py','scripts/verify_peg_f0.py',
+            'deliverables/gpu_training_handoff/peg_insertion/run_train_learner.sh',
+            'deliverables/gpu_training_handoff/peg_insertion/run_train_actor.sh',
+            'deliverables/gpu_training_handoff/peg_insertion/run_resume_learner.sh',
+            'deliverables/gpu_training_handoff/peg_insertion/run_resume_actor.sh']
+SOURCES += ['training/peg_insertion/sync_policy.py','training/peg_insertion/formal_preflight.py',
+            'training/peg_insertion/checkpoint.py','training/peg_insertion/peg_replay_adapter.py',
+            'training/peg_insertion/peg_runtime_adapter.py','scripts/build_peg_f1_gate.py',
+            'scripts/test_peg_f1.py']
+
+def bindings():
+    import yaml
+    config=ROOT/'configs/peg_insertion/peg_rlpd_baseline_seed0.yaml'
+    cfg=yaml.safe_load(config.read_text())
+    if cfg['training']['max_steps']!=10000 or cfg['training']['checkpoint_period']!=1000:
+        raise ValueError('formal training budget/cadence changed')
+    return dict(runtime_hash=sha(ROOT/'configs/peg_insertion/runtime_gpu_formal.env'),
+                config_hash=sha(config),demo_hash=sha(ROOT/cfg['demo']['path']),
+                demo_manifest_hash=sha(ROOT/'deliverables/gpu_training_handoff/peg_insertion/demo_manifest.json'))
+def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def runtime_policy(formal=False):
+    path=ROOT/'configs/peg_insertion'/('runtime_gpu_formal.env' if formal else 'runtime_gpu_formal_candidate.env')
+    values=dict(line.split('=',1) for line in path.read_text().splitlines() if line.strip())
+    if values!=RUNTIME:raise ValueError('runtime policy mismatch')
+    return values
+def validate_runtime(formal=False):
+    values=runtime_policy(formal)
+    if any(os.environ.get(k)!=v for k,v in values.items()):raise ValueError('effective runtime differs from approved policy')
+    if any(os.environ.get(k) for k in ('JAX_DISABLE_JIT','JAX_PLATFORMS','JAX_PLATFORM_NAME','CUDA_VISIBLE_DEVICES')):raise ValueError('unapproved inherited JAX override')
+def require_gate():
+    try:
+        gate=json.loads(GATE.read_text())
+        hashes=gate.get('source_hashes',{})
+        if set(hashes)!=set(SOURCES) or any(sha(ROOT/p)!=h for p,h in hashes.items()):raise ValueError('source approval stale')
+        if gate.get('formal_ready') is not True or gate.get('exact_path_acceptance_50')!='PASS_WITH_PER_LEAF_SYNC' or gate.get('exact_path_checkpoint_resume_5')!='PASS':raise ValueError('acceptance/resume approval missing')
+        if gate.get('runtime')!=RUNTIME:raise ValueError('runtime changed')
+        if gate.get('sync_policy')!='PER_LEAF_BLOCK_UNTIL_READY' or gate.get('sync_exact_root_cause')!='UNRESOLVED':raise ValueError('sync policy mismatch')
+        if gate.get('run_binding')!={'project':'flexible-line-peg-insertion','fresh_name':'peg_rlpd_baseline_seed0','resume':'must_same_run_id'}:raise ValueError('run binding policy changed')
+        if gate.get('checkpoint_cadence')!={'basis':'global_learner_update','period':1000,'max_steps':10000}:raise ValueError('cadence policy changed')
+        if gate.get('bindings')!=bindings():raise ValueError('runtime/config/demo hash mismatch')
+        for role in ('fresh_learner','actor_join','resume_learner','resume_actor'):
+            if gate.get('role_aware_preflight',{}).get(role)!='PASS':raise ValueError('role approval missing')
+        for path,digest in gate.get('evidence_hashes',{}).items():
+            if sha(ROOT/path)!=digest:raise ValueError('evidence changed')
+        if not gate.get('evidence_hashes'):raise ValueError('evidence binding missing')
+        validate_runtime(True)
+        return gate
+    except Exception as exc:raise RuntimeError('FORMAL_LAUNCH_BLOCKED: '+str(exc)) from exc

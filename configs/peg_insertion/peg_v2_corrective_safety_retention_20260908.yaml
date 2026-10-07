@@ -1,0 +1,32 @@
+experiment: peg_f3_v2_postbc_corrective_safety_retention_20260908
+scientific_mechanism: POST_BC_ON_POLICY_CORRECTIVE_SUPERVISION_HANDOFF_THEN_UNCHANGED_C_PLUS_G
+source_update: 1000
+retention_updates: 500
+retention_checkpoints: [1100, 1250, 1500]
+updates_per_block: 100
+admitted_transitions_per_block: 60
+online_batch_size: 32
+demo_batch_size: 32
+total_batch_size: 64
+utd_ratio: 1
+online_admission_threshold: 7.41773975814
+canonical_safety:
+  minimum_approach_reduction_ratio: 0.5
+  maximum_min_position_regression: 0.05
+  maximum_force_multiplier: 2.0
+  maximum_force_additive_regression: 25.0
+retention_gate:
+  minimum_c0_successes_of_3: 2
+  require_near_hole_successes_of_3: 2
+  require_contact_health: true
+  require_no_table_end_effector_contact: true
+prohibitions:
+  corrective_bc_during_rlpd: true
+  production_demo_mutation: true
+  threshold_change: true
+  canonical_eval_change: true
+  environment_or_controller_change: true
+  critic_penalty_change: true
+  entropy_or_std_tuning: true
+  jacobian_regularization: true
+  actor_architecture_change: true

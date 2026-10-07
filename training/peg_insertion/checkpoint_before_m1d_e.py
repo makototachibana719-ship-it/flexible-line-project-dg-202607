@@ -1,0 +1,30 @@
+"""Fresh Peg agent checkpoint primitives using validated legacy Flax I/O."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+from flax import config as flax_config
+from flax.training import checkpoints
+
+
+def save_fresh_state(directory: Path, state: Any, step: int = 0) -> Path:
+    old = flax_config.flax_use_orbax_checkpointing
+    flax_config.update("flax_use_orbax_checkpointing", False)
+    try:
+        saved = checkpoints.save_checkpoint(
+            str(Path(directory).resolve()), state, step=step, keep=2, overwrite=False
+        )
+        return Path(saved)
+    finally:
+        flax_config.update("flax_use_orbax_checkpointing", old)
+
+
+def restore_fresh_state(directory: Path, target: Any, step: int = 0) -> Any:
+    old = flax_config.flax_use_orbax_checkpointing
+    flax_config.update("flax_use_orbax_checkpointing", False)
+    try:
+        return checkpoints.restore_checkpoint(str(Path(directory).resolve()), target, step=step)
+    finally:
+        flax_config.update("flax_use_orbax_checkpointing", old)
+

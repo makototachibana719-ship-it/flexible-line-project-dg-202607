@@ -1,0 +1,111 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786109358.108796    4355 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786109363.953370    4355 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+E0000 00:00:1786109370.470906    4355 cuda_platform.cc:52] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/spaces/box.py:127: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+I0807 21:29:36.131845 137002730948416 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+I0807 21:29:36.132200 137002730948416 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+I0807 21:29:36.132332 137002730948416 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/serl/examples/async_drq_sim/async_drq_sim.py:500: DeprecationWarning: jax.tree_map is deprecated: use jax.tree.map (jax v0.4.25 or newer) or jax.tree_util.tree_map (any JAX version).
+  jax.tree_map(jnp.array, agent), sharding.replicate()
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+The ResNet-10 weights already exist at '/home/zero/.serl/resnet10_params.pkl'.
+Loaded 5.418792M parameters from ResNet-10 pretrained on ImageNet-1K
+replaced conv_init in pretrained_encoder
+replaced norm_init in pretrained_encoder
+replaced ResNetBlock_0 in pretrained_encoder
+replaced ResNetBlock_1 in pretrained_encoder
+replaced ResNetBlock_2 in pretrained_encoder
+replaced ResNetBlock_3 in pretrained_encoder
+shape of observation space and action space
+Dict('front': Box(0, 255, (1, 128, 128, 3), uint8), 'state': Box(-inf, inf, (1, 7), float32), 'wrist': Box(0, 255, (1, 128, 128, 3), uint8))
+Box(-1.0, 1.0, (4,), float32)
+[92m replay buffer created[00m
+[92m replay_buffer size: 0[00m
+shape of observation space and action space
+Dict('front': Box(0, 255, (1, 128, 128, 3), uint8), 'state': Box(-inf, inf, (1, 7), float32), 'wrist': Box(0, 255, (1, 128, 128, 3), uint8))
+Box(-1.0, 1.0, (4,), float32)
+demo buffer size: 2001
+[92m starting learner loop[00m
+entity: null
+exp_descriptor: serl_dev_drq_sim_test_resnet
+experiment_id: serl_dev_drq_sim_test_resnet_20260807_212948
+group: null
+project: serl_dev
+tag: serl_dev_drq_sim_test_resnet
+unique_identifier: '20260807_212948'
+
+Filling up replay buffer:   0%|          | 0/10 [00:00<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:01<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:02<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:03<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:04<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:05<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:06<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:07<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:08<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:09<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:10<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:11<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:12<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:13<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:14<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:15<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:16<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:17<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:18<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:19<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:20<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:21<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:22<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:23<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:24<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:25<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:26<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:27<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:28<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:29<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:30<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:31<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:32<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:33<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:34<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:35<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:36<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:37<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:38<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:39<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:40<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:41<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:42<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:43<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:44<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:45<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:46<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:47<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [00:48<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [01:03<?, ?it/s]Filling up replay buffer:   0%|          | 0/10 [01:04<?, ?it/s]Filling up replay buffer:  20%|██        | 2/10 [01:05<00:04,  2.00it/s]Filling up replay buffer: 11it [01:54,  4.82s/it]                       Filling up replay buffer: 11it [01:54, 10.44s/it]
+[92m sent initial network to actor[00m
+replay buffer:   1%|          | 21/2200 [00:00<?, ?it/s]
+learner:   0%|          | 0/20 [00:00<?, ?it/s][A/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+2026-08-07 21:40:40.789934: E external/xla/xla/service/slow_operation_alarm.cc:65] 
+********************************
+[Compiling module jit_update_high_utd] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+2026-08-07 21:40:52.739348: E external/xla/xla/service/slow_operation_alarm.cc:133] The operation took 8m4.826382987s
+
+********************************
+[Compiling module jit_update_high_utd] Very slow compile? If you want to file a bug, run with envvar XLA_FLAGS=--xla_dump_to=/tmp/foo and attach the results.
+********************************
+\n[TRAIN] step=0 actor/actor_loss=0.704449 actor/entropy=-2.424331 actor/temperature=0.010000 actor_lr=0.000300 critic/critic_loss=0.743497 critic/predicted_qs=0.058222 critic/target_qs=-0.078617 critic_lr=0.000300 temperature/temperature_loss=0.000127 temperature_lr=0.000300
+replay buffer:   1%|          | 21/2200 [08:55<?, ?it/s]
+learner:   5%|▌         | 1/20 [08:55<2:49:43, 535.96s/it][A/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+\n[TRAIN] step=1 actor/actor_loss=0.025510 actor/entropy=-9.275328 actor/temperature=0.009996 actor_lr=0.000300 critic/critic_loss=9.299606 critic/predicted_qs=-0.827474 critic/target_qs=0.345666 critic_lr=0.000300 temperature/temperature_loss=0.011950 temperature_lr=0.000300
+replay buffer:   1%|▏         | 31/2200 [09:15<1:10:05,  1.94s/it]
+learner:  10%|█         | 2/20 [09:15<1:09:37, 232.09s/it][A\n[TRAIN] step=2 actor/actor_loss=0.096085 actor/entropy=-2.687058 actor/temperature=0.009993 actor_lr=0.000300 critic/critic_loss=1.871321 critic/predicted_qs=-0.502757 critic/target_qs=-0.350262 critic_lr=0.000300 temperature/temperature_loss=-0.001088 temperature_lr=0.000300
+
+learner:  15%|█▌        | 3/20 [09:15<35:48, 126.40s/it]  [A\n[TRAIN] step=3 actor/actor_loss=-0.853236 actor/entropy=2.699631 actor/temperature=0.009991 actor_lr=0.000300 critic/critic_loss=1.188762 critic/predicted_qs=0.948762 critic/target_qs=0.447674 critic_lr=0.000300 temperature/temperature_loss=0.005980 temperature_lr=0.000300
+
+learner:  20%|██        | 4/20 [09:16<20:28, 76.80s/it] [A\n[TRAIN] step=4 actor/actor_loss=-0.948087 actor/entropy=-2.606352 actor/temperature=0.009988 actor_lr=0.000300 critic/critic_loss=1.196269 critic/predicted_qs=0.725161 critic/target_qs=1.214829 critic_lr=0.000300 temperature/temperature_loss=0.036145 temperature_lr=0.000300
+
+learner:  25%|██▌       | 5/20 [09:17<12:19, 49.28s/it][A\n[TRAIN] step=5 actor/actor_loss=-0.270513 actor/entropy=-11.984279 actor/temperature=0.009985 actor_lr=0.000300 critic/critic_loss=1.571242 critic/predicted_qs=0.767075 critic/target_qs=-0.327070 critic_lr=0.000300 temperature/temperature_loss=0.003884 temperature_lr=0.000300
+
+learner:  30%|███       | 6/20 [09:17<07:37, 32.65s/it][A\n[TRAIN] step=6 actor/actor_loss=-0.111599 actor/entropy=-1.438530 actor/temperature=0.009982 actor_lr=0.000300 critic/critic_loss=0.513386 critic/predicted_qs=0.339646 critic/target_qs=0.140508 critic_lr=0.000300 temperature/temperature_loss=-0.021057 temperature_lr=0.000300
+
+learner:  35%|███▌      | 7/20 [09:17<04:46, 22.07s/it][A\n[TRAIN] step=7 actor/actor_loss=0.239132 actor/entropy=-2.436986 actor/temperature=0.009981 actor_lr=0.000300 critic/critic_loss=0.612466 critic/predicted_qs=-0.140284 critic/target_qs=0.070263 critic_lr=0.000300 temperature/temperature_loss=-0.000131 temperature_lr=0.000300
+
+learner:  40%|████      | 8/20 [09:18<03:01, 15.16s/it][A\n[TRAIN] step=8 actor/actor_loss=0.211294 actor/entropy=-2.427108 actor/temperature=0.009980 actor_lr=0.000300 critic/critic_loss=1.160917 critic/predicted_qs=-0.335595 critic/target_qs=0.250834 critic_lr=0.000300 temperature/temperature_loss=-0.023310 temperature_lr=0.000300
+
+learner:  45%|████▌     | 9/20 [09:18<01:55, 10.54s/it][A\n[TRAIN] step=9 actor/actor_loss=-0.064726 actor/entropy=-0.902053 actor/temperature=0.009981 actor_lr=0.000300 critic/critic_loss=1.006348 critic/predicted_qs=0.231735 critic/target_qs=-0.402748 critic_lr=0.000300 temperature/temperature_loss=-0.000049 temperature_lr=0.000300
+
+learner:  50%|█████     | 10/20 [09:18<01:13,  7.38s/it][A\n[TRAIN] step=10 actor/actor_loss=0.543740 actor/entropy=-2.941685 actor/temperature=0.009982 actor_lr=0.000300 critic/critic_loss=0.429676 critic/predicted_qs=-0.441479 critic/target_qs=-0.404122 critic_lr=0.000300 temperature/temperature_loss=0.005259 temperature_lr=0.000300
+
+learner:  55%|█████▌    | 11/20 [09:19<00:48,  5.36s/it][A\n[TRAIN] step=11 actor/actor_loss=0.187612 actor/entropy=-2.967704 actor/temperature=0.009982 actor_lr=0.000300 critic/critic_loss=0.824870 critic/predicted_qs=-0.291703 critic/target_qs=0.447541 critic_lr=0.000300 temperature/temperature_loss=0.039996 temperature_lr=0.000300
+
+learner:  60%|██████    | 12/20 [09:20<00:30,  3.83s/it][A\n[TRAIN] step=12 actor/actor_loss=-0.185476 actor/entropy=-1.263617 actor/temperature=0.009980 actor_lr=0.000300 critic/critic_loss=0.810774 critic/predicted_qs=0.066621 critic/target_qs=0.388437 critic_lr=0.000300 temperature/temperature_loss=0.022500 temperature_lr=0.000300
+
+learner:  65%|██████▌   | 13/20 [09:20<00:19,  2.76s/it][A\n[TRAIN] step=13 actor/actor_loss=-0.149459 actor/entropy=-0.152189 actor/temperature=0.009978 actor_lr=0.000300 critic/critic_loss=0.392363 critic/predicted_qs=-0.101419 critic/target_qs=0.408350 critic_lr=0.000300 temperature/temperature_loss=0.003343 temperature_lr=0.000300
+
+learner:  70%|███████   | 14/20 [09:20<00:12,  2.03s/it][A\n[TRAIN] step=14 actor/actor_loss=-0.269774 actor/entropy=-0.272266 actor/temperature=0.009976 actor_lr=0.000300 critic/critic_loss=0.525767 critic/predicted_qs=0.182264 critic/target_qs=-0.133454 critic_lr=0.000300 temperature/temperature_loss=0.023606 temperature_lr=0.000300
+
+learner:  75%|███████▌  | 15/20 [09:21<00:07,  1.53s/it][A\n[TRAIN] step=15 actor/actor_loss=-0.745319 actor/entropy=-5.610681 actor/temperature=0.009973 actor_lr=0.000300 critic/critic_loss=0.966811 critic/predicted_qs=0.815683 critic/target_qs=0.362435 critic_lr=0.000300 temperature/temperature_loss=0.004385 temperature_lr=0.000300
+
+learner:  80%|████████  | 16/20 [09:21<00:04,  1.17s/it][A\n[TRAIN] step=16 actor/actor_loss=-0.176236 actor/entropy=-0.651920 actor/temperature=0.009971 actor_lr=0.000300 critic/critic_loss=0.789243 critic/predicted_qs=0.158840 critic/target_qs=-0.047425 critic_lr=0.000300 temperature/temperature_loss=0.017135 temperature_lr=0.000300
+
+learner:  85%|████████▌ | 17/20 [09:21<00:02,  1.07it/s][A\n[TRAIN] step=17 actor/actor_loss=-0.134830 actor/entropy=-0.019224 actor/temperature=0.009968 actor_lr=0.000300 critic/critic_loss=0.603701 critic/predicted_qs=0.265785 critic/target_qs=-0.395654 critic_lr=0.000300 temperature/temperature_loss=0.033129 temperature_lr=0.000300
+
+learner:  90%|█████████ | 18/20 [09:22<00:01,  1.31it/s][A\n[TRAIN] step=18 actor/actor_loss=-0.151630 actor/entropy=1.557970 actor/temperature=0.009965 actor_lr=0.000300 critic/critic_loss=0.430502 critic/predicted_qs=0.217981 critic/target_qs=0.283153 critic_lr=0.000300 temperature/temperature_loss=0.010164 temperature_lr=0.000300
+
+learner:  95%|█████████▌| 19/20 [09:22<00:00,  1.58it/s][A\n[TRAIN] step=19 actor/actor_loss=-0.095484 actor/entropy=1.243176 actor/temperature=0.009961 actor_lr=0.000300 critic/critic_loss=0.221968 critic/predicted_qs=0.101966 critic/target_qs=0.322176 critic_lr=0.000300 temperature/temperature_loss=0.003518 temperature_lr=0.000300
+
+learner: 100%|██████████| 20/20 [09:22<00:00,  1.79it/s][Alearner: 100%|██████████| 20/20 [09:22<00:00, 28.14s/it]
+replay buffer:   1%|▏         | 31/2200 [09:22<33:54:41, 56.28s/it]

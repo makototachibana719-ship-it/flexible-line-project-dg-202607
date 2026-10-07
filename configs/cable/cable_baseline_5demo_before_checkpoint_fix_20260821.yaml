@@ -1,0 +1,77 @@
+environment: PandaCableRouteVision-v0
+algorithm: DrQ
+seed: 0
+
+runtime:
+  python: /home/ubuntu/miniconda3/envs/serl/bin/python
+  mujoco_gl: egl
+
+wandb:
+  project: flexible-line-cable
+  run_name: cable_baseline_5demo_seed0
+  smoke_run_name: cable_smoke_5demo_seed0
+  mode: online
+
+demos:
+  expected_count: 5
+  expected_raw_transitions: 10521
+  expected_replay_size: 10526
+  verify_sha256: true
+  files:
+    - path: results/cable_demo/cable_routing_01_demos_2026-08-21_07-14-17.pkl
+      transitions: 2629
+      sha256: 415b2adf5c2453db6532a6c5b9347b6ba6c2b97b393331c98c956e9ef71e54e0
+    - path: results/cable_demo/cable_routing_01_demos_2026-08-21_07-37-47.pkl
+      transitions: 4879
+      sha256: 16ce3c0f9978e3f7b10c5e9c11ccd37307cdcc01b83e2308a1f22c0516da253b
+    - path: results/cable_demo/cable_routing_01_demos_2026-08-21_07-43-30.pkl
+      transitions: 1264
+      sha256: b4f3f835d62c97aab1add8ea0af1587a2d6e5a15166353c6a732b69d4063e7e7
+    - path: results/cable_demo/cable_routing_01_demos_2026-08-21_07-46-57.pkl
+      transitions: 866
+      sha256: 30210b87f980621e7402ed03bc361f99bc1fa1fbf78f785e7ee29e3df19d4c60
+    - path: results/cable_demo/cable_routing_01_demos_2026-08-21_07-50-43.pkl
+      transitions: 883
+      sha256: 86935541b3da64a95146b1ede1967b90d00b4e06897eb8c4c292163bc031b27f
+
+observation:
+  keys: [state, front, wrist]
+  state_shape: [1, 7]
+  front_shape: [1, 128, 128, 3]
+  wrist_shape: [1, 128, 128, 3]
+  state_dtype: float32
+  image_dtype: uint8
+action:
+  shape: [3]
+  dtype: float32
+
+training:
+  batch_size: 256
+  demo_fraction: 0.5
+  critic_actor_ratio: 4
+  utd_ratio: 1
+  training_starts: 300
+  random_steps: 300
+  encoder_type: resnet-pretrained
+  actor_learning_rate: 0.0003
+  critic_learning_rate: 0.0003
+  temperature_learning_rate: 0.0003
+  replay_capacity: 200000
+  max_steps: 1000000
+  log_period: 10
+  eval_period: 2000
+  eval_n_trajs: 5
+  steps_per_update: 30
+  checkpoint_period: 10000
+
+smoke:
+  learner_updates: 100
+  actor_steps: 500
+  checkpoint_period: 99
+
+outputs:
+  checkpoint_dir: results/checkpoints/cable_baseline_5demo_seed0
+  log_dir: results/logs/cable_baseline_5demo_seed0
+  smoke_checkpoint_dir: results/checkpoints/cable_smoke_5demo
+  smoke_log_dir: results/logs/cable_smoke_5demo
+

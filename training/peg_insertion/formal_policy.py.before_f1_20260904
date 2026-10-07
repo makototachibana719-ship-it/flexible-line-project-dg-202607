@@ -1,0 +1,35 @@
+"""Fail-closed launch policy; no GPU or training imports."""
+import hashlib
+import json
+import os
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[2]
+RUNTIME={'XLA_PYTHON_CLIENT_PREALLOCATE':'false','XLA_FLAGS':'--xla_gpu_enable_triton_gemm=false','MUJOCO_GL':'egl'}
+GATE=ROOT/'results/validation/peg/formal_readiness.json'
+SOURCES=['training/peg_insertion/run_peg_training.py','training/peg_insertion/resume.py',
+         'training/peg_insertion/formal_policy.py','configs/peg_insertion/peg_rlpd_baseline_seed0.yaml',
+         'external/packages/peg_insertion/peg_insertion/code/example/async_rlpd_peg_sim/async_sac_state_sim.py']
+SOURCES += ['scripts/peg_runtime_policy.sh','scripts/preflight_peg_formal.py','scripts/verify_peg_f0.py',
+            'deliverables/gpu_training_handoff/peg_insertion/run_train_learner.sh',
+            'deliverables/gpu_training_handoff/peg_insertion/run_train_actor.sh',
+            'deliverables/gpu_training_handoff/peg_insertion/run_resume_learner.sh',
+            'deliverables/gpu_training_handoff/peg_insertion/run_resume_actor.sh']
+def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def runtime_policy(formal=False):
+    path=ROOT/'configs/peg_insertion'/('runtime_gpu_formal.env' if formal else 'runtime_gpu_formal_candidate.env')
+    values=dict(line.split('=',1) for line in path.read_text().splitlines() if line.strip())
+    if values!=RUNTIME:raise ValueError('runtime policy mismatch')
+    return values
+def validate_runtime(formal=False):
+    values=runtime_policy(formal)
+    if any(os.environ.get(k)!=v for k,v in values.items()):raise ValueError('effective runtime differs from approved policy')
+def require_gate():
+    try:
+        gate=json.loads(GATE.read_text())
+        if gate.get('formal_ready') is not True or gate.get('exact_path_candidate')!='PASS' or gate.get('exact_path_resume')!='PASS':raise ValueError('acceptance/resume approval missing')
+        if gate.get('runtime')!=RUNTIME:raise ValueError('runtime changed')
+        hashes=gate.get('source_hashes',{})
+        if set(hashes)!=set(SOURCES) or any(sha(ROOT/p)!=h for p,h in hashes.items()):raise ValueError('source approval stale')
+        validate_runtime(True)
+    except Exception as exc:raise RuntimeError('FORMAL_LAUNCH_BLOCKED: '+str(exc)) from exc

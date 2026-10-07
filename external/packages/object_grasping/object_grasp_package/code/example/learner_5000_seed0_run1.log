@@ -1,0 +1,37 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786089226.461013    3935 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/scipy/__init__.py:132: UserWarning: A NumPy version >=1.21.6 and <1.28.0 is required for this version of SciPy (detected version 2.2.5)
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+Traceback (most recent call last):
+  File "/home/zero/serl/examples/async_drq_sim/async_drq_sim.py", line 10, in <module>
+    from flax.training import checkpoints
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/training/checkpoints.py", line 52, in <module>
+    from flax import config, core, errors, io, serialization, traverse_util
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/io.py", line 42, in <module>
+    from tensorflow.io import gfile  # type: ignore
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/__init__.py", line 49, in <module>
+    from tensorflow._api.v2 import __internal__
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/_api/v2/__internal__/__init__.py", line 13, in <module>
+    from tensorflow._api.v2.__internal__ import feature_column
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/_api/v2/__internal__/feature_column/__init__.py", line 8, in <module>
+    from tensorflow.python.feature_column.feature_column_v2 import DenseColumn # line: 1777
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/python/feature_column/feature_column_v2.py", line 38, in <module>
+    from tensorflow.python.feature_column import feature_column as fc_old
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/python/feature_column/feature_column.py", line 41, in <module>
+    from tensorflow.python.layers import base
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/python/layers/base.py", line 16, in <module>
+    from tensorflow.python.keras.legacy_tf_layers import base
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/python/keras/__init__.py", line 25, in <module>
+    from tensorflow.python.keras import models
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/python/keras/models.py", line 25, in <module>
+    from tensorflow.python.keras.engine import training_v1
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/python/keras/engine/training_v1.py", line 46, in <module>
+    from tensorflow.python.keras.engine import training_arrays_v1
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/tensorflow/python/keras/engine/training_arrays_v1.py", line 37, in <module>
+    from scipy.sparse import issparse  # pylint: disable=g-import-not-at-top
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/scipy/sparse/__init__.py", line 276, in <module>
+    from ._lil import *
+  File "/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/scipy/sparse/_lil.py", line 17, in <module>
+    from . import _csparsetools
+  File "scipy/sparse/_csparsetools.pyx", line 1, in init _csparsetools
+ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject

@@ -1,0 +1,54 @@
+{
+  "TASK": "SERL Paper-Style Peg Insertion Baseline Reconstruction",
+  "BASELINE": "SERL_PAPER_PEG_BASELINE_V1",
+  "PURE_SERL_RLPD_AUBO_PEG_CONVERGENCE": "NO",
+  "CONCLUSION_SCOPE": "Aubo Peg, fixed canonical reset, Obs20, Action7, 11-demo V2 dataset, UTD1, seed0, policy-only evaluation",
+  "PAPER_EXACT_REPRODUCTION": false,
+  "PREFLIGHT": "PASS",
+  "ONE_POLICY": true,
+  "DEMO_ONLINE_RATIO": "32:32",
+  "C0_C1_C2_C3": "NOT_IMPORTED",
+  "CUSTOM_RESIDUAL_GATE_OPTION": "NOT_IMPORTED",
+  "HIL_INTERVENTION": "OFF",
+  "STAGES": {
+    "FRESH": {
+      "success": "0/3",
+      "mean_return": -4993.000435284516,
+      "median_min_position_error": 0.05945410020643223,
+      "max_force": 77.38320810005872
+    },
+    "1000": {
+      "training": "PASS",
+      "checkpoint_restore": "PASS",
+      "success": "0/3",
+      "mean_return": -6892.679806934983,
+      "median_min_position_error": 0.009441925021851457,
+      "max_force": 86.60254037844386,
+      "promotion": "PARTIAL_GEOMETRY_IMPROVEMENT_TO_3K"
+    },
+    "3000": {
+      "training": "PASS",
+      "checkpoint_restore": "PASS",
+      "success": "0/3",
+      "mean_return": -8044.162047238454,
+      "median_min_position_error": 0.10532029030750019,
+      "max_force": 86.60254037844386,
+      "promotion": "STOP_REGRESSION"
+    },
+    "5000": "NOT_RUN_NOT_JUSTIFIED",
+    "10000": "NOT_RUN_NOT_JUSTIFIED"
+  },
+  "PROTECTED_SOURCE_HASHES_UNCHANGED": true,
+  "PRODUCTION_DEMO_SHA256": "4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878",
+  "RESIDUAL_TRAINING_PROCESSES": "NONE",
+  "LIMITATIONS": [
+    "11 validated demonstrations instead of the paper's 20",
+    "state-only Obs20 instead of two wrist cameras plus proprioception",
+    "fixed canonical reset instead of randomized initial end-effector pose",
+    "Aubo Action7 semantics instead of the paper's relative 6D twist",
+    "UTD=1 stable local V1 instead of a high-UTD controlled comparison",
+    "three deterministic canonical episodes per checkpoint because the reset is fixed"
+  ],
+  "NEXT": "Do not continue this V1 to 5K/10K. If desired, run a separately named high-UTD=8 paper-fidelity ablation before concluding about the exact paper recipe."
+}
+

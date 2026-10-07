@@ -1,0 +1,30 @@
+experiment: peg_f3_v2_postbc_on_policy_corrective_round1_20260908
+scientific_mechanism: POST_BC_ON_POLICY_CORRECTIVE_SUPERVISION
+source_post_bc_step: 1000
+takeover_steps: [1, 3]
+episode_seeds: [100, 101, 102]
+online_admission_threshold: 7.41773975814
+corrective_observation_source: ACTOR_RUNTIME_INPUT
+actor_only:
+  updates: 500
+  checkpoints: [100, 250, 500]
+  total_batch_size: 64
+  base_local_batch_size: 32
+  corrective_round1_batch_size: 32
+  actor_learning_rate: 0.0003
+  actor_warmup_steps: 2000
+  supervised_dimensions: [0, 1, 2, 3, 4, 5]
+  objective: equal_weight_bounded_action_mse
+  a6_supervised: false
+round1_gate:
+  minimum_accepted_episodes: 4
+  strong_pass_successes_of_3: 2
+  historical_first_local_support_exit_step: 6
+prohibitions:
+  production_demo_mutation: true
+  threshold_change: true
+  environment_or_controller_change: true
+  critic_or_rl_loss: true
+  entropy_or_std_tuning: true
+  jacobian_regularization: true
+  actor_architecture_change: true

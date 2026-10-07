@@ -1,0 +1,40 @@
+peg_insertion_package/
+├── README.md
+├── MANIFEST.md
+├── code/
+│   ├── example/
+│   │   ├── async_sac_peg_sim/
+│   │   ├── async_rlpd_peg_sim/
+│   │   └── bc_peg_state/
+│   ├── env/
+│   │   └── mujoco_env/
+│   └── modified_serl/
+│       └── serl_launcher/
+│           └── serl_launcher/
+│               └── agents/
+│                   └── continuous/
+│                       └── bc.py
+├── scripts/
+│   ├── run_actor.sh
+│   ├── run_learner.sh
+│   ├── run_tmux.sh
+│   ├── eval.sh
+│   └── record_demo.sh
+├── checkpoints/
+│   ├── rlpd_current_candidate/
+│   └── bc_current/
+├── demos/
+│   ├── peg_demos_v1/
+│   ├── peg_insert_20_demos_state.pkl
+│   ├── peg_insert_bc_consistent.pkl
+│   └── demo_info.md
+├── results/
+│   ├── training_summary.md
+│   └── evaluation/
+├── configs/
+│   ├── environment.yml
+│   ├── requirements.txt
+│   ├── runtime_versions.txt
+│   ├── rlpd_config.md
+│   └── git_info/
+└── logs/

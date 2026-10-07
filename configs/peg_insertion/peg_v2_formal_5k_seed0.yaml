@@ -1,0 +1,60 @@
+environment: AuboPegInsert-State-v0
+algorithm: RLPD_STYLE_SAC_PLUS_50_50_DEMO_REPLAY
+seed: 0
+fresh_initialization: true
+load_legacy_checkpoint: false
+runtime:
+  conda_environment: serl_peg_gpu
+  mujoco_gl: egl
+  xla_python_client_preallocate: false
+  xla_flags: --xla_gpu_enable_triton_gemm=false
+demo:
+  observation_contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  path: results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl
+  manifest: results/datasets/peg_v2_accepted_11_20260906/manifest.json
+  sha256: 4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878
+  episodes: 11
+  transitions: 1921
+observation:
+  contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  shape: [20]
+  dtype: float32
+action:
+  shape: [7]
+  dtype: float32
+  low: -1.0
+  high: 1.0
+training:
+  online_batch_size: 32
+  demo_batch_size: 32
+  total_batch_size: 64
+  demo_fraction: 0.5
+  critic_actor_ratio: 1
+  utd_ratio: 1
+  training_starts: 64
+  random_steps: 0
+  replay_capacity: 1000000
+  checkpoint_period: 1000
+formal:
+  target_updates: 5000
+  checkpoint_targets: [1000, 2000, 3000, 4000, 5000]
+  process_timeout_seconds: 7200
+  update_timeout_seconds: 120
+smoke:
+  learner_updates: 1000
+  checkpoint_period: 500
+  actor_max_steps: 1000000
+  process_timeout_seconds: 7200
+  update_timeout_seconds: 120
+wandb:
+  project: flexible-line-peg-insertion
+  run_name: peg_f3_v2_formal_5k_seed0_20260906
+  mode: disabled
+outputs:
+  run_dir: results/formal/peg_f3_v2_formal_5k_seed0_20260906
+  checkpoint_dir: results/formal/peg_f3_v2_formal_5k_seed0_20260906/run/checkpoints
+  log_dir: results/formal/peg_f3_v2_formal_5k_seed0_20260906/run/logs
+  actor_log_dir: results/formal/peg_f3_v2_formal_5k_seed0_20260906/run/actor
+contracts:
+  reward: "-80*lateral_error -20*axial_error -2*orientation_error +2[lateral<0.01] +25[success]"
+  success: "lateral<=0.002 and axial<=0.003 and orientation<=0.05; force excluded"

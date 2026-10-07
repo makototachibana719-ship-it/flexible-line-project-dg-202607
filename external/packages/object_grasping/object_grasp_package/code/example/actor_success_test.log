@@ -1,0 +1,57 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786109396.884881    4811 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786109398.841136    4811 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+E0000 00:00:1786109402.590009    4811 cuda_platform.cc:52] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/spaces/box.py:127: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+I0807 21:30:07.559325 139924814194496 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+I0807 21:30:07.559729 139924814194496 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+I0807 21:30:07.559883 139924814194496 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/serl/examples/async_drq_sim/async_drq_sim.py:500: DeprecationWarning: jax.tree_map is deprecated: use jax.tree.map (jax v0.4.25 or newer) or jax.tree_util.tree_map (any JAX version).
+  jax.tree_map(jnp.array, agent), sharding.replicate()
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/spaces/box.py:127: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:165: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+The ResNet-10 weights already exist at '/home/zero/.serl/resnet10_params.pkl'.
+Loaded 5.418792M parameters from ResNet-10 pretrained on ImageNet-1K
+replaced conv_init in pretrained_encoder
+replaced norm_init in pretrained_encoder
+replaced ResNetBlock_0 in pretrained_encoder
+replaced ResNetBlock_1 in pretrained_encoder
+replaced ResNetBlock_2 in pretrained_encoder
+replaced ResNetBlock_3 in pretrained_encoder
+[92m starting actor loop[00m
+  0%|          | 0/30 [00:00<?, ?it/s]/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(terminated, (bool, np.bool8)):
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:165: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(terminated, (bool, np.bool8)):
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:165: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+[EVAL EPISODE] 1/3 reward=0.000061 length=100 success=False max_lift_height=-0.0001
+[EVAL EPISODE] 2/3 reward=0.000396 length=100 success=False max_lift_height=-0.0001
+[EVAL EPISODE] 3/3 reward=0.001105 length=100 success=False max_lift_height=-0.0001
+
+[EVAL] step=0 {'episode.r': 0.000520849805266372, 'episode.r_std': 0.0004352844186420744, 'episode.l': 100.0, 'success_rate': 0.0, 'success_count': 0, 'num_episodes': 3, 'max_lift_height_mean': -0.00010775542021618581, 'max_lift_height_max': -0.00010775542021618581}
+[SUCCESS] step=0 success_rate=0.0000 success_count=0/3 max_lift_height_mean=-0.0001 max_lift_height_max=-0.0001
+  3%|▎         | 1/30 [00:49<23:52, 49.41s/it] 10%|█         | 3/30 [00:49<05:47, 12.88s/it] 17%|█▋        | 5/30 [00:49<02:38,  6.34s/it] 23%|██▎       | 7/30 [00:50<01:24,  3.69s/it] 30%|███       | 9/30 [00:50<00:48,  2.33s/it] 37%|███▋      | 11/30 [00:52<00:35,  1.89s/it] 40%|████      | 12/30 [00:52<00:29,  1.62s/it] 43%|████▎     | 13/30 [00:53<00:22,  1.34s/it] 47%|████▋     | 14/30 [00:55<00:25,  1.59s/it] 50%|█████     | 15/30 [00:58<00:28,  1.89s/it] 53%|█████▎    | 16/30 [00:59<00:23,  1.67s/it] 57%|█████▋    | 17/30 [00:59<00:16,  1.26s/it] 60%|██████    | 18/30 [00:59<00:11,  1.06it/s] 63%|██████▎   | 19/30 [01:00<00:09,  1.17it/s] 67%|██████▋   | 20/30 [01:01<00:08,  1.15it/s]W0807 21:31:58.008275 139924814194496 req_rep.py:136] Failed to send message to localhost:5488: Resource temporarily unavailable, potential timeout
+W0807 21:31:58.562280 139924814194496 trainer.py:354] Failed to get last update id
+[EVAL EPISODE] 1/3 reward=0.001588 length=100 success=False max_lift_height=-0.0001
+[EVAL EPISODE] 2/3 reward=0.000698 length=100 success=False max_lift_height=-0.0001
+[EVAL EPISODE] 3/3 reward=0.000373 length=100 success=False max_lift_height=-0.0001
+
+[EVAL] step=20 {'episode.r': 0.0008865613817095555, 'episode.r_std': 0.0005135492709420386, 'episode.l': 100.0, 'success_rate': 0.0, 'success_count': 0, 'num_episodes': 3, 'max_lift_height_mean': -0.00010775542021618581, 'max_lift_height_max': -0.00010775542021618581}
+[SUCCESS] step=20 success_rate=0.0000 success_count=0/3 max_lift_height_mean=-0.0001 max_lift_height_max=-0.0001
+ 70%|███████   | 21/30 [10:08<24:12, 161.39s/it]W0807 21:41:03.220823 139924814194496 req_rep.py:136] Failed to send message to localhost:5488: Resource temporarily unavailable, potential timeout
+W0807 21:41:03.229991 139924814194496 trainer.py:354] Failed to get last update id
+ 73%|███████▎  | 22/30 [10:10<15:15, 114.41s/it] 77%|███████▋  | 23/30 [10:10<09:23, 80.51s/it]  80%|████████  | 24/30 [10:11<05:39, 56.59s/it] 83%|████████▎ | 25/30 [10:11<03:18, 39.75s/it] 87%|████████▋ | 26/30 [10:11<01:51, 27.93s/it] 90%|█████████ | 27/30 [10:11<00:58, 19.66s/it] 93%|█████████▎| 28/30 [10:12<00:27, 13.81s/it]100%|██████████| 30/30 [10:12<00:00,  7.49s/it]100%|██████████| 30/30 [10:12<00:00, 20.41s/it]

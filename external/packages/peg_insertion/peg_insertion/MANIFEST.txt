@@ -1,0 +1,147 @@
+# Peg Insertion 修改文件清单
+
+本文件记录相对于原始 SERL / 原始 mujoco_env 增加或修改的主要文件。
+
+## A. SERL Example
+
+### examples/async_sac_peg_sim/async_sac_state_sim.py
+
+修改原因：
+从 PandaPickCube 状态版异步 SAC 模板迁移为 Peg Insertion 状态版；
+接入自定义 Peg MuJoCo Adapter、Gymnasium API、checkpoint、日志及训练配置。
+
+### examples/async_sac_peg_sim/peg_env_adapter.py
+
+新增。
+
+作用：
+将 MuJoCo Peg Insertion 环境适配为 SERL state-only 环境；
+将原始 observation 转换为固定 20 维 float32 state；
+将 7 维归一化增量动作转换成 MuJoCo 所需目标控制量。
+
+### examples/async_sac_peg_sim/record_peg_serl_demos.py
+
+新增。
+
+作用：
+使用键盘遥操作记录与 SERL Actor 相同 action/observation 空间的正式 Demo transition。
+
+### examples/async_sac_peg_sim/build_peg_demo_pkl.py
+
+新增。
+
+作用：
+将 20 条 NPZ Demo 转换为 SERL ReplayBuffer 可直接插入的 transition PKL。
+
+### examples/async_sac_peg_sim/run_actor.sh
+### examples/async_sac_peg_sim/run_learner.sh
+### examples/async_sac_peg_sim/tmux_launch.sh
+
+修改原因：
+适配 serl_peg Conda 环境、Peg 环境名称、独立 experiment/checkpoint 参数和异步启动流程。
+
+---
+
+## B. RLPD Example
+
+### examples/async_rlpd_peg_sim/async_sac_state_sim.py
+
+修改原因：
+
+在状态版 Peg SAC 基础上加入：
+
+- demonstration buffer
+- online replay buffer
+- Demo + Online 混合采样
+- eval checkpoint restore
+- checkpoint 管理
+- Peg episode / evaluation 相关日志
+
+当前配置的 mixed batch：
+
+32 online + 32 demo = 64
+
+### examples/async_rlpd_peg_sim/peg_env_adapter.py
+
+作用同 Peg SAC Adapter。
+
+### examples/async_rlpd_peg_sim/record_peg_serl_demos.py
+
+正式 SERL Demo Recorder。
+
+### examples/async_rlpd_peg_sim/build_peg_demo_pkl.py
+
+正式 Demo PKL 转换脚本。
+
+### examples/async_rlpd_peg_sim/run_actor.sh
+### examples/async_rlpd_peg_sim/run_learner.sh
+### examples/async_rlpd_peg_sim/tmux_launch.sh
+
+修改原因：
+用于当前 Peg RLPD 异步训练配置。
+
+---
+
+## C. BC
+
+### examples/bc_peg_state/train_peg_bc.py
+
+新增。
+
+作用：
+训练 Peg Insertion state-only BC policy。
+
+### examples/bc_peg_state/eval_peg_bc.py
+
+新增。
+
+作用：
+加载 BC checkpoint 并运行 Peg Insertion BC evaluation。
+
+### serl_launcher/serl_launcher/agents/continuous/bc.py
+
+修改。
+
+修改原因：
+适配当前 Peg state-only BC 训练和推理流程。
+
+该文件按 SERL 原始相对路径保存在：
+
+code/modified_serl/serl_launcher/serl_launcher/agents/continuous/bc.py
+
+---
+
+## D. MuJoCo
+
+### mujoco_env/tasks/peg_insertion/peg_insertion.py
+
+已修改。
+
+修改原因：
+调整 Peg Insertion 任务的目标、reward、success / termination 等训练逻辑。
+
+### examples/demo_aubo_i5_assemble_hole.py
+
+当前工作版本有后期修改。
+
+作用：
+Aubo i5 assemble-hole 环境调试、人工操作及早期 trajectory 流程。
+
+### mujoco_env/tasks/PegInsertion/aubo_i5_assemble_hole.xml
+
+当前工作目录中存在后期生成/加入的 XML 文件。
+
+状态：
+由于 mujoco_env 当前不是 Git 仓库，无法仅通过 git status 判断该文件是否属于原始仓库。
+因此完整保留到 code/env/mujoco_env/，避免遗漏环境运行依赖。
+
+---
+
+## E. 未纳入本包的历史修改
+
+以下文件属于早期 PandaPickCube 基准环境，不属于 Peg Insertion 当前单工艺交付内容：
+
+examples/async_sac_state_sim/*
+franka_sim/franka_sim/envs/panda_pick_gym_env.py
+
+因此不纳入 Peg Insertion modified_serl。

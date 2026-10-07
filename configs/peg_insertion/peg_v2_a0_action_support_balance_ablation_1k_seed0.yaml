@@ -1,0 +1,119 @@
+environment: AuboPegInsert-State-v0
+algorithm: RLPD_STYLE_SAC_PLUS_50_50_DEMO_REPLAY
+seed: 0
+fresh_initialization: true
+load_legacy_checkpoint: false
+runtime:
+  conda_environment: serl_peg_gpu
+  mujoco_gl: egl
+  xla_python_client_preallocate: false
+  xla_flags: --xla_gpu_enable_triton_gemm=false
+demo:
+  observation_contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  path: results/datasets/peg_v2_accepted_11_20260906/peg_v2_accepted_11.pkl
+  manifest: results/datasets/peg_v2_accepted_11_20260906/manifest.json
+  sha256: 4a266b512d4a3e9b2e7546102227821c249b24f29b03f7df27e9e2d0e8cc3878
+  episodes: 11
+  transitions: 1921
+observation:
+  contract_version: PEG_OBS_CONTRACT_V2_SENSOR_FIXED
+  shape: [20]
+  dtype: float32
+action:
+  shape: [7]
+  dtype: float32
+  low: -1.0
+  high: 1.0
+optimizer:
+  actor_learning_rate: 0.0003
+  actor_warmup_steps: 2000
+  critic_learning_rate: 0.0003
+  critic_warmup_steps: 2000
+  temperature_learning_rate: 0.0003
+training:
+  online_batch_size: 32
+  demo_batch_size: 32
+  total_batch_size: 64
+  demo_fraction: 0.5
+  critic_actor_ratio: 1
+  utd_ratio: 1
+  training_starts: 64
+  random_steps: 0
+  replay_capacity: 1000000
+  checkpoint_period: 500
+algorithm_defaults:
+  discount: 0.99
+  soft_target_update_rate: 0.005
+  target_entropy: -3.5
+  backup_entropy: false
+  critic_ensemble_size: 10
+  critic_subsample_size: 2
+conservative_q:
+  enabled: true
+  scope: demo_tail
+  demo_batch_size: 32
+  loss: mean_relu_q_policy_minus_q_demo_plus_margin
+  margin: 0.0
+  lambda_small: 5.0
+  selected_lambda: 5.0
+demo_actor_anchor:
+  enabled: true
+  scope: all_demo
+  scope_source: fixed_rlpd_concat_demo_tail
+  demo_batch_size: 32
+  loss: mse_policy_mode_to_demo_action
+  lambda_small: 0.07
+  selected_lambda: 0.07
+actor_objective_balance:
+  enabled: true
+  scope: demo_early_approach_rows
+  action_dim: a0
+  pretanh_source: native_tanh_multivariate_normal_diag_distribution_loc
+  target_pretanh: 0.0
+  loss: mse_policy_pretanh_loc_a0_to_zero
+  coefficient_source: offline_ckpt500_1000_sac_dz_pressure_150pct_r2_transition
+  lambda_small: 0.08
+  selected_lambda: 0.08
+  predicate:
+    phases: [setup, approach]
+    lateral_min: 0.10
+    axial_min: 0.030
+    axial_max: 0.050
+    orientation_max: 0.050
+a0_action_support:
+  enabled: true
+  scope: demo_early_approach_rows
+  action_dim: a0
+  loss: mse_distance_policy_mode_a0_to_demo_supported_interval
+  support_source: accepted_demo_rows_matching_actor_objective_balance_predicate
+  selected_lambda: 0.0258505165
+  dry_run_grad_ratio: 0.15
+  predicate:
+    phases: [setup, approach]
+    lateral_min: 0.10
+    axial_min: 0.030
+    axial_max: 0.050
+    orientation_max: 0.050
+ablation:
+  identifier: PEG_F3_V2_A0_ACTION_SUPPORT_BALANCE_1K_SEED0
+  baseline_config: configs/peg_insertion/peg_v2_formal_5k_seed0.yaml
+  baseline_config_sha256: eee952a9e88f46cb173d9894d4ee7d90aa6155541fcc5f3cd5bdde64a99538de
+  semantic_diff_fields: [conservative_q, demo_actor_anchor, actor_objective_balance, a0_action_support]
+  target_updates: 1000
+  checkpoint_targets: [500, 1000]
+  q_policy_minus_demo_baseline: 1.578540
+  demo_action_mae_baseline: 0.713376
+  lateral_mae_baseline: 0.734863
+  action1_mae_baseline: 1.015701
+wandb:
+  project: flexible-line-peg-insertion
+  run_name: peg_f3_v2_a0_action_support_balance_ablation_1k_seed0
+  mode: disabled
+outputs:
+  run_dir: results/ablation/peg_f3_v2_a0_action_support_balance_ablation_1k_seed0
+  checkpoint_dir: results/ablation/peg_f3_v2_a0_action_support_balance_ablation_1k_seed0/run/checkpoints
+  log_dir: results/ablation/peg_f3_v2_a0_action_support_balance_ablation_1k_seed0/run/logs
+  actor_log_dir: results/ablation/peg_f3_v2_a0_action_support_balance_ablation_1k_seed0/run/actor
+contracts:
+  reward: "-80*lateral_error -20*axial_error -2*orientation_error +2[lateral<0.01] +25[success]"
+  success: "lateral<=0.002 and axial<=0.003 and orientation<=0.05; force excluded"

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "annotation_only": true,
+  "source": "results/validation/peg/f2_artifact_adjudication_20260904/adjudication.json",
+  "checkpoint_sha256": {
+    "e36d0cc1e0b8cb4ee160b67a5c0b64f14fcd45aef69fb1122588c1c383467d9f": "PEG_OBS_CONTRACT_V1_LEGACY",
+    "e16a4924869885ce2d2417b482ee47d9e0d4cfa1a7a063cf0c4a3fca7d214833": "PEG_OBS_CONTRACT_V1_LEGACY",
+    "3d3b01d708baff24f84caf80700215654da92367d68281744a087dbecf5a0c9c": "PEG_OBS_CONTRACT_V1_LEGACY",
+    "191c6b44c93d47faaa5476fa45040158dc6190185ad0986736308b1cb672e895": "PEG_OBS_CONTRACT_V1_LEGACY",
+    "e12b83c56aeea4c181a65007191c059a8c35eb4c7c3daf47f0e86e8c1b2b4b90": "PEG_OBS_CONTRACT_V1_LEGACY",
+    "33da53d95733576cdecfee7cdd1262ee9e1c32f05ab1f4687497d4021b7b7877": "PEG_OBS_CONTRACT_V1_LEGACY",
+    "80dced5598ddc7ab7c3c21d519087b74bc3cf33d0b268f3c11bf6ac1b11f147e": "PEG_OBS_CONTRACT_V1_LEGACY"
+  },
+  "demo_sha256": {
+    "44ee651768d9f231caccf81d5a58460c8f44bc17463de7e08ea157b3c2a53ce7": "PEG_OBS_CONTRACT_V1_LEGACY"
+  },
+  "unknown_unversioned_checkpoint": "FAIL_CLOSED",
+  "legacy_torque_indices_10_11_12": ["Fy", "Fz", "Tx"],
+  "v2_torque_indices_10_11_12": ["Tx", "Ty", "Tz"]
+}

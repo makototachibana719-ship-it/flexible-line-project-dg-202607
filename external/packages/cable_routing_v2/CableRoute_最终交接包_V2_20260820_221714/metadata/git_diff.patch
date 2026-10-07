@@ -1,0 +1,103 @@
+diff --git a/examples/async_sac_state_sim/run_actor.sh b/examples/async_sac_state_sim/run_actor.sh
+index 5767791..9fdea11 100644
+--- a/examples/async_sac_state_sim/run_actor.sh
++++ b/examples/async_sac_state_sim/run_actor.sh
+@@ -2,7 +2,7 @@ export XLA_PYTHON_CLIENT_PREALLOCATE=false && \
+ export XLA_PYTHON_CLIENT_MEM_FRACTION=.05 && \
+ python async_sac_state_sim.py "$@" \
+     --actor \
+-    --render \
++    --actor \
+     --env PandaPickCube-v0 \
+     --exp_name=serl_dev_sim_test \
+     --seed 0 \
+diff --git a/franka_sim/franka_sim/__init__.py b/franka_sim/franka_sim/__init__.py
+index 967e9e5..75f5946 100644
+--- a/franka_sim/franka_sim/__init__.py
++++ b/franka_sim/franka_sim/__init__.py
+@@ -18,3 +18,16 @@ register(
+     max_episode_steps=100,
+     kwargs={"image_obs": True},
+ )
++
++register(
++    id="PandaCableRoute-v0",
++    entry_point="franka_sim.envs:PandaCableRouteGymEnv",
++    max_episode_steps=500,
++)
++
++register(
++    id="PandaCableRouteVision-v0",
++    entry_point="franka_sim.envs:PandaCableRouteGymEnv",
++    max_episode_steps=500,
++    kwargs={"image_obs": True},
++)
+diff --git a/franka_sim/franka_sim/envs/__init__.py b/franka_sim/franka_sim/envs/__init__.py
+index 50c6882..5418020 100644
+--- a/franka_sim/franka_sim/envs/__init__.py
++++ b/franka_sim/franka_sim/envs/__init__.py
+@@ -1,5 +1,7 @@
++from franka_sim.envs.panda_cable_route_gym_env import PandaCableRouteGymEnv
+ from franka_sim.envs.panda_pick_gym_env import PandaPickCubeGymEnv
+ 
+ __all__ = [
+     "PandaPickCubeGymEnv",
++    "PandaCableRouteGymEnv",
+ ]
+diff --git a/franka_sim/franka_sim/envs/panda_pick_gym_env.py b/franka_sim/franka_sim/envs/panda_pick_gym_env.py
+index f0a8d25..1bce12f 100644
+--- a/franka_sim/franka_sim/envs/panda_pick_gym_env.py
++++ b/franka_sim/franka_sim/envs/panda_pick_gym_env.py
+@@ -57,7 +57,7 @@ class PandaPickCubeGymEnv(MujocoGymEnv):
+         }
+ 
+         self.render_mode = render_mode
+-        self.camera_id = (0, 1)
++        self.camera_names = ("front", "handcam_rgb")
+         self.image_obs = image_obs
+ 
+         # Caching.
+@@ -144,7 +144,21 @@ class PandaPickCubeGymEnv(MujocoGymEnv):
+         self._viewer = MujocoRenderer(
+             self.model,
+             self.data,
++            width=640,
++            height=480,
+         )
++
++        # Native MuJoCo renderer for RGB observations.
++        # gymnasium 1.3.0 does not accept camera_id in
++        # MujocoRenderer.render(), so camera switching is
++        # handled with mujoco.Renderer.update_scene().
++        self._rgb_renderer = mujoco.Renderer(
++            self._model,
++            height=render_spec.height,
++            width=render_spec.width,
++        )
++
++      
+         self._viewer.render(self.render_mode)
+ 
+     def reset(
+@@ -224,10 +238,18 @@ class PandaPickCubeGymEnv(MujocoGymEnv):
+ 
+     def render(self):
+         rendered_frames = []
+-        for cam_id in self.camera_id:
+-            rendered_frames.append(
+-                self._viewer.render(render_mode="rgb_array", camera_id=cam_id)
++
++        for camera_name in self.camera_names:
++            self._rgb_renderer.update_scene(
++                self._data,
++                camera=camera_name,
+             )
++
++            # copy() is important because MuJoCo may reuse
++            # its internal render buffer.
++            frame = self._rgb_renderer.render().copy()
++            rendered_frames.append(frame)
++
+         return rendered_frames
+ 
+     # Helper methods.

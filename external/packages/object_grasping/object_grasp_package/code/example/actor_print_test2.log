@@ -1,0 +1,45 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1783857052.638548    4334 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1783857054.235077    4334 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+E0000 00:00:1783857057.553480    4334 cuda_platform.cc:52] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/spaces/box.py:127: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+I0712 19:51:00.695198 128494248331072 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+I0712 19:51:00.695634 128494248331072 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+I0712 19:51:00.695810 128494248331072 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/serl/examples/async_drq_sim/async_drq_sim.py:394: DeprecationWarning: jax.tree_map is deprecated: use jax.tree.map (jax v0.4.25 or newer) or jax.tree_util.tree_map (any JAX version).
+  jax.tree_map(jnp.array, agent), sharding.replicate()
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/spaces/box.py:127: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:165: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+The ResNet-10 weights already exist at '/home/zero/.serl/resnet10_params.pkl'.
+Loaded 5.418792M parameters from ResNet-10 pretrained on ImageNet-1K
+replaced conv_init in pretrained_encoder
+replaced norm_init in pretrained_encoder
+replaced ResNetBlock_0 in pretrained_encoder
+replaced ResNetBlock_1 in pretrained_encoder
+replaced ResNetBlock_2 in pretrained_encoder
+replaced ResNetBlock_3 in pretrained_encoder
+[92m starting actor loop[00m
+  0%|          | 0/30 [00:00<?, ?it/s]/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(terminated, (bool, np.bool8)):
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:165: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(terminated, (bool, np.bool8)):
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/utils/passive_env_checker.py:165: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+
+[EVAL] step=0 defaultdict(<class 'list'>, {'episode.r': 0.00027252134, 'episode.l': 100.0, 'episode.t': 13.919804, 'final.episode.r': 0.00027252134, 'final.episode.l': 100.0, 'final.episode.t': 13.919804})
+  3%|▎         | 1/30 [00:13<06:40, 13.80s/it]  7%|▋         | 2/30 [00:13<02:40,  5.74s/it] 10%|█         | 3/30 [00:14<01:25,  3.17s/it] 17%|█▋        | 5/30 [00:14<00:35,  1.43s/it] 20%|██        | 6/30 [00:14<00:25,  1.05s/it] 27%|██▋       | 8/30 [00:14<00:13,  1.62it/s] 33%|███▎      | 10/30 [00:14<00:08,  2.48it/s] 40%|████      | 12/30 [00:15<00:08,  2.01it/s] 43%|████▎     | 13/30 [00:16<00:08,  1.90it/s] 47%|████▋     | 14/30 [00:16<00:07,  2.09it/s] 50%|█████     | 15/30 [00:17<00:09,  1.66it/s] 53%|█████▎    | 16/30 [00:18<00:07,  1.84it/s] 57%|█████▋    | 17/30 [00:18<00:06,  2.09it/s] 60%|██████    | 18/30 [00:18<00:05,  2.36it/s] 63%|██████▎   | 19/30 [00:19<00:04,  2.59it/s] 67%|██████▋   | 20/30 [00:19<00:03,  2.67it/s]
+[EVAL] step=20 defaultdict(<class 'list'>, {'episode.r': 0.00030692777, 'episode.l': 100.0, 'episode.t': 34.905183, 'final.episode.r': 0.00030692777, 'final.episode.l': 100.0, 'final.episode.t': 34.905183})
+ 70%|███████   | 21/30 [00:34<00:42,  4.73s/it] 73%|███████▎  | 22/30 [00:35<00:27,  3.41s/it] 77%|███████▋  | 23/30 [00:35<00:17,  2.49s/it] 80%|████████  | 24/30 [00:35<00:11,  1.90s/it] 83%|████████▎ | 25/30 [00:36<00:07,  1.41s/it] 87%|████████▋ | 26/30 [00:36<00:04,  1.07s/it] 90%|█████████ | 27/30 [00:36<00:02,  1.24it/s] 93%|█████████▎| 28/30 [00:36<00:01,  1.63it/s] 97%|█████████▋| 29/30 [00:36<00:00,  2.05it/s]100%|██████████| 30/30 [00:37<00:00,  2.39it/s]100%|██████████| 30/30 [00:37<00:00,  1.24s/it]

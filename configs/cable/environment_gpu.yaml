@@ -1,0 +1,25 @@
+name: flexible-line-cable-gpu
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.20
+  - pip
+  - pip:
+      - numpy==1.26.4
+      - flax==0.8.5
+      - optax==0.2.3
+      - orbax-checkpoint==0.6.4
+      - tensorstore==0.1.51
+      - gym==0.26.2
+      - gymnasium==1.3.0
+      - mujoco==2.3.7
+      - wandb==0.28.0
+      - PyYAML==6.0.3
+      - agentlace @ git+https://github.com/youliangtan/agentlace.git@cf2c337c5e3694cdbfc14831b239bd657bc4894d
+
+# JAX/JAXlib is intentionally absent. The GPU operator must install the
+# JAX 0.4.35 CUDA wheel matching the target CUDA/driver, then prove that
+# jax.default_backend() is not "cpu" before any formal training.
+# Install these project/package components as editable local sources:
+#   external/serl/serl_launcher
+#   external/packages/cable_routing_v2/.../franka_sim

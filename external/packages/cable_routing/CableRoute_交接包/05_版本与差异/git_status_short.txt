@@ -1,0 +1,14 @@
+ M examples/async_sac_state_sim/run_actor.sh
+ M franka_sim/franka_sim/__init__.py
+ M franka_sim/franka_sim/envs/__init__.py
+ M franka_sim/franka_sim/envs/panda_pick_gym_env.py
+?? checkpoints/
+?? examples/async_cable_route_sim/
+?? franka_sim/franka_sim/envs/panda_cable_route_gym_env.py
+?? franka_sim/franka_sim/envs/panda_cable_route_gym_env.py.before_training
+?? franka_sim/franka_sim/envs/panda_cable_route_gym_env.py.before_v0
+?? franka_sim/franka_sim/envs/panda_pick_gym_env.py.bak
+?? franka_sim/franka_sim/envs/panda_pick_gym_env.py.before_camera_fix
+?? franka_sim/franka_sim/envs/xmls/cable_route.xml
+?? franka_sim/franka_sim/envs/xmls/cable_route.xml.before_grasp
+?? franka_sim/franka_sim/envs/xmls/cable_route.xml.before_training

@@ -1,0 +1,110 @@
+{
+  "bad_imports": [],
+  "checks": {
+    "ASYNC_ACTOR_LEARNER": true,
+    "CLEAN_SERL_RLPD_CORE": true,
+    "DEMO_SHA": true,
+    "DEMO_TRANSITIONS": true,
+    "EXACT_20_SUCCESS_DEMOS": true,
+    "FORMAL_RESET_CANONICAL": true,
+    "GOAL_UNCHANGED_DURING_RANDOMIZATION": true,
+    "HIGH_UTD8": true,
+    "LAYER_NORM": false,
+    "NO_CUSTOM_IMPORTS": true,
+    "NO_RESIDUAL_PROCESSES": true,
+    "OBS20_ACTION7": true,
+    "OLD_11_VALUES_PRESERVED": true,
+    "ONE_POLICY": true,
+    "RELATIVE_ACTION_COMPATIBLE": true,
+    "SYMMETRIC_50_50": true,
+    "TRAIN_RESET_RANDOMIZED": true
+  },
+  "demo_sha256": "d4c625b243420460a48cad68fa6d75cd987f306099f0d4ad7c18cd1404135bc3",
+  "demo_transitions": 3627,
+  "formal_eval_canonical": true,
+  "status": "FAIL",
+  "training_reset_records": [
+    {
+      "canonical": false,
+      "commands": 2,
+      "enabled": true,
+      "rotation_action": [
+        -0.14504170417785645,
+        0.093981072306633,
+        0.04127555713057518
+      ],
+      "settle_commands": 6,
+      "translation_action": [
+        0.05478467419743538,
+        -0.1611492931842804,
+        -0.18361058831214905
+      ]
+    },
+    {
+      "canonical": false,
+      "commands": 2,
+      "enabled": true,
+      "rotation_action": [
+        0.1305217295885086,
+        0.09475606679916382,
+        -0.049726150929927826
+      ],
+      "settle_commands": 6,
+      "translation_action": [
+        0.042654309421777725,
+        0.16064758598804474,
+        0.0174499973654747
+      ]
+    },
+    {
+      "canonical": false,
+      "commands": 2,
+      "enabled": true,
+      "rotation_action": [
+        -0.09730331599712372,
+        0.10895367711782455,
+        0.00414612190797925
+      ],
+      "settle_commands": 6,
+      "translation_action": [
+        0.14296171069145203,
+        -0.3264901041984558,
+        0.09186217933893204
+      ]
+    },
+    {
+      "canonical": false,
+      "commands": 2,
+      "enabled": true,
+      "rotation_action": [
+        -0.11271501332521439,
+        0.05118732526898384,
+        0.014718950726091862
+      ],
+      "settle_commands": 6,
+      "translation_action": [
+        -0.08011524379253387,
+        -0.05411894619464874,
+        -0.18867212533950806
+      ]
+    },
+    {
+      "canonical": false,
+      "commands": 2,
+      "enabled": true,
+      "rotation_action": [
+        0.14425060153007507,
+        0.055662594735622406,
+        0.015045927837491035
+      ],
+      "settle_commands": 6,
+      "translation_action": [
+        0.046154044568538666,
+        -0.08142571151256561,
+        0.19888398051261902
+      ]
+    }
+  ],
+  "training_reset_unique_observations": 5,
+  "training_started": false
+}

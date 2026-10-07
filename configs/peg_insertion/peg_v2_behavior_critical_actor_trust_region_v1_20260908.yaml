@@ -1,0 +1,32 @@
+experiment: peg_f3_v2_behavior_critical_actor_trust_region_v1_20260908
+scientific_variable:
+  behavior_critical_actor_candidate_trust_region: true
+actor_update_period: 4
+critic_update_period: 1
+temperature_follows_accepted_actor_candidate: true
+learner_updates_primary: 100
+learner_updates_retention: 500
+evaluations: [0, 20, 40, 60, 80, 100, 250, 500]
+online_batch_size: 32
+demo_batch_size: 32
+total_batch_size: 64
+utd_ratio: 1
+online_admission_threshold: 7.41773975814
+frozen_preflight: results/preflight/peg/f3_v2_behavior_critical_actor_trust_region_v1_20260908_005/frozen_trust_region.json
+alpha_candidates: [1.0, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625]
+epsilon: 1.0e-8
+candidate_grid: false
+alternate_periods_forbidden: [2, 8, 16]
+prohibitions:
+  actor_learning_rate_change: true
+  critic_learning_rate_change: true
+  utd_or_tau_change: true
+  entropy_or_std_change: true
+  soft_bc_or_retention_loss: true
+  critic_penalty: true
+  single_axis_loss: true
+  architecture_change: true
+  new_demo: true
+  production_demo_mutation: true
+  threshold_change: true
+  canonical_eval_change: true

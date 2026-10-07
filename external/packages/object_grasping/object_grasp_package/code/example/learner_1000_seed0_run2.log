@@ -1,0 +1,1367 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1783918767.890384    3867 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1783918768.886078    3867 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+E0000 00:00:1783918770.753580    3867 cuda_platform.cc:52] failed call to cuInit: INTERNAL: CUDA error: Failed call to cuInit: UNKNOWN ERROR (303)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/gym/spaces/box.py:127: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+I0713 12:59:32.615147 133733199308608 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+I0713 12:59:32.615415 133733199308608 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+I0713 12:59:32.615515 133733199308608 _schedule.py:74] A polynomial schedule was set with a non-positive `transition_steps` value; this results in a constant schedule with value `init_value`.
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/serl/examples/async_drq_sim/async_drq_sim.py:394: DeprecationWarning: jax.tree_map is deprecated: use jax.tree.map (jax v0.4.25 or newer) or jax.tree_util.tree_map (any JAX version).
+  jax.tree_map(jnp.array, agent), sharding.replicate()
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+The ResNet-10 weights already exist at '/home/zero/.serl/resnet10_params.pkl'.
+Loaded 5.418792M parameters from ResNet-10 pretrained on ImageNet-1K
+replaced conv_init in pretrained_encoder
+replaced norm_init in pretrained_encoder
+replaced ResNetBlock_0 in pretrained_encoder
+replaced ResNetBlock_1 in pretrained_encoder
+replaced ResNetBlock_2 in pretrained_encoder
+replaced ResNetBlock_3 in pretrained_encoder
+shape of observation space and action space
+Dict('front': Box(0, 255, (1, 128, 128, 3), uint8), 'state': Box(-inf, inf, (1, 7), float32), 'wrist': Box(0, 255, (1, 128, 128, 3), uint8))
+Box(-1.0, 1.0, (4,), float32)
+[92m replay buffer created[00m
+[92m replay_buffer size: 0[00m
+shape of observation space and action space
+Dict('front': Box(0, 255, (1, 128, 128, 3), uint8), 'state': Box(-inf, inf, (1, 7), float32), 'wrist': Box(0, 255, (1, 128, 128, 3), uint8))
+Box(-1.0, 1.0, (4,), float32)
+demo buffer size: 2001
+[92m starting learner loop[00m
+entity: null
+exp_descriptor: serl_dev_drq_sim_test_resnet
+experiment_id: serl_dev_drq_sim_test_resnet_20260713_125937
+group: null
+project: serl_dev
+tag: serl_dev_drq_sim_test_resnet
+unique_identifier: '20260713_125937'
+
+Filling up replay buffer:   0%|          | 0/200 [00:00<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:01<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:02<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:03<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:04<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:05<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:06<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:07<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:08<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:09<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:10<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:11<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:12<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:13<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:14<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:15<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:16<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:17<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:18<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:19<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:20<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:21<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:22<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:23<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:24<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:25<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:26<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:27<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:28<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:29<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:30<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:31<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:32<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:33<?, ?it/s]Filling up replay buffer:   0%|          | 0/200 [00:34<?, ?it/s]Filling up replay buffer:   1%|          | 2/200 [00:35<02:14,  1.47it/s]Filling up replay buffer:   6%|▌         | 11/200 [03:52<59:46, 18.98s/it]Filling up replay buffer:  14%|█▎        | 27/200 [03:53<17:14,  5.98s/it]Filling up replay buffer:  22%|██▏       | 44/200 [03:54<07:41,  2.96s/it]Filling up replay buffer:  30%|███       | 61/200 [03:55<04:01,  1.73s/it]Filling up replay buffer:  39%|███▉      | 78/200 [03:56<02:14,  1.10s/it]Filling up replay buffer:  46%|████▋     | 93/200 [03:57<01:22,  1.30it/s]Filling up replay buffer:  55%|█████▍    | 109/200 [03:58<00:48,  1.86it/s]Filling up replay buffer:  62%|██████▎   | 125/200 [03:59<00:28,  2.59it/s]Filling up replay buffer:  71%|███████   | 142/200 [04:00<00:16,  3.58it/s]Filling up replay buffer:  80%|███████▉  | 159/200 [04:01<00:08,  4.78it/s]Filling up replay buffer:  87%|████████▋ | 174/200 [04:02<00:04,  5.94it/s]Filling up replay buffer:  94%|█████████▍| 189/200 [04:03<00:01,  7.20it/s]Filling up replay buffer: 202it [04:04,  8.16it/s]                         Filling up replay buffer: 202it [04:04,  1.21s/it]
+[92m sent initial network to actor[00m
+replay buffer:   4%|▍         | 202/5000 [00:00<?, ?it/s]
+learner:   0%|          | 0/1000 [00:00<?, ?it/s][A/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+\n[TRAIN] step=0 actor/actor_loss=-0.731697 actor/entropy=-1.414980 actor/temperature=0.010000 actor_lr=0.000300 critic/critic_loss=0.698039 critic/predicted_qs=0.083720 critic/target_qs=0.197282 critic_lr=0.000300 temperature/temperature_loss=0.007859 temperature_lr=0.000300
+I0713 13:03:57.342034 133733199308608 checkpoints.py:574] Saving checkpoint at step: 0
+I0713 13:03:57.343288 133733199308608 checkpoints.py:662] Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+I0713 13:03:57.343772 133733199308608 abstract_checkpointer.py:35] orbax-checkpoint version: 0.6.4
+W0713 13:03:57.345844 133733199308608 type_handlers.py:229] The `aggregate` option is deprecated and will be ignored.
+I0713 13:03:57.349649 133733199308608 checkpointer.py:189] [process=0] Started saving checkpoint to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_0.
+I0713 13:03:57.352692 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre.checkpoint_0.1
+I0713 13:03:57.354024 133733199308608 atomicity.py:175] Creating tmp directory /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_0.orbax-checkpoint-tmp-0
+I0713 13:03:57.354967 133733199308608 checkpoint.py:134] Wrote CheckpointMetadata=CheckpointMetadata(init_timestamp_nsecs=1783919037354651030, commit_timestamp_nsecs=None), json={"init_timestamp_nsecs": 1783919037354651030, "commit_timestamp_nsecs": null} to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_0.orbax-checkpoint-tmp-0
+I0713 13:03:57.355192 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post.checkpoint_0.2
+I0713 13:03:57.436940 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 3.5 GiB/s (total bytes: 290.2 MiB) (time elapsed: 80 milliseconds) (per-host)
+I0713 13:03:59.263510 133733199308608 future.py:88] ChainedFuture completed 2/2 futures in 1.83 seconds.
+I0713 13:03:59.263758 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/bytes_per_sec: 152.1 MiB/s (total bytes: 290.2 MiB) (time elapsed: a second) (per-host)
+I0713 13:03:59.263982 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save.checkpoint_0
+I0713 13:03:59.299859 133733199308608 type_handlers.py:562] [process=0][thread=MainThread] Validating params (raw input=1196, unique=598) in TensorStore KvStore: KvStore({
+  'base': {
+    'driver': 'file',
+    'path': '/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_0.orbax-checkpoint-tmp-0/',
+  },
+  'cache_pool': 'cache_pool#ocdbt',
+  'config': {
+    'compression': {'id': 'zstd'},
+    'max_decoded_node_bytes': 100000000,
+    'max_inline_value_bytes': 1024,
+    'uuid': '85d750e0a8ae8bc4b57925e1ff1d29df',
+    'version_tree_arity_log2': 4,
+  },
+  'context': {
+    'cache_pool#ocdbt': {'total_bytes_limit': 100000000},
+    'data_copy_concurrency': {},
+    'file_io_concurrency': {'limit': 128},
+    'file_io_locking': {},
+    'file_io_mode': {},
+    'file_io_sync': True,
+    'ocdbt_coordinator': {},
+  },
+  'driver': 'ocdbt',
+  'experimental_read_coalescing_interval': '1ms',
+  'experimental_read_coalescing_merged_bytes': 500000000000,
+  'experimental_read_coalescing_threshold_bytes': 1000000,
+}).
+I0713 13:03:59.305734 133733199308608 atomicity.py:316] Renaming /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_0.orbax-checkpoint-tmp-0 to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_0
+I0713 13:03:59.306366 133733199308608 checkpoint.py:174] Read CheckpointMetadata=CheckpointMetadata(init_timestamp_nsecs=1783919037354651030, commit_timestamp_nsecs=None) from /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_0.orbax-checkpoint-tmp-0
+I0713 13:03:59.306939 133733199308608 checkpoint.py:191] Updated CheckpointMetadata=CheckpointMetadata(init_timestamp_nsecs=1783919037354651030, commit_timestamp_nsecs=1783919039306133062) to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_0.orbax-checkpoint-tmp-0
+I0713 13:03:59.307872 133733199308608 atomicity.py:518] [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_0`.
+I0713 13:03:59.308104 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize.checkpoint_0
+replay buffer:   4%|▍         | 204/5000 [00:16<11:16:29,  8.46s/it]
+learner:   0%|          | 1/1000 [00:16<4:41:50, 16.93s/it][A/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+/home/zero/miniconda3/envs/serl/lib/python3.10/site-packages/flax/core/lift.py:305: RuntimeWarning: kwargs are not supported in vmap, so "train" is(are) ignored
+  warnings.warn(msg.format(name, ', '.join(kwargs.keys())), RuntimeWarning)
+
+learner:   0%|          | 2/1000 [00:37<5:18:11, 19.13s/it][A
+learner:   0%|          | 3/1000 [00:38<3:01:32, 10.92s/it][A
+learner:   0%|          | 4/1000 [00:43<2:19:33,  8.41s/it][A
+learner:   0%|          | 5/1000 [00:45<1:40:25,  6.06s/it][A
+learner:   1%|          | 6/1000 [00:48<1:25:11,  5.14s/it][A
+learner:   1%|          | 7/1000 [00:53<1:24:25,  5.10s/it][A
+learner:   1%|          | 8/1000 [00:58<1:20:54,  4.89s/it][A
+learner:   1%|          | 9/1000 [01:00<1:06:15,  4.01s/it][A
+learner:   1%|          | 10/1000 [01:02<58:20,  3.54s/it] [A\n[TRAIN] step=10 actor/actor_loss=0.040430 actor/entropy=1.340621 actor/temperature=0.009966 actor_lr=0.000300 critic/critic_loss=0.481428 critic/predicted_qs=0.074497 critic/target_qs=-0.029180 critic_lr=0.000300 temperature/temperature_loss=0.012653 temperature_lr=0.000300
+
+learner:   1%|          | 11/1000 [01:05<53:51,  3.27s/it][A
+learner:   1%|          | 12/1000 [01:07<48:01,  2.92s/it][A
+learner:   1%|▏         | 13/1000 [01:09<44:54,  2.73s/it][A
+learner:   1%|▏         | 14/1000 [01:11<42:32,  2.59s/it][Areplay buffer:   4%|▍         | 205/5000 [01:14<38:24:02, 28.83s/it]
+learner:   2%|▏         | 15/1000 [01:14<41:22,  2.52s/it][Areplay buffer:   4%|▍         | 211/5000 [01:15<8:37:45,  6.49s/it] 
+learner:   2%|▏         | 16/1000 [01:15<35:43,  2.18s/it][Areplay buffer:   4%|▍         | 217/5000 [01:16<4:11:45,  3.16s/it]
+learner:   2%|▏         | 17/1000 [01:16<30:08,  1.84s/it][Areplay buffer:   4%|▍         | 225/5000 [01:18<2:13:23,  1.68s/it]
+learner:   2%|▏         | 18/1000 [01:18<28:58,  1.77s/it][Areplay buffer:   5%|▍         | 232/5000 [01:19<1:26:02,  1.08s/it]
+learner:   2%|▏         | 19/1000 [01:19<24:54,  1.52s/it][Areplay buffer:   5%|▍         | 238/5000 [01:20<1:01:32,  1.29it/s]
+learner:   2%|▏         | 20/1000 [01:20<21:03,  1.29s/it][A\n[TRAIN] step=20 actor/actor_loss=0.024370 actor/entropy=0.999949 actor/temperature=0.009922 actor_lr=0.000300 critic/critic_loss=0.394073 critic/predicted_qs=0.053540 critic/target_qs=0.308138 critic_lr=0.000300 temperature/temperature_loss=0.031289 temperature_lr=0.000300
+replay buffer:   5%|▍         | 245/5000 [01:20<43:27,  1.82it/s]  
+learner:   2%|▏         | 21/1000 [01:20<18:56,  1.16s/it][Areplay buffer:   5%|▌         | 250/5000 [01:21<35:06,  2.25it/s]
+learner:   2%|▏         | 22/1000 [01:21<16:52,  1.04s/it][Areplay buffer:   5%|▌         | 254/5000 [01:22<30:06,  2.63it/s]
+learner:   2%|▏         | 23/1000 [01:22<15:08,  1.08it/s][Areplay buffer:   5%|▌         | 259/5000 [01:22<24:31,  3.22it/s]
+learner:   2%|▏         | 24/1000 [01:22<14:00,  1.16it/s][Areplay buffer:   5%|▌         | 263/5000 [01:23<21:33,  3.66it/s]
+learner:   2%|▎         | 25/1000 [01:23<12:55,  1.26it/s][Areplay buffer:   5%|▌         | 267/5000 [01:24<19:23,  4.07it/s]
+learner:   3%|▎         | 26/1000 [01:24<12:20,  1.32it/s][Areplay buffer:   6%|▌         | 275/5000 [01:25<14:45,  5.34it/s]
+learner:   3%|▎         | 27/1000 [01:25<12:53,  1.26it/s][Areplay buffer:   6%|▌         | 281/5000 [01:25<13:06,  6.00it/s]
+learner:   3%|▎         | 28/1000 [01:25<12:33,  1.29it/s][Areplay buffer:   6%|▌         | 287/5000 [01:26<12:14,  6.41it/s]
+learner:   3%|▎         | 29/1000 [01:26<12:38,  1.28it/s][Areplay buffer:   6%|▌         | 295/5000 [01:27<11:03,  7.09it/s]
+learner:   3%|▎         | 30/1000 [01:27<13:19,  1.21it/s][A\n[TRAIN] step=30 actor/actor_loss=-0.006526 actor/entropy=0.975507 actor/temperature=0.009868 actor_lr=0.000300 critic/critic_loss=0.188691 critic/predicted_qs=0.017841 critic/target_qs=0.050997 critic_lr=0.000300 temperature/temperature_loss=0.035647 temperature_lr=0.000300
+replay buffer:   6%|▌         | 300/5000 [01:28<11:07,  7.04it/s]
+learner:   3%|▎         | 31/1000 [01:28<12:50,  1.26it/s][Areplay buffer:   6%|▌         | 307/5000 [01:29<10:08,  7.71it/s]
+learner:   3%|▎         | 32/1000 [01:29<12:31,  1.29it/s][Areplay buffer:   6%|▋         | 314/5000 [01:29<09:55,  7.87it/s]
+learner:   3%|▎         | 33/1000 [01:29<12:52,  1.25it/s][Areplay buffer:   6%|▋         | 320/5000 [01:30<09:59,  7.81it/s]
+learner:   3%|▎         | 34/1000 [01:30<12:48,  1.26it/s][Areplay buffer:   7%|▋         | 326/5000 [01:31<09:42,  8.02it/s]
+learner:   4%|▎         | 35/1000 [01:31<12:18,  1.31it/s][Areplay buffer:   7%|▋         | 331/5000 [01:32<09:49,  7.92it/s]
+learner:   4%|▎         | 36/1000 [01:32<11:45,  1.37it/s][Areplay buffer:   7%|▋         | 336/5000 [01:32<10:06,  7.69it/s]
+learner:   4%|▎         | 37/1000 [01:32<11:35,  1.38it/s][Areplay buffer:   7%|▋         | 342/5000 [01:33<10:06,  7.68it/s]
+learner:   4%|▍         | 38/1000 [01:33<11:52,  1.35it/s][Areplay buffer:   7%|▋         | 348/5000 [01:34<10:04,  7.70it/s]
+learner:   4%|▍         | 39/1000 [01:34<12:03,  1.33it/s][Areplay buffer:   7%|▋         | 352/5000 [01:34<10:36,  7.31it/s]
+learner:   4%|▍         | 40/1000 [01:34<11:29,  1.39it/s][A\n[TRAIN] step=40 actor/actor_loss=0.282162 actor/entropy=0.871453 actor/temperature=0.009818 actor_lr=0.000300 critic/critic_loss=0.244276 critic/predicted_qs=-0.330199 critic/target_qs=0.035415 critic_lr=0.000300 temperature/temperature_loss=0.024168 temperature_lr=0.000300
+replay buffer:   7%|▋         | 356/5000 [01:35<11:04,  6.98it/s]
+learner:   4%|▍         | 41/1000 [01:35<11:09,  1.43it/s][Areplay buffer:   7%|▋         | 361/5000 [01:36<10:56,  7.07it/s]
+learner:   4%|▍         | 42/1000 [01:36<11:06,  1.44it/s][Areplay buffer:   7%|▋         | 365/5000 [01:37<11:43,  6.58it/s]
+learner:   4%|▍         | 43/1000 [01:37<11:13,  1.42it/s][Areplay buffer:   7%|▋         | 372/5000 [01:38<11:59,  6.43it/s]
+learner:   4%|▍         | 44/1000 [01:38<13:15,  1.20it/s][Areplay buffer:   8%|▊         | 376/5000 [01:38<12:17,  6.27it/s]
+learner:   4%|▍         | 45/1000 [01:38<12:32,  1.27it/s][Areplay buffer:   8%|▊         | 380/5000 [01:39<12:51,  5.99it/s]
+learner:   5%|▍         | 46/1000 [01:39<12:22,  1.29it/s][Areplay buffer:   8%|▊         | 385/5000 [01:40<12:09,  6.33it/s]
+learner:   5%|▍         | 47/1000 [01:40<11:57,  1.33it/s][Areplay buffer:   8%|▊         | 389/5000 [01:40<12:10,  6.31it/s]
+learner:   5%|▍         | 48/1000 [01:40<11:23,  1.39it/s][Areplay buffer:   8%|▊         | 397/5000 [01:41<10:24,  7.37it/s]
+learner:   5%|▍         | 49/1000 [01:41<11:59,  1.32it/s][Areplay buffer:   8%|▊         | 403/5000 [01:42<10:14,  7.48it/s]
+learner:   5%|▌         | 50/1000 [01:42<12:04,  1.31it/s][A\n[TRAIN] step=50 actor/actor_loss=-0.194828 actor/entropy=0.967862 actor/temperature=0.009771 actor_lr=0.000300 critic/critic_loss=0.186487 critic/predicted_qs=0.146534 critic/target_qs=0.154023 critic_lr=0.000300 temperature/temperature_loss=0.029920 temperature_lr=0.000300
+replay buffer:   8%|▊         | 406/5000 [01:43<11:22,  6.73it/s]
+learner:   5%|▌         | 51/1000 [01:43<11:29,  1.38it/s][A
+learner:   5%|▌         | 52/1000 [01:43<11:27,  1.38it/s][A
+learner:   5%|▌         | 53/1000 [01:44<11:55,  1.32it/s][A
+learner:   5%|▌         | 54/1000 [01:45<11:55,  1.32it/s][A
+learner:   6%|▌         | 55/1000 [01:46<11:53,  1.32it/s][A
+learner:   6%|▌         | 56/1000 [01:47<11:52,  1.33it/s][A
+learner:   6%|▌         | 57/1000 [01:47<12:21,  1.27it/s][A
+learner:   6%|▌         | 58/1000 [01:48<12:24,  1.27it/s][A
+learner:   6%|▌         | 59/1000 [01:49<13:06,  1.20it/s][A
+learner:   6%|▌         | 60/1000 [01:50<12:48,  1.22it/s][A\n[TRAIN] step=60 actor/actor_loss=0.024541 actor/entropy=1.623292 actor/temperature=0.009728 actor_lr=0.000300 critic/critic_loss=0.316464 critic/predicted_qs=-0.123984 critic/target_qs=0.410587 critic_lr=0.000300 temperature/temperature_loss=0.018463 temperature_lr=0.000300
+
+learner:   6%|▌         | 61/1000 [01:51<12:26,  1.26it/s][A
+learner:   6%|▌         | 62/1000 [01:51<12:26,  1.26it/s][A
+learner:   6%|▋         | 63/1000 [01:52<11:54,  1.31it/s][A
+learner:   6%|▋         | 64/1000 [01:53<11:32,  1.35it/s][A
+learner:   6%|▋         | 65/1000 [01:54<11:54,  1.31it/s][A
+learner:   7%|▋         | 66/1000 [01:54<11:47,  1.32it/s][A
+learner:   7%|▋         | 67/1000 [01:55<11:43,  1.33it/s][A
+learner:   7%|▋         | 68/1000 [01:56<11:48,  1.31it/s][A
+learner:   7%|▋         | 69/1000 [01:57<11:38,  1.33it/s][A
+learner:   7%|▋         | 70/1000 [01:57<11:33,  1.34it/s][A\n[TRAIN] step=70 actor/actor_loss=-0.229299 actor/entropy=-0.112593 actor/temperature=0.009685 actor_lr=0.000300 critic/critic_loss=0.014850 critic/predicted_qs=0.277015 critic/target_qs=0.262019 critic_lr=0.000300 temperature/temperature_loss=0.024361 temperature_lr=0.000300
+
+learner:   7%|▋         | 71/1000 [01:58<11:45,  1.32it/s][A
+learner:   7%|▋         | 72/1000 [01:59<11:22,  1.36it/s][A
+learner:   7%|▋         | 73/1000 [02:00<11:05,  1.39it/s][A
+learner:   7%|▋         | 74/1000 [02:00<10:59,  1.40it/s][A
+learner:   8%|▊         | 75/1000 [02:01<11:23,  1.35it/s][A
+learner:   8%|▊         | 76/1000 [02:02<11:42,  1.31it/s][A
+learner:   8%|▊         | 77/1000 [02:03<13:15,  1.16it/s][A
+learner:   8%|▊         | 78/1000 [02:04<13:48,  1.11it/s][A
+learner:   8%|▊         | 79/1000 [02:05<13:28,  1.14it/s][A
+learner:   8%|▊         | 80/1000 [02:06<12:56,  1.18it/s][A\n[TRAIN] step=80 actor/actor_loss=-0.290515 actor/entropy=-0.779033 actor/temperature=0.009643 actor_lr=0.000300 critic/critic_loss=0.068035 critic/predicted_qs=0.298373 critic/target_qs=0.447262 critic_lr=0.000300 temperature/temperature_loss=0.023260 temperature_lr=0.000300
+
+learner:   8%|▊         | 81/1000 [02:06<12:40,  1.21it/s][A
+learner:   8%|▊         | 82/1000 [02:07<12:05,  1.27it/s][A
+learner:   8%|▊         | 83/1000 [02:08<11:56,  1.28it/s][A
+learner:   8%|▊         | 84/1000 [02:08<11:40,  1.31it/s][A
+learner:   8%|▊         | 85/1000 [02:09<11:48,  1.29it/s][A
+learner:   9%|▊         | 86/1000 [02:10<11:47,  1.29it/s][A
+learner:   9%|▊         | 87/1000 [02:11<12:06,  1.26it/s][A
+learner:   9%|▉         | 88/1000 [02:12<11:28,  1.32it/s][A
+learner:   9%|▉         | 89/1000 [02:12<11:27,  1.32it/s][A
+learner:   9%|▉         | 90/1000 [02:13<11:52,  1.28it/s][A\n[TRAIN] step=90 actor/actor_loss=-0.406846 actor/entropy=1.045310 actor/temperature=0.009604 actor_lr=0.000300 critic/critic_loss=0.273792 critic/predicted_qs=0.444915 critic/target_qs=0.310715 critic_lr=0.000300 temperature/temperature_loss=0.021241 temperature_lr=0.000300
+
+learner:   9%|▉         | 91/1000 [02:14<12:08,  1.25it/s][A
+learner:   9%|▉         | 92/1000 [02:15<12:21,  1.22it/s][A
+learner:   9%|▉         | 93/1000 [02:16<12:10,  1.24it/s][A
+learner:   9%|▉         | 94/1000 [02:16<11:36,  1.30it/s][A
+learner:  10%|▉         | 95/1000 [02:17<11:38,  1.30it/s][A
+learner:  10%|▉         | 96/1000 [02:18<11:48,  1.28it/s][A
+learner:  10%|▉         | 97/1000 [02:19<11:15,  1.34it/s][A
+learner:  10%|▉         | 98/1000 [02:19<11:26,  1.31it/s][A
+learner:  10%|▉         | 99/1000 [02:20<11:11,  1.34it/s][A
+learner:  10%|█         | 100/1000 [02:21<11:29,  1.31it/s][A\n[TRAIN] step=100 actor/actor_loss=-0.445689 actor/entropy=1.043892 actor/temperature=0.009566 actor_lr=0.000300 critic/critic_loss=0.224382 critic/predicted_qs=0.277639 critic/target_qs=0.650686 critic_lr=0.000300 temperature/temperature_loss=0.012958 temperature_lr=0.000300
+
+learner:  10%|█         | 101/1000 [02:22<11:29,  1.30it/s][A
+learner:  10%|█         | 102/1000 [02:22<11:47,  1.27it/s][A
+learner:  10%|█         | 103/1000 [02:23<11:49,  1.26it/s][A
+learner:  10%|█         | 104/1000 [02:24<12:00,  1.24it/s][A
+learner:  10%|█         | 105/1000 [02:25<12:18,  1.21it/s][A
+learner:  11%|█         | 106/1000 [02:26<12:09,  1.23it/s][A
+learner:  11%|█         | 107/1000 [02:26<11:27,  1.30it/s][A
+learner:  11%|█         | 108/1000 [02:27<12:24,  1.20it/s][A
+learner:  11%|█         | 109/1000 [02:29<13:45,  1.08it/s][A
+learner:  11%|█         | 110/1000 [02:29<13:02,  1.14it/s][A\n[TRAIN] step=110 actor/actor_loss=-0.981572 actor/entropy=0.453016 actor/temperature=0.009528 actor_lr=0.000300 critic/critic_loss=0.143176 critic/predicted_qs=1.056135 critic/target_qs=0.713057 critic_lr=0.000300 temperature/temperature_loss=0.033591 temperature_lr=0.000300
+
+learner:  11%|█         | 111/1000 [02:30<12:38,  1.17it/s][A
+learner:  11%|█         | 112/1000 [02:31<11:37,  1.27it/s][A
+learner:  11%|█▏        | 113/1000 [02:31<11:07,  1.33it/s][A
+learner:  11%|█▏        | 114/1000 [02:32<10:38,  1.39it/s][A
+learner:  12%|█▏        | 115/1000 [02:33<10:39,  1.38it/s][A
+learner:  12%|█▏        | 116/1000 [02:34<10:32,  1.40it/s][A
+learner:  12%|█▏        | 117/1000 [02:34<11:08,  1.32it/s][A
+learner:  12%|█▏        | 118/1000 [02:35<10:50,  1.36it/s][A
+learner:  12%|█▏        | 119/1000 [02:36<11:12,  1.31it/s][A
+learner:  12%|█▏        | 120/1000 [02:37<10:46,  1.36it/s][A\n[TRAIN] step=120 actor/actor_loss=-0.552672 actor/entropy=-0.419980 actor/temperature=0.009495 actor_lr=0.000300 critic/critic_loss=0.049983 critic/predicted_qs=0.585057 critic/target_qs=0.729268 critic_lr=0.000300 temperature/temperature_loss=0.012161 temperature_lr=0.000300
+
+learner:  12%|█▏        | 121/1000 [02:37<10:46,  1.36it/s][A
+learner:  12%|█▏        | 122/1000 [02:38<10:58,  1.33it/s][A
+learner:  12%|█▏        | 123/1000 [02:39<10:50,  1.35it/s][A
+learner:  12%|█▏        | 124/1000 [02:40<10:46,  1.36it/s][A
+learner:  12%|█▎        | 125/1000 [02:40<10:46,  1.35it/s][A
+learner:  13%|█▎        | 126/1000 [02:41<10:59,  1.32it/s][A
+learner:  13%|█▎        | 127/1000 [02:42<10:42,  1.36it/s][A
+learner:  13%|█▎        | 128/1000 [02:42<10:23,  1.40it/s][Areplay buffer:   8%|▊         | 409/5000 [02:43<5:29:58,  4.31s/it]
+learner:  13%|█▎        | 129/1000 [02:43<10:33,  1.37it/s][Areplay buffer:   8%|▊         | 417/5000 [02:44<3:07:08,  2.45s/it]
+learner:  13%|█▎        | 130/1000 [02:44<10:55,  1.33it/s][A\n[TRAIN] step=130 actor/actor_loss=-1.023463 actor/entropy=-0.995010 actor/temperature=0.009467 actor_lr=0.000300 critic/critic_loss=0.041176 critic/predicted_qs=0.951843 critic/target_qs=0.866670 critic_lr=0.000300 temperature/temperature_loss=0.013880 temperature_lr=0.000300
+replay buffer:   8%|▊         | 424/5000 [02:45<2:03:21,  1.62s/it]
+learner:  13%|█▎        | 131/1000 [02:45<11:00,  1.32it/s][Areplay buffer:   9%|▊         | 430/5000 [02:45<1:28:27,  1.16s/it]
+learner:  13%|█▎        | 132/1000 [02:45<10:41,  1.35it/s][Areplay buffer:   9%|▉         | 438/5000 [02:46<59:01,  1.29it/s]  
+learner:  13%|█▎        | 133/1000 [02:46<11:18,  1.28it/s][Areplay buffer:   9%|▉         | 445/5000 [02:47<42:55,  1.77it/s]
+learner:  13%|█▎        | 134/1000 [02:47<11:05,  1.30it/s][Areplay buffer:   9%|▉         | 449/5000 [02:48<36:50,  2.06it/s]
+learner:  14%|█▎        | 135/1000 [02:48<10:47,  1.34it/s][Areplay buffer:   9%|▉         | 455/5000 [02:49<28:22,  2.67it/s]
+learner:  14%|█▎        | 136/1000 [02:49<10:39,  1.35it/s][Areplay buffer:   9%|▉         | 460/5000 [02:49<23:38,  3.20it/s]
+learner:  14%|█▎        | 137/1000 [02:49<10:29,  1.37it/s][Areplay buffer:   9%|▉         | 467/5000 [02:50<18:15,  4.14it/s]
+learner:  14%|█▍        | 138/1000 [02:50<10:36,  1.35it/s][Areplay buffer:   9%|▉         | 474/5000 [02:51<15:00,  5.03it/s]
+learner:  14%|█▍        | 139/1000 [02:51<10:49,  1.33it/s][Areplay buffer:  10%|▉         | 482/5000 [02:52<12:29,  6.03it/s]
+learner:  14%|█▍        | 140/1000 [02:52<11:10,  1.28it/s][A\n[TRAIN] step=140 actor/actor_loss=-0.982455 actor/entropy=-0.154781 actor/temperature=0.009443 actor_lr=0.000300 critic/critic_loss=0.514916 critic/predicted_qs=1.058632 critic/target_qs=0.644269 critic_lr=0.000300 temperature/temperature_loss=0.015146 temperature_lr=0.000300
+replay buffer:  10%|▉         | 487/5000 [02:52<12:17,  6.12it/s]
+learner:  14%|█▍        | 141/1000 [02:52<11:09,  1.28it/s][Areplay buffer:  10%|▉         | 494/5000 [02:53<11:05,  6.77it/s]
+learner:  14%|█▍        | 142/1000 [02:53<11:14,  1.27it/s][Areplay buffer:  10%|█         | 501/5000 [02:54<09:58,  7.52it/s]
+learner:  14%|█▍        | 143/1000 [02:54<10:53,  1.31it/s][Areplay buffer:  10%|█         | 507/5000 [02:55<09:34,  7.82it/s]
+learner:  14%|█▍        | 144/1000 [02:55<10:33,  1.35it/s][Areplay buffer:  10%|█         | 513/5000 [02:55<09:15,  8.07it/s]
+learner:  14%|█▍        | 145/1000 [02:55<10:18,  1.38it/s][Areplay buffer:  10%|█         | 519/5000 [02:56<09:21,  7.98it/s]
+learner:  15%|█▍        | 146/1000 [02:56<10:32,  1.35it/s][Areplay buffer:  11%|█         | 526/5000 [02:57<09:27,  7.88it/s]
+learner:  15%|█▍        | 147/1000 [02:57<11:13,  1.27it/s][Areplay buffer:  11%|█         | 533/5000 [02:58<09:07,  8.15it/s]
+learner:  15%|█▍        | 148/1000 [02:58<11:14,  1.26it/s][Areplay buffer:  11%|█         | 541/5000 [02:59<08:36,  8.63it/s]
+learner:  15%|█▍        | 149/1000 [02:59<11:21,  1.25it/s][Areplay buffer:  11%|█         | 547/5000 [02:59<08:55,  8.32it/s]
+learner:  15%|█▌        | 150/1000 [02:59<11:17,  1.25it/s][A\n[TRAIN] step=150 actor/actor_loss=-0.763465 actor/entropy=-1.254304 actor/temperature=0.009414 actor_lr=0.000300 critic/critic_loss=0.070880 critic/predicted_qs=0.857158 critic/target_qs=0.713306 critic_lr=0.000300 temperature/temperature_loss=0.026787 temperature_lr=0.000300
+replay buffer:  11%|█         | 553/5000 [03:00<09:06,  8.14it/s]
+learner:  15%|█▌        | 151/1000 [03:00<11:12,  1.26it/s][Areplay buffer:  11%|█         | 559/5000 [03:01<09:03,  8.16it/s]
+learner:  15%|█▌        | 152/1000 [03:01<10:55,  1.29it/s][Areplay buffer:  11%|█▏        | 563/5000 [03:01<09:34,  7.73it/s]
+learner:  15%|█▌        | 153/1000 [03:01<10:16,  1.37it/s][Areplay buffer:  11%|█▏        | 568/5000 [03:02<09:42,  7.61it/s]
+learner:  15%|█▌        | 154/1000 [03:02<10:03,  1.40it/s][Areplay buffer:  11%|█▏        | 572/5000 [03:03<10:26,  7.06it/s]
+learner:  16%|█▌        | 155/1000 [03:03<09:58,  1.41it/s][Areplay buffer:  12%|█▏        | 577/5000 [03:03<10:07,  7.28it/s]
+learner:  16%|█▌        | 156/1000 [03:03<09:39,  1.46it/s][Areplay buffer:  12%|█▏        | 583/5000 [03:04<09:47,  7.52it/s]
+learner:  16%|█▌        | 157/1000 [03:04<09:54,  1.42it/s][Areplay buffer:  12%|█▏        | 588/5000 [03:05<10:11,  7.21it/s]
+learner:  16%|█▌        | 158/1000 [03:05<10:08,  1.38it/s][Areplay buffer:  12%|█▏        | 595/5000 [03:06<09:08,  8.03it/s]
+learner:  16%|█▌        | 159/1000 [03:06<10:02,  1.40it/s][Areplay buffer:  12%|█▏        | 602/5000 [03:07<09:03,  8.10it/s]
+learner:  16%|█▌        | 160/1000 [03:07<10:35,  1.32it/s][A\n[TRAIN] step=160 actor/actor_loss=-0.952328 actor/entropy=-0.112709 actor/temperature=0.009380 actor_lr=0.000300 critic/critic_loss=0.145241 critic/predicted_qs=0.810898 critic/target_qs=1.087881 critic_lr=0.000300 temperature/temperature_loss=0.020583 temperature_lr=0.000300
+replay buffer:  12%|█▏        | 608/5000 [03:07<08:51,  8.26it/s]
+learner:  16%|█▌        | 161/1000 [03:07<10:18,  1.36it/s][A
+learner:  16%|█▌        | 162/1000 [03:08<09:49,  1.42it/s][A
+learner:  16%|█▋        | 163/1000 [03:09<10:12,  1.37it/s][A
+learner:  16%|█▋        | 164/1000 [03:09<10:19,  1.35it/s][A
+learner:  16%|█▋        | 165/1000 [03:10<10:35,  1.31it/s][A
+learner:  17%|█▋        | 166/1000 [03:11<10:45,  1.29it/s][A
+learner:  17%|█▋        | 167/1000 [03:12<10:29,  1.32it/s][A
+learner:  17%|█▋        | 168/1000 [03:13<10:31,  1.32it/s][A
+learner:  17%|█▋        | 169/1000 [03:13<10:21,  1.34it/s][A
+learner:  17%|█▋        | 170/1000 [03:14<09:54,  1.40it/s][A\n[TRAIN] step=170 actor/actor_loss=-0.165366 actor/entropy=0.844054 actor/temperature=0.009348 actor_lr=0.000300 critic/critic_loss=0.015994 critic/predicted_qs=0.097383 critic/target_qs=0.112353 critic_lr=0.000300 temperature/temperature_loss=0.022788 temperature_lr=0.000300
+
+learner:  17%|█▋        | 171/1000 [03:15<09:40,  1.43it/s][A
+learner:  17%|█▋        | 172/1000 [03:15<09:51,  1.40it/s][A
+learner:  17%|█▋        | 173/1000 [03:16<10:17,  1.34it/s][A
+learner:  17%|█▋        | 174/1000 [03:17<10:12,  1.35it/s][A
+learner:  18%|█▊        | 175/1000 [03:18<10:33,  1.30it/s][A
+learner:  18%|█▊        | 176/1000 [03:18<10:08,  1.35it/s][A
+learner:  18%|█▊        | 177/1000 [03:19<10:16,  1.33it/s][A
+learner:  18%|█▊        | 178/1000 [03:20<10:04,  1.36it/s][A
+learner:  18%|█▊        | 179/1000 [03:21<10:03,  1.36it/s][A
+learner:  18%|█▊        | 180/1000 [03:21<10:25,  1.31it/s][A\n[TRAIN] step=180 actor/actor_loss=-0.381988 actor/entropy=0.286262 actor/temperature=0.009321 actor_lr=0.000300 critic/critic_loss=0.032026 critic/predicted_qs=0.340818 critic/target_qs=0.428585 critic_lr=0.000300 temperature/temperature_loss=0.019416 temperature_lr=0.000300
+
+learner:  18%|█▊        | 181/1000 [03:22<10:13,  1.34it/s][A
+learner:  18%|█▊        | 182/1000 [03:23<10:33,  1.29it/s][A
+learner:  18%|█▊        | 183/1000 [03:24<12:30,  1.09it/s][A
+learner:  18%|█▊        | 184/1000 [03:25<11:58,  1.14it/s][A
+learner:  18%|█▊        | 185/1000 [03:26<11:11,  1.21it/s][A
+learner:  19%|█▊        | 186/1000 [03:27<11:40,  1.16it/s][A
+learner:  19%|█▊        | 187/1000 [03:27<11:34,  1.17it/s][A
+learner:  19%|█▉        | 188/1000 [03:28<11:25,  1.18it/s][A
+learner:  19%|█▉        | 189/1000 [03:29<11:17,  1.20it/s][A
+learner:  19%|█▉        | 190/1000 [03:30<11:04,  1.22it/s][A\n[TRAIN] step=190 actor/actor_loss=-0.099726 actor/entropy=-0.933551 actor/temperature=0.009296 actor_lr=0.000300 critic/critic_loss=0.055485 critic/predicted_qs=0.001902 critic/target_qs=0.187593 critic_lr=0.000300 temperature/temperature_loss=0.022792 temperature_lr=0.000300
+
+learner:  19%|█▉        | 191/1000 [03:31<11:10,  1.21it/s][A
+learner:  19%|█▉        | 192/1000 [03:32<11:04,  1.22it/s][A
+learner:  19%|█▉        | 193/1000 [03:32<10:40,  1.26it/s][A
+learner:  19%|█▉        | 194/1000 [03:33<10:09,  1.32it/s][A
+learner:  20%|█▉        | 195/1000 [03:34<10:44,  1.25it/s][A
+learner:  20%|█▉        | 196/1000 [03:35<10:44,  1.25it/s][A
+learner:  20%|█▉        | 197/1000 [03:35<10:44,  1.25it/s][A
+learner:  20%|█▉        | 198/1000 [03:36<10:41,  1.25it/s][A
+learner:  20%|█▉        | 199/1000 [03:37<10:46,  1.24it/s][A
+learner:  20%|██        | 200/1000 [03:38<10:21,  1.29it/s][A\n[TRAIN] step=200 actor/actor_loss=-0.480409 actor/entropy=0.293820 actor/temperature=0.009268 actor_lr=0.000300 critic/critic_loss=0.021582 critic/predicted_qs=0.444543 critic/target_qs=0.400660 critic_lr=0.000300 temperature/temperature_loss=0.035047 temperature_lr=0.000300
+I0713 13:07:21.396259 133733199308608 checkpoints.py:574] Saving checkpoint at step: 200
+I0713 13:07:21.406685 133733199308608 checkpoints.py:662] Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+I0713 13:07:21.432291 133733199308608 checkpointer.py:189] [process=0] Started saving checkpoint to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_200.
+I0713 13:07:21.450423 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre.checkpoint_200.4
+I0713 13:07:21.459719 133733199308608 atomicity.py:175] Creating tmp directory /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_200.orbax-checkpoint-tmp-3
+I0713 13:07:21.470726 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post.checkpoint_200.5
+I0713 13:07:21.629024 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 1.8 GiB/s (total bytes: 290.2 MiB) (time elapsed: 153 milliseconds) (per-host)
+I0713 13:07:22.752312 133733199308608 future.py:88] ChainedFuture completed 2/2 futures in 1.12 seconds.
+I0713 13:07:22.752688 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/bytes_per_sec: 226.8 MiB/s (total bytes: 290.2 MiB) (time elapsed: a second) (per-host)
+I0713 13:07:22.752996 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save.checkpoint_200
+I0713 13:07:22.772982 133733199308608 type_handlers.py:562] [process=0][thread=MainThread] Validating params (raw input=1196, unique=598) in TensorStore KvStore: KvStore({
+  'base': {
+    'driver': 'file',
+    'path': '/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_200.orbax-checkpoint-tmp-3/',
+  },
+  'cache_pool': 'cache_pool#ocdbt',
+  'config': {
+    'compression': {'id': 'zstd'},
+    'max_decoded_node_bytes': 100000000,
+    'max_inline_value_bytes': 1024,
+    'uuid': '1ee2e46c2fc00a906c77a7150a40d5ca',
+    'version_tree_arity_log2': 4,
+  },
+  'context': {
+    'cache_pool#ocdbt': {'total_bytes_limit': 100000000},
+    'data_copy_concurrency': {},
+    'file_io_concurrency': {'limit': 128},
+    'file_io_locking': {},
+    'file_io_mode': {},
+    'file_io_sync': True,
+    'ocdbt_coordinator': {},
+  },
+  'driver': 'ocdbt',
+  'experimental_read_coalescing_interval': '1ms',
+  'experimental_read_coalescing_merged_bytes': 500000000000,
+  'experimental_read_coalescing_threshold_bytes': 1000000,
+}).
+I0713 13:07:22.774496 133733199308608 atomicity.py:316] Renaming /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_200.orbax-checkpoint-tmp-3 to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_200
+I0713 13:07:22.776128 133733199308608 atomicity.py:518] [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_200`.
+I0713 13:07:22.776282 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize.checkpoint_200
+
+learner:  20%|██        | 201/1000 [03:40<15:42,  1.18s/it][A
+learner:  20%|██        | 202/1000 [03:41<14:56,  1.12s/it][A
+learner:  20%|██        | 203/1000 [03:42<13:54,  1.05s/it][A
+learner:  20%|██        | 204/1000 [03:43<13:00,  1.02it/s][A
+learner:  20%|██        | 205/1000 [03:44<13:03,  1.01it/s][A
+learner:  21%|██        | 206/1000 [03:45<13:24,  1.01s/it][A
+learner:  21%|██        | 207/1000 [03:46<13:00,  1.02it/s][A
+learner:  21%|██        | 208/1000 [03:46<12:32,  1.05it/s][A
+learner:  21%|██        | 209/1000 [03:47<12:04,  1.09it/s][A
+learner:  21%|██        | 210/1000 [03:48<11:55,  1.10it/s][A\n[TRAIN] step=210 actor/actor_loss=-0.974269 actor/entropy=0.417600 actor/temperature=0.009235 actor_lr=0.000300 critic/critic_loss=0.047984 critic/predicted_qs=0.903718 critic/target_qs=0.758141 critic_lr=0.000300 temperature/temperature_loss=0.010662 temperature_lr=0.000300
+
+learner:  21%|██        | 211/1000 [03:49<11:17,  1.16it/s][A
+learner:  21%|██        | 212/1000 [03:50<11:09,  1.18it/s][A
+learner:  21%|██▏       | 213/1000 [03:51<11:57,  1.10it/s][A
+learner:  21%|██▏       | 214/1000 [03:52<11:30,  1.14it/s][A
+learner:  22%|██▏       | 215/1000 [03:53<11:48,  1.11it/s][A
+learner:  22%|██▏       | 216/1000 [03:53<11:16,  1.16it/s][A
+learner:  22%|██▏       | 217/1000 [03:54<10:52,  1.20it/s][A
+learner:  22%|██▏       | 218/1000 [03:55<10:38,  1.23it/s][A
+learner:  22%|██▏       | 219/1000 [03:56<10:08,  1.28it/s][A
+learner:  22%|██▏       | 220/1000 [03:56<10:18,  1.26it/s][A\n[TRAIN] step=220 actor/actor_loss=-0.312568 actor/entropy=-0.116940 actor/temperature=0.009219 actor_lr=0.000300 critic/critic_loss=0.280642 critic/predicted_qs=0.321069 critic/target_qs=0.039639 critic_lr=0.000300 temperature/temperature_loss=0.005672 temperature_lr=0.000300
+
+learner:  22%|██▏       | 221/1000 [03:57<10:03,  1.29it/s][A
+learner:  22%|██▏       | 222/1000 [03:58<09:46,  1.33it/s][A
+learner:  22%|██▏       | 223/1000 [03:59<09:35,  1.35it/s][A
+learner:  22%|██▏       | 224/1000 [03:59<09:25,  1.37it/s][A
+learner:  22%|██▎       | 225/1000 [04:00<09:12,  1.40it/s][A
+learner:  23%|██▎       | 226/1000 [04:01<09:36,  1.34it/s][A
+learner:  23%|██▎       | 227/1000 [04:02<09:42,  1.33it/s][A
+learner:  23%|██▎       | 228/1000 [04:02<09:55,  1.30it/s][A
+learner:  23%|██▎       | 229/1000 [04:03<09:45,  1.32it/s][A
+learner:  23%|██▎       | 230/1000 [04:04<09:31,  1.35it/s][A\n[TRAIN] step=230 actor/actor_loss=-0.517141 actor/entropy=-1.577980 actor/temperature=0.009207 actor_lr=0.000300 critic/critic_loss=0.057752 critic/predicted_qs=0.440413 critic/target_qs=0.643097 critic_lr=0.000300 temperature/temperature_loss=0.007623 temperature_lr=0.000300
+
+learner:  23%|██▎       | 231/1000 [04:04<09:14,  1.39it/s][A
+learner:  23%|██▎       | 232/1000 [04:05<08:55,  1.43it/s][A
+learner:  23%|██▎       | 233/1000 [04:06<08:58,  1.43it/s][A
+learner:  23%|██▎       | 234/1000 [04:07<09:05,  1.40it/s][A
+learner:  24%|██▎       | 235/1000 [04:07<08:58,  1.42it/s][A
+learner:  24%|██▎       | 236/1000 [04:08<08:45,  1.45it/s][A
+learner:  24%|██▎       | 237/1000 [04:09<08:38,  1.47it/s][A
+learner:  24%|██▍       | 238/1000 [04:09<08:38,  1.47it/s][A
+learner:  24%|██▍       | 239/1000 [04:10<08:41,  1.46it/s][Areplay buffer:  12%|█▏        | 612/5000 [04:11<4:21:24,  3.57s/it]
+learner:  24%|██▍       | 240/1000 [04:11<08:47,  1.44it/s][A\n[TRAIN] step=240 actor/actor_loss=-0.641900 actor/entropy=-1.150034 actor/temperature=0.009192 actor_lr=0.000300 critic/critic_loss=0.048327 critic/predicted_qs=0.600975 critic/target_qs=0.626742 critic_lr=0.000300 temperature/temperature_loss=0.003953 temperature_lr=0.000300
+replay buffer:  12%|█▏        | 616/5000 [04:11<3:22:15,  2.77s/it]
+learner:  24%|██▍       | 241/1000 [04:11<09:09,  1.38it/s][Areplay buffer:  12%|█▏        | 621/5000 [04:12<2:25:07,  1.99s/it]
+learner:  24%|██▍       | 242/1000 [04:12<09:26,  1.34it/s][Areplay buffer:  12%|█▎        | 625/5000 [04:13<1:51:05,  1.52s/it]
+learner:  24%|██▍       | 243/1000 [04:13<09:04,  1.39it/s][Areplay buffer:  13%|█▎        | 631/5000 [04:14<1:15:00,  1.03s/it]
+learner:  24%|██▍       | 244/1000 [04:14<09:12,  1.37it/s][Areplay buffer:  13%|█▎        | 638/5000 [04:14<50:16,  1.45it/s]  
+learner:  24%|██▍       | 245/1000 [04:14<09:30,  1.32it/s][Areplay buffer:  13%|█▎        | 645/5000 [04:15<35:56,  2.02it/s]
+learner:  25%|██▍       | 246/1000 [04:15<09:55,  1.27it/s][Areplay buffer:  13%|█▎        | 652/5000 [04:16<26:41,  2.72it/s]
+learner:  25%|██▍       | 247/1000 [04:16<09:52,  1.27it/s][Areplay buffer:  13%|█▎        | 658/5000 [04:17<21:46,  3.32it/s]
+learner:  25%|██▍       | 248/1000 [04:17<09:56,  1.26it/s][Areplay buffer:  13%|█▎        | 664/5000 [04:18<18:08,  3.98it/s]
+learner:  25%|██▍       | 249/1000 [04:18<09:52,  1.27it/s][Areplay buffer:  13%|█▎        | 670/5000 [04:18<15:29,  4.66it/s]
+learner:  25%|██▌       | 250/1000 [04:18<09:46,  1.28it/s][A\n[TRAIN] step=250 actor/actor_loss=-0.838911 actor/entropy=-1.262695 actor/temperature=0.009176 actor_lr=0.000300 critic/critic_loss=0.055948 critic/predicted_qs=0.807608 critic/target_qs=0.785629 critic_lr=0.000300 temperature/temperature_loss=0.002481 temperature_lr=0.000300
+replay buffer:  14%|█▎        | 677/5000 [04:19<13:00,  5.54it/s]
+learner:  25%|██▌       | 251/1000 [04:19<09:43,  1.28it/s][Areplay buffer:  14%|█▎        | 682/5000 [04:20<12:23,  5.81it/s]
+learner:  25%|██▌       | 252/1000 [04:20<09:34,  1.30it/s][Areplay buffer:  14%|█▍        | 688/5000 [04:21<11:25,  6.29it/s]
+learner:  25%|██▌       | 253/1000 [04:21<09:33,  1.30it/s][Areplay buffer:  14%|█▍        | 695/5000 [04:22<10:22,  6.91it/s]
+learner:  25%|██▌       | 254/1000 [04:22<09:42,  1.28it/s][Areplay buffer:  14%|█▍        | 700/5000 [04:22<10:11,  7.03it/s]
+learner:  26%|██▌       | 255/1000 [04:22<09:18,  1.33it/s][Areplay buffer:  14%|█▍        | 706/5000 [04:23<09:37,  7.43it/s]
+learner:  26%|██▌       | 256/1000 [04:23<09:06,  1.36it/s][Areplay buffer:  14%|█▍        | 712/5000 [04:24<09:13,  7.74it/s]
+learner:  26%|██▌       | 257/1000 [04:24<08:58,  1.38it/s][Areplay buffer:  14%|█▍        | 719/5000 [04:24<08:44,  8.16it/s]
+learner:  26%|██▌       | 258/1000 [04:24<09:07,  1.36it/s][Areplay buffer:  14%|█▍        | 725/5000 [04:25<08:40,  8.21it/s]
+learner:  26%|██▌       | 259/1000 [04:25<09:02,  1.37it/s][Areplay buffer:  15%|█▍        | 733/5000 [04:26<08:13,  8.64it/s]
+learner:  26%|██▌       | 260/1000 [04:26<09:24,  1.31it/s][A\n[TRAIN] step=260 actor/actor_loss=-0.610794 actor/entropy=-0.714149 actor/temperature=0.009159 actor_lr=0.000300 critic/critic_loss=0.031323 critic/predicted_qs=0.526271 critic/target_qs=0.609756 critic_lr=0.000300 temperature/temperature_loss=0.015608 temperature_lr=0.000300
+replay buffer:  15%|█▍        | 742/5000 [04:27<07:43,  9.19it/s]
+learner:  26%|██▌       | 261/1000 [04:27<09:47,  1.26it/s][Areplay buffer:  15%|█▍        | 748/5000 [04:28<08:05,  8.76it/s]
+learner:  26%|██▌       | 262/1000 [04:28<09:43,  1.26it/s][Areplay buffer:  15%|█▌        | 754/5000 [04:28<08:23,  8.43it/s]
+learner:  26%|██▋       | 263/1000 [04:28<09:40,  1.27it/s][Areplay buffer:  15%|█▌        | 761/5000 [04:29<08:15,  8.55it/s]
+learner:  26%|██▋       | 264/1000 [04:29<09:41,  1.27it/s][Areplay buffer:  15%|█▌        | 767/5000 [04:30<08:15,  8.54it/s]
+learner:  26%|██▋       | 265/1000 [04:30<09:22,  1.31it/s][Areplay buffer:  15%|█▌        | 774/5000 [04:31<08:01,  8.78it/s]
+learner:  27%|██▋       | 266/1000 [04:31<09:17,  1.32it/s][Areplay buffer:  16%|█▌        | 780/5000 [04:31<08:20,  8.44it/s]
+learner:  27%|██▋       | 267/1000 [04:31<09:21,  1.30it/s][Areplay buffer:  16%|█▌        | 786/5000 [04:32<08:28,  8.29it/s]
+learner:  27%|██▋       | 268/1000 [04:32<09:18,  1.31it/s][Areplay buffer:  16%|█▌        | 793/5000 [04:33<08:12,  8.54it/s]
+learner:  27%|██▋       | 269/1000 [04:33<09:18,  1.31it/s][Areplay buffer:  16%|█▌        | 798/5000 [04:34<08:43,  8.03it/s]
+learner:  27%|██▋       | 270/1000 [04:34<09:11,  1.32it/s][A\n[TRAIN] step=270 actor/actor_loss=-0.731115 actor/entropy=-0.446881 actor/temperature=0.009142 actor_lr=0.000300 critic/critic_loss=0.047340 critic/predicted_qs=0.698624 critic/target_qs=0.513116 critic_lr=0.000300 temperature/temperature_loss=0.014541 temperature_lr=0.000300
+replay buffer:  16%|█▌        | 804/5000 [04:34<08:36,  8.12it/s]
+learner:  27%|██▋       | 271/1000 [04:34<09:03,  1.34it/s][Areplay buffer:  16%|█▌        | 808/5000 [04:35<09:28,  7.37it/s]
+learner:  27%|██▋       | 272/1000 [04:35<08:56,  1.36it/s][Areplay buffer:  16%|█▌        | 810/5000 [04:36<11:01,  6.34it/s]
+learner:  27%|██▋       | 273/1000 [04:36<08:25,  1.44it/s][A
+learner:  27%|██▋       | 274/1000 [04:36<08:12,  1.47it/s][A
+learner:  28%|██▊       | 275/1000 [04:37<08:02,  1.50it/s][A
+learner:  28%|██▊       | 276/1000 [04:38<08:02,  1.50it/s][A
+learner:  28%|██▊       | 277/1000 [04:38<08:18,  1.45it/s][A
+learner:  28%|██▊       | 278/1000 [04:39<08:26,  1.43it/s][A
+learner:  28%|██▊       | 279/1000 [04:40<08:41,  1.38it/s][A
+learner:  28%|██▊       | 280/1000 [04:41<08:57,  1.34it/s][A\n[TRAIN] step=280 actor/actor_loss=-1.031770 actor/entropy=-0.333778 actor/temperature=0.009114 actor_lr=0.000300 critic/critic_loss=0.036885 critic/predicted_qs=0.923600 critic/target_qs=1.050688 critic_lr=0.000300 temperature/temperature_loss=0.010576 temperature_lr=0.000300
+
+learner:  28%|██▊       | 281/1000 [04:41<08:51,  1.35it/s][A
+learner:  28%|██▊       | 282/1000 [04:42<09:06,  1.31it/s][A
+learner:  28%|██▊       | 283/1000 [04:43<09:00,  1.33it/s][A
+learner:  28%|██▊       | 284/1000 [04:44<08:52,  1.34it/s][A
+learner:  28%|██▊       | 285/1000 [04:44<08:49,  1.35it/s][A
+learner:  29%|██▊       | 286/1000 [04:45<08:55,  1.33it/s][A
+learner:  29%|██▊       | 287/1000 [04:46<08:58,  1.32it/s][A
+learner:  29%|██▉       | 288/1000 [04:47<09:05,  1.31it/s][A
+learner:  29%|██▉       | 289/1000 [04:48<09:08,  1.30it/s][A
+learner:  29%|██▉       | 290/1000 [04:48<08:59,  1.32it/s][A\n[TRAIN] step=290 actor/actor_loss=-0.777155 actor/entropy=-0.846410 actor/temperature=0.009090 actor_lr=0.000300 critic/critic_loss=0.019631 critic/predicted_qs=0.706152 critic/target_qs=0.710150 critic_lr=0.000300 temperature/temperature_loss=0.025176 temperature_lr=0.000300
+
+learner:  29%|██▉       | 291/1000 [04:49<09:08,  1.29it/s][A
+learner:  29%|██▉       | 292/1000 [04:50<09:08,  1.29it/s][A
+learner:  29%|██▉       | 293/1000 [04:51<09:16,  1.27it/s][A
+learner:  29%|██▉       | 294/1000 [04:52<10:24,  1.13it/s][A
+learner:  30%|██▉       | 295/1000 [04:53<10:01,  1.17it/s][A
+learner:  30%|██▉       | 296/1000 [04:53<09:47,  1.20it/s][A
+learner:  30%|██▉       | 297/1000 [04:54<09:30,  1.23it/s][A
+learner:  30%|██▉       | 298/1000 [04:55<09:28,  1.23it/s][A
+learner:  30%|██▉       | 299/1000 [04:56<09:17,  1.26it/s][A
+learner:  30%|███       | 300/1000 [04:56<09:08,  1.28it/s][A\n[TRAIN] step=300 actor/actor_loss=-1.095070 actor/entropy=0.068281 actor/temperature=0.009058 actor_lr=0.000300 critic/critic_loss=0.034450 critic/predicted_qs=1.064214 critic/target_qs=0.951218 critic_lr=0.000300 temperature/temperature_loss=0.014102 temperature_lr=0.000300
+
+learner:  30%|███       | 301/1000 [04:57<09:10,  1.27it/s][A
+learner:  30%|███       | 302/1000 [04:58<09:16,  1.26it/s][A
+learner:  30%|███       | 303/1000 [04:59<08:56,  1.30it/s][A
+learner:  30%|███       | 304/1000 [04:59<08:44,  1.33it/s][A
+learner:  30%|███       | 305/1000 [05:00<08:40,  1.34it/s][A
+learner:  31%|███       | 306/1000 [05:01<08:44,  1.32it/s][A
+learner:  31%|███       | 307/1000 [05:02<08:46,  1.32it/s][A
+learner:  31%|███       | 308/1000 [05:03<08:50,  1.30it/s][A
+learner:  31%|███       | 309/1000 [05:03<09:04,  1.27it/s][A
+learner:  31%|███       | 310/1000 [05:04<09:22,  1.23it/s][A\n[TRAIN] step=310 actor/actor_loss=-1.106441 actor/entropy=0.403949 actor/temperature=0.009026 actor_lr=0.000300 critic/critic_loss=0.012375 critic/predicted_qs=1.060989 critic/target_qs=1.073687 critic_lr=0.000300 temperature/temperature_loss=0.015639 temperature_lr=0.000300
+
+learner:  31%|███       | 311/1000 [05:05<09:14,  1.24it/s][A
+learner:  31%|███       | 312/1000 [05:06<09:10,  1.25it/s][A
+learner:  31%|███▏      | 313/1000 [05:06<08:44,  1.31it/s][A
+learner:  31%|███▏      | 314/1000 [05:07<08:44,  1.31it/s][A
+learner:  32%|███▏      | 315/1000 [05:08<08:46,  1.30it/s][A
+learner:  32%|███▏      | 316/1000 [05:09<08:37,  1.32it/s][A
+learner:  32%|███▏      | 317/1000 [05:09<08:37,  1.32it/s][A
+learner:  32%|███▏      | 318/1000 [05:10<08:42,  1.30it/s][A
+learner:  32%|███▏      | 319/1000 [05:11<08:30,  1.33it/s][A
+learner:  32%|███▏      | 320/1000 [05:12<08:16,  1.37it/s][A\n[TRAIN] step=320 actor/actor_loss=-1.099358 actor/entropy=0.014071 actor/temperature=0.008988 actor_lr=0.000300 critic/critic_loss=0.015925 critic/predicted_qs=1.083686 critic/target_qs=1.174295 critic_lr=0.000300 temperature/temperature_loss=0.014262 temperature_lr=0.000300
+
+learner:  32%|███▏      | 321/1000 [05:12<08:12,  1.38it/s][A
+learner:  32%|███▏      | 322/1000 [05:13<08:20,  1.35it/s][A
+learner:  32%|███▏      | 323/1000 [05:14<08:26,  1.34it/s][A
+learner:  32%|███▏      | 324/1000 [05:15<08:46,  1.28it/s][A
+learner:  32%|███▎      | 325/1000 [05:15<08:26,  1.33it/s][A
+learner:  33%|███▎      | 326/1000 [05:16<08:26,  1.33it/s][A
+learner:  33%|███▎      | 327/1000 [05:17<08:31,  1.32it/s][A
+learner:  33%|███▎      | 328/1000 [05:18<08:41,  1.29it/s][A
+learner:  33%|███▎      | 329/1000 [05:19<08:42,  1.28it/s][A
+learner:  33%|███▎      | 330/1000 [05:19<08:36,  1.30it/s][A\n[TRAIN] step=330 actor/actor_loss=-1.190169 actor/entropy=0.801239 actor/temperature=0.008957 actor_lr=0.000300 critic/critic_loss=0.019021 critic/predicted_qs=1.192827 critic/target_qs=1.102426 critic_lr=0.000300 temperature/temperature_loss=0.013831 temperature_lr=0.000300
+
+learner:  33%|███▎      | 331/1000 [05:20<08:54,  1.25it/s][A
+learner:  33%|███▎      | 332/1000 [05:21<08:42,  1.28it/s][A
+learner:  33%|███▎      | 333/1000 [05:22<08:34,  1.30it/s][A
+learner:  33%|███▎      | 334/1000 [05:22<08:22,  1.33it/s][A
+learner:  34%|███▎      | 335/1000 [05:23<08:16,  1.34it/s][A
+learner:  34%|███▎      | 336/1000 [05:24<07:53,  1.40it/s][A
+learner:  34%|███▎      | 337/1000 [05:25<08:17,  1.33it/s][A
+learner:  34%|███▍      | 338/1000 [05:25<08:30,  1.30it/s][A
+learner:  34%|███▍      | 339/1000 [05:26<08:30,  1.29it/s][A
+learner:  34%|███▍      | 340/1000 [05:27<08:47,  1.25it/s][A\n[TRAIN] step=340 actor/actor_loss=-0.985767 actor/entropy=-0.686645 actor/temperature=0.008922 actor_lr=0.000300 critic/critic_loss=0.030152 critic/predicted_qs=1.008358 critic/target_qs=0.862945 critic_lr=0.000300 temperature/temperature_loss=0.007515 temperature_lr=0.000300
+
+learner:  34%|███▍      | 341/1000 [05:28<08:46,  1.25it/s][A
+learner:  34%|███▍      | 342/1000 [05:29<08:55,  1.23it/s][A
+learner:  34%|███▍      | 343/1000 [05:29<08:44,  1.25it/s][A
+learner:  34%|███▍      | 344/1000 [05:30<08:41,  1.26it/s][A
+learner:  34%|███▍      | 345/1000 [05:31<08:32,  1.28it/s][A
+learner:  35%|███▍      | 346/1000 [05:32<08:38,  1.26it/s][A
+learner:  35%|███▍      | 347/1000 [05:33<08:35,  1.27it/s][A
+learner:  35%|███▍      | 348/1000 [05:33<08:48,  1.23it/s][A
+learner:  35%|███▍      | 349/1000 [05:34<08:24,  1.29it/s][A
+learner:  35%|███▌      | 350/1000 [05:35<07:53,  1.37it/s][A\n[TRAIN] step=350 actor/actor_loss=-1.481690 actor/entropy=-0.401920 actor/temperature=0.008891 actor_lr=0.000300 critic/critic_loss=0.046383 critic/predicted_qs=1.536662 critic/target_qs=1.524578 critic_lr=0.000300 temperature/temperature_loss=0.016760 temperature_lr=0.000300
+
+learner:  35%|███▌      | 351/1000 [05:36<08:24,  1.29it/s][Areplay buffer:  16%|█▌        | 812/5000 [05:37<5:55:19,  5.09s/it]
+learner:  35%|███▌      | 352/1000 [05:37<08:43,  1.24it/s][Areplay buffer:  16%|█▋        | 815/5000 [05:37<4:27:02,  3.83s/it]
+learner:  35%|███▌      | 353/1000 [05:37<08:09,  1.32it/s][Areplay buffer:  16%|█▋        | 819/5000 [05:38<3:02:07,  2.61s/it]
+learner:  35%|███▌      | 354/1000 [05:38<07:36,  1.42it/s][Areplay buffer:  16%|█▋        | 823/5000 [05:38<2:06:52,  1.82s/it]
+learner:  36%|███▌      | 355/1000 [05:38<07:11,  1.49it/s][Areplay buffer:  17%|█▋        | 827/5000 [05:39<1:30:36,  1.30s/it]
+learner:  36%|███▌      | 356/1000 [05:39<07:11,  1.49it/s][Areplay buffer:  17%|█▋        | 831/5000 [05:40<1:05:31,  1.06it/s]
+learner:  36%|███▌      | 357/1000 [05:40<06:50,  1.57it/s][Areplay buffer:  17%|█▋        | 836/5000 [05:40<45:29,  1.53it/s]  
+learner:  36%|███▌      | 358/1000 [05:40<06:57,  1.54it/s][Areplay buffer:  17%|█▋        | 839/5000 [05:41<38:16,  1.81it/s]
+learner:  36%|███▌      | 359/1000 [05:41<06:54,  1.55it/s][Areplay buffer:  17%|█▋        | 844/5000 [05:42<27:47,  2.49it/s]
+learner:  36%|███▌      | 360/1000 [05:42<06:54,  1.54it/s][A\n[TRAIN] step=360 actor/actor_loss=-1.000876 actor/entropy=-0.283409 actor/temperature=0.008861 actor_lr=0.000300 critic/critic_loss=0.026417 critic/predicted_qs=0.922736 critic/target_qs=1.031549 critic_lr=0.000300 temperature/temperature_loss=0.016244 temperature_lr=0.000300
+replay buffer:  17%|█▋        | 847/5000 [05:42<24:42,  2.80it/s]
+learner:  36%|███▌      | 361/1000 [05:42<06:51,  1.55it/s][Areplay buffer:  17%|█▋        | 851/5000 [05:43<20:16,  3.41it/s]
+learner:  36%|███▌      | 362/1000 [05:43<06:43,  1.58it/s][Areplay buffer:  17%|█▋        | 855/5000 [05:43<17:28,  3.95it/s]
+learner:  36%|███▋      | 363/1000 [05:43<06:45,  1.57it/s][Areplay buffer:  17%|█▋        | 860/5000 [05:44<14:44,  4.68it/s]
+learner:  36%|███▋      | 364/1000 [05:44<06:58,  1.52it/s][Areplay buffer:  17%|█▋        | 864/5000 [05:45<13:46,  5.00it/s]
+learner:  36%|███▋      | 365/1000 [05:45<06:58,  1.52it/s][Areplay buffer:  17%|█▋        | 868/5000 [05:45<12:39,  5.44it/s]
+learner:  37%|███▋      | 366/1000 [05:45<06:42,  1.57it/s][Areplay buffer:  17%|█▋        | 873/5000 [05:46<11:26,  6.01it/s]
+learner:  37%|███▋      | 367/1000 [05:46<06:47,  1.55it/s][Areplay buffer:  18%|█▊        | 876/5000 [05:47<12:08,  5.66it/s]
+learner:  37%|███▋      | 368/1000 [05:47<06:45,  1.56it/s][Areplay buffer:  18%|█▊        | 881/5000 [05:47<11:25,  6.01it/s]
+learner:  37%|███▋      | 369/1000 [05:47<07:03,  1.49it/s][Areplay buffer:  18%|█▊        | 885/5000 [05:48<11:31,  5.95it/s]
+learner:  37%|███▋      | 370/1000 [05:48<07:05,  1.48it/s][A\n[TRAIN] step=370 actor/actor_loss=-0.719601 actor/entropy=0.974586 actor/temperature=0.008828 actor_lr=0.000300 critic/critic_loss=0.043793 critic/predicted_qs=0.672509 critic/target_qs=0.796795 critic_lr=0.000300 temperature/temperature_loss=0.023313 temperature_lr=0.000300
+replay buffer:  18%|█▊        | 889/5000 [05:49<11:14,  6.10it/s]
+learner:  37%|███▋      | 371/1000 [05:49<06:53,  1.52it/s][Areplay buffer:  18%|█▊        | 894/5000 [05:49<10:33,  6.48it/s]
+learner:  37%|███▋      | 372/1000 [05:49<06:57,  1.51it/s][Areplay buffer:  18%|█▊        | 898/5000 [05:50<10:31,  6.50it/s]
+learner:  37%|███▋      | 373/1000 [05:50<06:46,  1.54it/s][Areplay buffer:  18%|█▊        | 902/5000 [05:51<10:24,  6.57it/s]
+learner:  37%|███▋      | 374/1000 [05:51<06:35,  1.58it/s][Areplay buffer:  18%|█▊        | 906/5000 [05:51<10:36,  6.43it/s]
+learner:  38%|███▊      | 375/1000 [05:51<06:38,  1.57it/s][Areplay buffer:  18%|█▊        | 911/5000 [05:52<09:51,  6.91it/s]
+learner:  38%|███▊      | 376/1000 [05:52<06:34,  1.58it/s][Areplay buffer:  18%|█▊        | 919/5000 [05:53<08:41,  7.83it/s]
+learner:  38%|███▊      | 377/1000 [05:53<07:14,  1.43it/s][Areplay buffer:  18%|█▊        | 924/5000 [05:53<08:49,  7.70it/s]
+learner:  38%|███▊      | 378/1000 [05:53<07:10,  1.44it/s][Areplay buffer:  19%|█▊        | 930/5000 [05:54<09:00,  7.52it/s]
+learner:  38%|███▊      | 379/1000 [05:54<07:36,  1.36it/s][Areplay buffer:  19%|█▊        | 937/5000 [05:55<08:27,  8.00it/s]
+learner:  38%|███▊      | 380/1000 [05:55<07:42,  1.34it/s][A\n[TRAIN] step=380 actor/actor_loss=-1.153489 actor/entropy=0.432756 actor/temperature=0.008800 actor_lr=0.000300 critic/critic_loss=0.022332 critic/predicted_qs=1.169841 critic/target_qs=1.090892 critic_lr=0.000300 temperature/temperature_loss=0.010587 temperature_lr=0.000300
+replay buffer:  19%|█▉        | 944/5000 [05:56<08:11,  8.25it/s]
+learner:  38%|███▊      | 381/1000 [05:56<07:50,  1.31it/s][Areplay buffer:  19%|█▉        | 951/5000 [05:57<08:00,  8.43it/s]
+learner:  38%|███▊      | 382/1000 [05:57<07:55,  1.30it/s][Areplay buffer:  19%|█▉        | 957/5000 [05:58<08:35,  7.84it/s]
+learner:  38%|███▊      | 383/1000 [05:58<08:19,  1.24it/s][Areplay buffer:  19%|█▉        | 963/5000 [05:58<08:34,  7.85it/s]
+learner:  38%|███▊      | 384/1000 [05:58<08:09,  1.26it/s][Areplay buffer:  19%|█▉        | 967/5000 [05:59<09:13,  7.29it/s]
+learner:  38%|███▊      | 385/1000 [05:59<07:49,  1.31it/s][Areplay buffer:  19%|█▉        | 972/5000 [06:00<09:07,  7.36it/s]
+learner:  39%|███▊      | 386/1000 [06:00<07:30,  1.36it/s][Areplay buffer:  20%|█▉        | 978/5000 [06:00<09:00,  7.45it/s]
+learner:  39%|███▊      | 387/1000 [06:00<07:39,  1.33it/s][Areplay buffer:  20%|█▉        | 983/5000 [06:01<09:18,  7.19it/s]
+learner:  39%|███▉      | 388/1000 [06:01<07:40,  1.33it/s][Areplay buffer:  20%|█▉        | 988/5000 [06:02<09:18,  7.19it/s]
+learner:  39%|███▉      | 389/1000 [06:02<07:29,  1.36it/s][Areplay buffer:  20%|█▉        | 993/5000 [06:03<09:12,  7.26it/s]
+learner:  39%|███▉      | 390/1000 [06:03<07:17,  1.40it/s][A\n[TRAIN] step=390 actor/actor_loss=-0.952772 actor/entropy=1.018555 actor/temperature=0.008776 actor_lr=0.000300 critic/critic_loss=0.014669 critic/predicted_qs=0.935116 critic/target_qs=0.927472 critic_lr=0.000300 temperature/temperature_loss=0.011590 temperature_lr=0.000300
+replay buffer:  20%|█▉        | 997/5000 [06:03<09:37,  6.93it/s]
+learner:  39%|███▉      | 391/1000 [06:03<07:05,  1.43it/s][Areplay buffer:  20%|██        | 1001/5000 [06:04<09:46,  6.82it/s]
+learner:  39%|███▉      | 392/1000 [06:04<06:48,  1.49it/s][Areplay buffer:  20%|██        | 1006/5000 [06:04<09:15,  7.19it/s]
+learner:  39%|███▉      | 393/1000 [06:04<06:37,  1.53it/s][Areplay buffer:  20%|██        | 1010/5000 [06:05<09:51,  6.75it/s]
+learner:  39%|███▉      | 394/1000 [06:05<06:43,  1.50it/s][A
+learner:  40%|███▉      | 395/1000 [06:06<06:05,  1.66it/s][A
+learner:  40%|███▉      | 396/1000 [06:06<05:44,  1.75it/s][A
+learner:  40%|███▉      | 397/1000 [06:06<05:10,  1.94it/s][A
+learner:  40%|███▉      | 398/1000 [06:07<04:48,  2.09it/s][A
+learner:  40%|███▉      | 399/1000 [06:07<04:36,  2.18it/s][A
+learner:  40%|████      | 400/1000 [06:08<04:18,  2.32it/s][A\n[TRAIN] step=400 actor/actor_loss=-0.770736 actor/entropy=-1.957144 actor/temperature=0.008747 actor_lr=0.000300 critic/critic_loss=0.015701 critic/predicted_qs=0.685028 critic/target_qs=0.732291 critic_lr=0.000300 temperature/temperature_loss=0.010098 temperature_lr=0.000300
+I0713 13:09:50.918578 133733199308608 checkpoints.py:574] Saving checkpoint at step: 400
+I0713 13:09:50.918768 133733199308608 checkpoints.py:662] Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+I0713 13:09:50.922153 133733199308608 checkpointer.py:189] [process=0] Started saving checkpoint to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_400.
+I0713 13:09:50.922747 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre.checkpoint_400.7
+I0713 13:09:50.924143 133733199308608 atomicity.py:175] Creating tmp directory /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_400.orbax-checkpoint-tmp-6
+I0713 13:09:50.925001 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post.checkpoint_400.8
+I0713 13:09:50.968675 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 6.6 GiB/s (total bytes: 290.2 MiB) (time elapsed: 42 milliseconds) (per-host)
+I0713 13:09:53.048662 133733199308608 future.py:88] ChainedFuture completed 2/2 futures in 2.07 seconds.
+I0713 13:09:53.048854 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/bytes_per_sec: 136.7 MiB/s (total bytes: 290.2 MiB) (time elapsed: 2 seconds) (per-host)
+I0713 13:09:53.049063 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save.checkpoint_400
+I0713 13:09:53.061150 133733199308608 type_handlers.py:562] [process=0][thread=MainThread] Validating params (raw input=1196, unique=598) in TensorStore KvStore: KvStore({
+  'base': {
+    'driver': 'file',
+    'path': '/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_400.orbax-checkpoint-tmp-6/',
+  },
+  'cache_pool': 'cache_pool#ocdbt',
+  'config': {
+    'compression': {'id': 'zstd'},
+    'max_decoded_node_bytes': 100000000,
+    'max_inline_value_bytes': 1024,
+    'uuid': '232b3ac716e94497b863a1d29609b72d',
+    'version_tree_arity_log2': 4,
+  },
+  'context': {
+    'cache_pool#ocdbt': {'total_bytes_limit': 100000000},
+    'data_copy_concurrency': {},
+    'file_io_concurrency': {'limit': 128},
+    'file_io_locking': {},
+    'file_io_mode': {},
+    'file_io_sync': True,
+    'ocdbt_coordinator': {},
+  },
+  'driver': 'ocdbt',
+  'experimental_read_coalescing_interval': '1ms',
+  'experimental_read_coalescing_merged_bytes': 500000000000,
+  'experimental_read_coalescing_threshold_bytes': 1000000,
+}).
+I0713 13:09:53.061743 133733199308608 atomicity.py:316] Renaming /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_400.orbax-checkpoint-tmp-6 to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_400
+I0713 13:09:53.062673 133733199308608 atomicity.py:518] [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_400`.
+I0713 13:09:53.062780 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize.checkpoint_400
+
+learner:  40%|████      | 401/1000 [06:10<10:35,  1.06s/it][A
+learner:  40%|████      | 402/1000 [06:11<08:27,  1.18it/s][A
+learner:  40%|████      | 403/1000 [06:11<07:03,  1.41it/s][A
+learner:  40%|████      | 404/1000 [06:11<06:02,  1.64it/s][A
+learner:  40%|████      | 405/1000 [06:12<05:20,  1.86it/s][A
+learner:  41%|████      | 406/1000 [06:12<04:54,  2.02it/s][A
+learner:  41%|████      | 407/1000 [06:12<04:31,  2.19it/s][A
+learner:  41%|████      | 408/1000 [06:13<04:16,  2.31it/s][A
+learner:  41%|████      | 409/1000 [06:13<04:05,  2.40it/s][A
+learner:  41%|████      | 410/1000 [06:14<04:06,  2.39it/s][A\n[TRAIN] step=410 actor/actor_loss=-0.768378 actor/entropy=-1.314063 actor/temperature=0.008727 actor_lr=0.000300 critic/critic_loss=0.026093 critic/predicted_qs=0.674163 critic/target_qs=0.687591 critic_lr=0.000300 temperature/temperature_loss=0.020592 temperature_lr=0.000300
+
+learner:  41%|████      | 411/1000 [06:14<04:08,  2.37it/s][A
+learner:  41%|████      | 412/1000 [06:14<04:00,  2.45it/s][A
+learner:  41%|████▏     | 413/1000 [06:15<03:54,  2.50it/s][A
+learner:  41%|████▏     | 414/1000 [06:15<03:50,  2.54it/s][A
+learner:  42%|████▏     | 415/1000 [06:16<03:44,  2.60it/s][A
+learner:  42%|████▏     | 416/1000 [06:16<03:43,  2.61it/s][A
+learner:  42%|████▏     | 417/1000 [06:16<03:41,  2.63it/s][A
+learner:  42%|████▏     | 418/1000 [06:17<03:40,  2.64it/s][A
+learner:  42%|████▏     | 419/1000 [06:17<03:40,  2.64it/s][A
+learner:  42%|████▏     | 420/1000 [06:17<03:37,  2.66it/s][A\n[TRAIN] step=420 actor/actor_loss=-1.176465 actor/entropy=-2.033545 actor/temperature=0.008699 actor_lr=0.000300 critic/critic_loss=0.019841 critic/predicted_qs=1.177081 critic/target_qs=1.099586 critic_lr=0.000300 temperature/temperature_loss=-0.001639 temperature_lr=0.000300
+
+learner:  42%|████▏     | 421/1000 [06:18<03:39,  2.64it/s][A
+learner:  42%|████▏     | 422/1000 [06:18<03:37,  2.66it/s][A
+learner:  42%|████▏     | 423/1000 [06:19<03:34,  2.69it/s][A
+learner:  42%|████▏     | 424/1000 [06:19<03:35,  2.68it/s][A
+learner:  42%|████▎     | 425/1000 [06:19<03:33,  2.69it/s][A
+learner:  43%|████▎     | 426/1000 [06:20<03:37,  2.64it/s][A
+learner:  43%|████▎     | 427/1000 [06:20<03:33,  2.68it/s][A
+learner:  43%|████▎     | 428/1000 [06:20<03:30,  2.71it/s][A
+learner:  43%|████▎     | 429/1000 [06:21<03:33,  2.67it/s][A
+learner:  43%|████▎     | 430/1000 [06:21<03:32,  2.68it/s][A\n[TRAIN] step=430 actor/actor_loss=-0.932126 actor/entropy=0.088970 actor/temperature=0.008677 actor_lr=0.000300 critic/critic_loss=0.022981 critic/predicted_qs=0.785007 critic/target_qs=0.867164 critic_lr=0.000300 temperature/temperature_loss=0.014739 temperature_lr=0.000300
+
+learner:  43%|████▎     | 431/1000 [06:22<03:30,  2.71it/s][A
+learner:  43%|████▎     | 432/1000 [06:22<03:28,  2.72it/s][A
+learner:  43%|████▎     | 433/1000 [06:22<03:28,  2.72it/s][A
+learner:  43%|████▎     | 434/1000 [06:23<03:28,  2.71it/s][A
+learner:  44%|████▎     | 435/1000 [06:23<03:30,  2.69it/s][A
+learner:  44%|████▎     | 436/1000 [06:23<03:28,  2.71it/s][A
+learner:  44%|████▎     | 437/1000 [06:24<03:28,  2.70it/s][A
+learner:  44%|████▍     | 438/1000 [06:24<03:27,  2.70it/s][A
+learner:  44%|████▍     | 439/1000 [06:24<03:27,  2.71it/s][A
+learner:  44%|████▍     | 440/1000 [06:25<03:31,  2.65it/s][A\n[TRAIN] step=440 actor/actor_loss=-1.429444 actor/entropy=1.098459 actor/temperature=0.008655 actor_lr=0.000300 critic/critic_loss=0.104368 critic/predicted_qs=1.360317 critic/target_qs=1.629237 critic_lr=0.000300 temperature/temperature_loss=-0.000683 temperature_lr=0.000300
+
+learner:  44%|████▍     | 441/1000 [06:25<03:31,  2.65it/s][A
+learner:  44%|████▍     | 442/1000 [06:26<03:29,  2.67it/s][A
+learner:  44%|████▍     | 443/1000 [06:26<03:32,  2.62it/s][A
+learner:  44%|████▍     | 444/1000 [06:26<03:31,  2.63it/s][A
+learner:  44%|████▍     | 445/1000 [06:27<03:30,  2.63it/s][A
+learner:  45%|████▍     | 446/1000 [06:27<03:33,  2.60it/s][A
+learner:  45%|████▍     | 447/1000 [06:28<03:28,  2.65it/s][A
+learner:  45%|████▍     | 448/1000 [06:28<03:28,  2.65it/s][A
+learner:  45%|████▍     | 449/1000 [06:28<03:24,  2.69it/s][A
+learner:  45%|████▌     | 450/1000 [06:29<03:24,  2.69it/s][A\n[TRAIN] step=450 actor/actor_loss=-0.903347 actor/entropy=0.150448 actor/temperature=0.008634 actor_lr=0.000300 critic/critic_loss=0.033387 critic/predicted_qs=0.841888 critic/target_qs=0.938917 critic_lr=0.000300 temperature/temperature_loss=0.012516 temperature_lr=0.000300
+
+learner:  45%|████▌     | 451/1000 [06:29<03:27,  2.65it/s][A
+learner:  45%|████▌     | 452/1000 [06:29<03:23,  2.69it/s][A
+learner:  45%|████▌     | 453/1000 [06:30<03:22,  2.70it/s][A
+learner:  45%|████▌     | 454/1000 [06:30<03:23,  2.69it/s][A
+learner:  46%|████▌     | 455/1000 [06:30<03:23,  2.68it/s][A
+learner:  46%|████▌     | 456/1000 [06:31<03:26,  2.64it/s][A
+learner:  46%|████▌     | 457/1000 [06:31<03:24,  2.65it/s][A
+learner:  46%|████▌     | 458/1000 [06:32<03:23,  2.67it/s][A
+learner:  46%|████▌     | 459/1000 [06:32<03:22,  2.67it/s][A
+learner:  46%|████▌     | 460/1000 [06:32<03:25,  2.63it/s][A\n[TRAIN] step=460 actor/actor_loss=-1.798717 actor/entropy=-0.161996 actor/temperature=0.008605 actor_lr=0.000300 critic/critic_loss=0.021795 critic/predicted_qs=1.710009 critic/target_qs=1.754167 critic_lr=0.000300 temperature/temperature_loss=0.006348 temperature_lr=0.000300
+
+learner:  46%|████▌     | 461/1000 [06:33<03:26,  2.61it/s][A
+learner:  46%|████▌     | 462/1000 [06:33<03:28,  2.58it/s][A
+learner:  46%|████▋     | 463/1000 [06:34<03:25,  2.62it/s][A
+learner:  46%|████▋     | 464/1000 [06:34<03:32,  2.53it/s][A
+learner:  46%|████▋     | 465/1000 [06:34<03:42,  2.40it/s][A
+learner:  47%|████▋     | 466/1000 [06:35<03:40,  2.42it/s][A
+learner:  47%|████▋     | 467/1000 [06:35<03:42,  2.39it/s][A
+learner:  47%|████▋     | 468/1000 [06:36<03:39,  2.42it/s][A
+learner:  47%|████▋     | 469/1000 [06:36<03:37,  2.44it/s][A
+learner:  47%|████▋     | 470/1000 [06:37<03:44,  2.36it/s][A\n[TRAIN] step=470 actor/actor_loss=-0.994755 actor/entropy=0.082907 actor/temperature=0.008574 actor_lr=0.000300 critic/critic_loss=0.028790 critic/predicted_qs=0.949322 critic/target_qs=1.038428 critic_lr=0.000300 temperature/temperature_loss=0.022448 temperature_lr=0.000300
+
+learner:  47%|████▋     | 471/1000 [06:37<03:46,  2.34it/s][A
+learner:  47%|████▋     | 472/1000 [06:37<03:49,  2.30it/s][A
+learner:  47%|████▋     | 473/1000 [06:38<03:52,  2.26it/s][A
+learner:  47%|████▋     | 474/1000 [06:38<03:55,  2.23it/s][A
+learner:  48%|████▊     | 475/1000 [06:39<03:57,  2.21it/s][A
+learner:  48%|████▊     | 476/1000 [06:39<03:50,  2.27it/s][A
+learner:  48%|████▊     | 477/1000 [06:40<03:39,  2.38it/s][A
+learner:  48%|████▊     | 478/1000 [06:40<03:33,  2.45it/s][A
+learner:  48%|████▊     | 479/1000 [06:40<03:25,  2.53it/s][A
+learner:  48%|████▊     | 480/1000 [06:41<03:24,  2.55it/s][A\n[TRAIN] step=480 actor/actor_loss=-2.013056 actor/entropy=-1.015614 actor/temperature=0.008536 actor_lr=0.000300 critic/critic_loss=0.048429 critic/predicted_qs=2.003884 critic/target_qs=1.812598 critic_lr=0.000300 temperature/temperature_loss=0.012779 temperature_lr=0.000300
+
+learner:  48%|████▊     | 481/1000 [06:41<03:23,  2.55it/s][A
+learner:  48%|████▊     | 482/1000 [06:41<03:19,  2.59it/s][A
+learner:  48%|████▊     | 483/1000 [06:42<03:18,  2.60it/s][A
+learner:  48%|████▊     | 484/1000 [06:42<03:21,  2.56it/s][A
+learner:  48%|████▊     | 485/1000 [06:43<03:20,  2.57it/s][A
+learner:  49%|████▊     | 486/1000 [06:43<03:35,  2.39it/s][A
+learner:  49%|████▊     | 487/1000 [06:44<03:34,  2.39it/s][A
+learner:  49%|████▉     | 488/1000 [06:44<03:28,  2.46it/s][A
+learner:  49%|████▉     | 489/1000 [06:44<03:25,  2.49it/s][A
+learner:  49%|████▉     | 490/1000 [06:45<03:25,  2.48it/s][A\n[TRAIN] step=490 actor/actor_loss=-0.732240 actor/entropy=-0.675179 actor/temperature=0.008498 actor_lr=0.000300 critic/critic_loss=0.020667 critic/predicted_qs=0.752338 critic/target_qs=0.728538 critic_lr=0.000300 temperature/temperature_loss=0.024113 temperature_lr=0.000300
+
+learner:  49%|████▉     | 491/1000 [06:45<03:22,  2.52it/s][A
+learner:  49%|████▉     | 492/1000 [06:45<03:17,  2.57it/s][A
+learner:  49%|████▉     | 493/1000 [06:46<03:19,  2.54it/s][A
+learner:  49%|████▉     | 494/1000 [06:46<03:20,  2.52it/s][A
+learner:  50%|████▉     | 495/1000 [06:47<03:20,  2.52it/s][A
+learner:  50%|████▉     | 496/1000 [06:47<03:16,  2.57it/s][A
+learner:  50%|████▉     | 497/1000 [06:47<03:12,  2.62it/s][A
+learner:  50%|████▉     | 498/1000 [06:48<03:11,  2.63it/s][A
+learner:  50%|████▉     | 499/1000 [06:48<03:10,  2.64it/s][A
+learner:  50%|█████     | 500/1000 [06:49<03:08,  2.66it/s][A\n[TRAIN] step=500 actor/actor_loss=-1.429124 actor/entropy=0.258819 actor/temperature=0.008458 actor_lr=0.000300 critic/critic_loss=0.012267 critic/predicted_qs=1.372869 critic/target_qs=1.360028 critic_lr=0.000300 temperature/temperature_loss=0.014043 temperature_lr=0.000300
+
+learner:  50%|█████     | 501/1000 [06:49<03:09,  2.63it/s][A
+learner:  50%|█████     | 502/1000 [06:49<03:11,  2.60it/s][A
+learner:  50%|█████     | 503/1000 [06:50<03:11,  2.60it/s][A
+learner:  50%|█████     | 504/1000 [06:50<03:11,  2.60it/s][A
+learner:  50%|█████     | 505/1000 [06:50<03:07,  2.64it/s][A
+learner:  51%|█████     | 506/1000 [06:51<03:09,  2.61it/s][A
+learner:  51%|█████     | 507/1000 [06:51<03:07,  2.63it/s][A
+learner:  51%|█████     | 508/1000 [06:52<03:07,  2.63it/s][A
+learner:  51%|█████     | 509/1000 [06:52<03:06,  2.63it/s][A
+learner:  51%|█████     | 510/1000 [06:52<03:04,  2.66it/s][A\n[TRAIN] step=510 actor/actor_loss=-1.618246 actor/entropy=-0.135294 actor/temperature=0.008428 actor_lr=0.000300 critic/critic_loss=0.050461 critic/predicted_qs=1.636079 critic/target_qs=1.476811 critic_lr=0.000300 temperature/temperature_loss=0.022198 temperature_lr=0.000300
+
+learner:  51%|█████     | 511/1000 [06:53<03:11,  2.55it/s][A
+learner:  51%|█████     | 512/1000 [06:53<03:17,  2.47it/s][A
+learner:  51%|█████▏    | 513/1000 [06:54<03:19,  2.44it/s][A
+learner:  51%|█████▏    | 514/1000 [06:54<03:15,  2.48it/s][A
+learner:  52%|█████▏    | 515/1000 [06:54<03:07,  2.58it/s][A
+learner:  52%|█████▏    | 516/1000 [06:55<03:06,  2.59it/s][A
+learner:  52%|█████▏    | 517/1000 [06:55<03:04,  2.62it/s][A
+learner:  52%|█████▏    | 518/1000 [06:56<03:01,  2.66it/s][A
+learner:  52%|█████▏    | 519/1000 [06:56<03:05,  2.60it/s][A
+learner:  52%|█████▏    | 520/1000 [06:56<03:23,  2.36it/s][A\n[TRAIN] step=520 actor/actor_loss=-1.847238 actor/entropy=-0.547678 actor/temperature=0.008398 actor_lr=0.000300 critic/critic_loss=0.011059 critic/predicted_qs=1.836328 critic/target_qs=1.892314 critic_lr=0.000300 temperature/temperature_loss=0.015312 temperature_lr=0.000300
+
+learner:  52%|█████▏    | 521/1000 [06:57<03:23,  2.36it/s][A
+learner:  52%|█████▏    | 522/1000 [06:57<03:17,  2.42it/s][A
+learner:  52%|█████▏    | 523/1000 [06:58<03:09,  2.51it/s][A
+learner:  52%|█████▏    | 524/1000 [06:58<03:12,  2.47it/s][A
+learner:  52%|█████▎    | 525/1000 [06:58<03:12,  2.47it/s][A
+learner:  53%|█████▎    | 526/1000 [06:59<03:09,  2.51it/s][A
+learner:  53%|█████▎    | 527/1000 [06:59<03:07,  2.53it/s][A
+learner:  53%|█████▎    | 528/1000 [07:00<03:11,  2.46it/s][A
+learner:  53%|█████▎    | 529/1000 [07:00<03:09,  2.48it/s][A
+learner:  53%|█████▎    | 530/1000 [07:00<03:03,  2.57it/s][A\n[TRAIN] step=530 actor/actor_loss=-1.192090 actor/entropy=0.706332 actor/temperature=0.008362 actor_lr=0.000300 critic/critic_loss=0.023993 critic/predicted_qs=1.058802 critic/target_qs=1.191760 critic_lr=0.000300 temperature/temperature_loss=0.015755 temperature_lr=0.000300
+
+learner:  53%|█████▎    | 531/1000 [07:01<03:05,  2.53it/s][A
+learner:  53%|█████▎    | 532/1000 [07:01<03:04,  2.53it/s][A
+learner:  53%|█████▎    | 533/1000 [07:02<03:00,  2.58it/s][A
+learner:  53%|█████▎    | 534/1000 [07:02<02:59,  2.59it/s][A
+learner:  54%|█████▎    | 535/1000 [07:02<02:56,  2.64it/s][A
+learner:  54%|█████▎    | 536/1000 [07:03<02:55,  2.65it/s][A
+learner:  54%|█████▎    | 537/1000 [07:03<02:55,  2.64it/s][A
+learner:  54%|█████▍    | 538/1000 [07:03<02:52,  2.68it/s][A
+learner:  54%|█████▍    | 539/1000 [07:04<02:51,  2.68it/s][A
+learner:  54%|█████▍    | 540/1000 [07:04<02:59,  2.57it/s][A\n[TRAIN] step=540 actor/actor_loss=-1.587228 actor/entropy=-0.107839 actor/temperature=0.008325 actor_lr=0.000300 critic/critic_loss=0.024804 critic/predicted_qs=1.658401 critic/target_qs=1.548036 critic_lr=0.000300 temperature/temperature_loss=0.011094 temperature_lr=0.000300
+
+learner:  54%|█████▍    | 541/1000 [07:05<02:58,  2.56it/s][A
+learner:  54%|█████▍    | 542/1000 [07:05<03:01,  2.53it/s][A
+learner:  54%|█████▍    | 543/1000 [07:05<02:56,  2.59it/s][A
+learner:  54%|█████▍    | 544/1000 [07:06<02:56,  2.58it/s][A
+learner:  55%|█████▍    | 545/1000 [07:06<02:53,  2.62it/s][A
+learner:  55%|█████▍    | 546/1000 [07:07<02:59,  2.54it/s][A
+learner:  55%|█████▍    | 547/1000 [07:07<03:04,  2.45it/s][A
+learner:  55%|█████▍    | 548/1000 [07:07<03:01,  2.48it/s][A
+learner:  55%|█████▍    | 549/1000 [07:08<03:00,  2.50it/s][A
+learner:  55%|█████▌    | 550/1000 [07:08<02:57,  2.54it/s][A\n[TRAIN] step=550 actor/actor_loss=-1.478154 actor/entropy=-1.126887 actor/temperature=0.008294 actor_lr=0.000300 critic/critic_loss=0.006563 critic/predicted_qs=1.432666 critic/target_qs=1.475067 critic_lr=0.000300 temperature/temperature_loss=0.009016 temperature_lr=0.000300
+
+learner:  55%|█████▌    | 551/1000 [07:09<02:52,  2.61it/s][A
+learner:  55%|█████▌    | 552/1000 [07:09<02:52,  2.60it/s][A
+learner:  55%|█████▌    | 553/1000 [07:09<02:47,  2.66it/s][A
+learner:  55%|█████▌    | 554/1000 [07:10<02:45,  2.70it/s][A
+learner:  56%|█████▌    | 555/1000 [07:10<02:44,  2.71it/s][A
+learner:  56%|█████▌    | 556/1000 [07:10<02:41,  2.75it/s][A
+learner:  56%|█████▌    | 557/1000 [07:11<02:42,  2.72it/s][A
+learner:  56%|█████▌    | 558/1000 [07:11<02:49,  2.61it/s][A
+learner:  56%|█████▌    | 559/1000 [07:12<02:47,  2.64it/s][A
+learner:  56%|█████▌    | 560/1000 [07:12<02:47,  2.62it/s][A\n[TRAIN] step=560 actor/actor_loss=-1.560690 actor/entropy=0.314786 actor/temperature=0.008268 actor_lr=0.000300 critic/critic_loss=0.006119 critic/predicted_qs=1.544642 critic/target_qs=1.552153 critic_lr=0.000300 temperature/temperature_loss=0.017904 temperature_lr=0.000300
+
+learner:  56%|█████▌    | 561/1000 [07:12<02:47,  2.62it/s][A
+learner:  56%|█████▌    | 562/1000 [07:13<02:44,  2.66it/s][A
+learner:  56%|█████▋    | 563/1000 [07:13<02:51,  2.55it/s][A
+learner:  56%|█████▋    | 564/1000 [07:13<02:47,  2.60it/s][A
+learner:  56%|█████▋    | 565/1000 [07:14<02:55,  2.48it/s][A
+learner:  57%|█████▋    | 566/1000 [07:14<03:15,  2.22it/s][A
+learner:  57%|█████▋    | 567/1000 [07:15<03:07,  2.30it/s][A
+learner:  57%|█████▋    | 568/1000 [07:15<03:07,  2.30it/s][A
+learner:  57%|█████▋    | 569/1000 [07:16<03:02,  2.37it/s][A
+learner:  57%|█████▋    | 570/1000 [07:16<02:53,  2.47it/s][A\n[TRAIN] step=570 actor/actor_loss=-1.592881 actor/entropy=0.151142 actor/temperature=0.008234 actor_lr=0.000300 critic/critic_loss=0.025502 critic/predicted_qs=1.582278 critic/target_qs=1.473930 critic_lr=0.000300 temperature/temperature_loss=0.020891 temperature_lr=0.000300
+
+learner:  57%|█████▋    | 571/1000 [07:16<02:48,  2.55it/s][A
+learner:  57%|█████▋    | 572/1000 [07:17<02:46,  2.57it/s][A
+learner:  57%|█████▋    | 573/1000 [07:17<02:45,  2.58it/s][A
+learner:  57%|█████▋    | 574/1000 [07:18<02:42,  2.62it/s][A
+learner:  57%|█████▊    | 575/1000 [07:18<02:42,  2.61it/s][A
+learner:  58%|█████▊    | 576/1000 [07:18<02:39,  2.65it/s][A
+learner:  58%|█████▊    | 577/1000 [07:19<02:39,  2.66it/s][A
+learner:  58%|█████▊    | 578/1000 [07:19<02:40,  2.63it/s][A
+learner:  58%|█████▊    | 579/1000 [07:19<02:37,  2.68it/s][A
+learner:  58%|█████▊    | 580/1000 [07:20<02:37,  2.67it/s][A\n[TRAIN] step=580 actor/actor_loss=-1.561903 actor/entropy=-0.708880 actor/temperature=0.008199 actor_lr=0.000300 critic/critic_loss=0.014264 critic/predicted_qs=1.498801 critic/target_qs=1.547149 critic_lr=0.000300 temperature/temperature_loss=0.013393 temperature_lr=0.000300
+
+learner:  58%|█████▊    | 581/1000 [07:20<02:37,  2.66it/s][A
+learner:  58%|█████▊    | 582/1000 [07:21<02:37,  2.65it/s][A
+learner:  58%|█████▊    | 583/1000 [07:21<02:39,  2.62it/s][A
+learner:  58%|█████▊    | 584/1000 [07:21<02:37,  2.64it/s][A
+learner:  58%|█████▊    | 585/1000 [07:22<02:35,  2.66it/s][A
+learner:  59%|█████▊    | 586/1000 [07:22<02:36,  2.64it/s][A
+learner:  59%|█████▊    | 587/1000 [07:22<02:36,  2.64it/s][A
+learner:  59%|█████▉    | 588/1000 [07:23<02:36,  2.63it/s][A
+learner:  59%|█████▉    | 589/1000 [07:23<02:37,  2.61it/s][A
+learner:  59%|█████▉    | 590/1000 [07:24<02:42,  2.53it/s][A\n[TRAIN] step=590 actor/actor_loss=-1.555627 actor/entropy=-0.540597 actor/temperature=0.008173 actor_lr=0.000300 critic/critic_loss=0.019834 critic/predicted_qs=1.545534 critic/target_qs=1.608683 critic_lr=0.000300 temperature/temperature_loss=0.020110 temperature_lr=0.000300
+
+learner:  59%|█████▉    | 591/1000 [07:24<02:40,  2.54it/s][A
+learner:  59%|█████▉    | 592/1000 [07:24<02:38,  2.57it/s][A
+learner:  59%|█████▉    | 593/1000 [07:25<02:37,  2.58it/s][A
+learner:  59%|█████▉    | 594/1000 [07:25<02:35,  2.61it/s][A
+learner:  60%|█████▉    | 595/1000 [07:26<02:33,  2.64it/s][A
+learner:  60%|█████▉    | 596/1000 [07:26<02:31,  2.66it/s][A
+learner:  60%|█████▉    | 597/1000 [07:26<02:30,  2.69it/s][A
+learner:  60%|█████▉    | 598/1000 [07:27<02:31,  2.66it/s][A
+learner:  60%|█████▉    | 599/1000 [07:27<02:33,  2.61it/s][A
+learner:  60%|██████    | 600/1000 [07:27<02:33,  2.61it/s][A\n[TRAIN] step=600 actor/actor_loss=-1.466437 actor/entropy=-0.457872 actor/temperature=0.008141 actor_lr=0.000300 critic/critic_loss=0.560697 critic/predicted_qs=1.571023 critic/target_qs=1.129951 critic_lr=0.000300 temperature/temperature_loss=0.011042 temperature_lr=0.000300
+I0713 13:11:10.702665 133733199308608 checkpoints.py:574] Saving checkpoint at step: 600
+I0713 13:11:10.702831 133733199308608 checkpoints.py:662] Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+I0713 13:11:10.707168 133733199308608 checkpointer.py:189] [process=0] Started saving checkpoint to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_600.
+I0713 13:11:10.707722 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre.checkpoint_600.10
+I0713 13:11:10.708677 133733199308608 atomicity.py:175] Creating tmp directory /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_600.orbax-checkpoint-tmp-9
+I0713 13:11:10.710831 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post.checkpoint_600.11
+I0713 13:11:10.761763 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 5.7 GiB/s (total bytes: 290.2 MiB) (time elapsed: 49 milliseconds) (per-host)
+I0713 13:11:11.470276 133733199308608 future.py:88] ChainedFuture completed 2/2 futures in 0.71 seconds.
+I0713 13:11:11.470460 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/bytes_per_sec: 382.5 MiB/s (total bytes: 290.2 MiB) (time elapsed: 758 milliseconds) (per-host)
+I0713 13:11:11.470668 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save.checkpoint_600
+I0713 13:11:11.483750 133733199308608 type_handlers.py:562] [process=0][thread=MainThread] Validating params (raw input=1196, unique=598) in TensorStore KvStore: KvStore({
+  'base': {
+    'driver': 'file',
+    'path': '/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_600.orbax-checkpoint-tmp-9/',
+  },
+  'cache_pool': 'cache_pool#ocdbt',
+  'config': {
+    'compression': {'id': 'zstd'},
+    'max_decoded_node_bytes': 100000000,
+    'max_inline_value_bytes': 1024,
+    'uuid': '1a00fb162028eb0795b1fef7b76da54e',
+    'version_tree_arity_log2': 4,
+  },
+  'context': {
+    'cache_pool#ocdbt': {'total_bytes_limit': 100000000},
+    'data_copy_concurrency': {},
+    'file_io_concurrency': {'limit': 128},
+    'file_io_locking': {},
+    'file_io_mode': {},
+    'file_io_sync': True,
+    'ocdbt_coordinator': {},
+  },
+  'driver': 'ocdbt',
+  'experimental_read_coalescing_interval': '1ms',
+  'experimental_read_coalescing_merged_bytes': 500000000000,
+  'experimental_read_coalescing_threshold_bytes': 1000000,
+}).
+I0713 13:11:11.484323 133733199308608 atomicity.py:316] Renaming /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_600.orbax-checkpoint-tmp-9 to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_600
+I0713 13:11:11.485270 133733199308608 atomicity.py:518] [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_600`.
+I0713 13:11:11.485373 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize.checkpoint_600
+
+learner:  60%|██████    | 601/1000 [07:29<04:06,  1.62it/s][A
+learner:  60%|██████    | 602/1000 [07:29<03:43,  1.78it/s][A
+learner:  60%|██████    | 603/1000 [07:29<03:27,  1.91it/s][A
+learner:  60%|██████    | 604/1000 [07:30<03:27,  1.91it/s][A
+learner:  60%|██████    | 605/1000 [07:30<03:09,  2.08it/s][A
+learner:  61%|██████    | 606/1000 [07:31<02:56,  2.24it/s][A
+learner:  61%|██████    | 607/1000 [07:31<02:49,  2.32it/s][A
+learner:  61%|██████    | 608/1000 [07:31<02:41,  2.43it/s][A
+learner:  61%|██████    | 609/1000 [07:32<02:36,  2.49it/s][A
+learner:  61%|██████    | 610/1000 [07:32<02:30,  2.58it/s][A\n[TRAIN] step=610 actor/actor_loss=-1.736066 actor/entropy=-0.954488 actor/temperature=0.008112 actor_lr=0.000300 critic/critic_loss=0.020639 critic/predicted_qs=1.661186 critic/target_qs=1.695291 critic_lr=0.000300 temperature/temperature_loss=0.012072 temperature_lr=0.000300
+
+learner:  61%|██████    | 611/1000 [07:33<02:28,  2.63it/s][A
+learner:  61%|██████    | 612/1000 [07:33<02:28,  2.61it/s][A
+learner:  61%|██████▏   | 613/1000 [07:33<02:26,  2.63it/s][A
+learner:  61%|██████▏   | 614/1000 [07:34<02:26,  2.63it/s][A
+learner:  62%|██████▏   | 615/1000 [07:34<02:26,  2.62it/s][A
+learner:  62%|██████▏   | 616/1000 [07:34<02:24,  2.66it/s][A
+learner:  62%|██████▏   | 617/1000 [07:35<02:31,  2.54it/s][A
+learner:  62%|██████▏   | 618/1000 [07:35<02:30,  2.54it/s][A
+learner:  62%|██████▏   | 619/1000 [07:36<02:27,  2.58it/s][A
+learner:  62%|██████▏   | 620/1000 [07:36<02:26,  2.59it/s][A\n[TRAIN] step=620 actor/actor_loss=-2.180029 actor/entropy=2.298263 actor/temperature=0.008084 actor_lr=0.000300 critic/critic_loss=0.107580 critic/predicted_qs=2.103584 critic/target_qs=2.127515 critic_lr=0.000300 temperature/temperature_loss=0.018246 temperature_lr=0.000300
+
+learner:  62%|██████▏   | 621/1000 [07:36<02:24,  2.61it/s][A
+learner:  62%|██████▏   | 622/1000 [07:37<02:26,  2.57it/s][A
+learner:  62%|██████▏   | 623/1000 [07:37<02:29,  2.53it/s][A
+learner:  62%|██████▏   | 624/1000 [07:38<02:33,  2.44it/s][A
+learner:  62%|██████▎   | 625/1000 [07:38<02:30,  2.50it/s][A
+learner:  63%|██████▎   | 626/1000 [07:38<02:28,  2.51it/s][A
+learner:  63%|██████▎   | 627/1000 [07:39<02:24,  2.58it/s][A
+learner:  63%|██████▎   | 628/1000 [07:39<02:21,  2.62it/s][A
+learner:  63%|██████▎   | 629/1000 [07:40<02:20,  2.63it/s][A
+learner:  63%|██████▎   | 630/1000 [07:40<02:21,  2.61it/s][A\n[TRAIN] step=630 actor/actor_loss=-1.166079 actor/entropy=-0.980496 actor/temperature=0.008058 actor_lr=0.000300 critic/critic_loss=0.216431 critic/predicted_qs=0.987526 critic/target_qs=1.283938 critic_lr=0.000300 temperature/temperature_loss=0.006970 temperature_lr=0.000300
+
+learner:  63%|██████▎   | 631/1000 [07:40<02:19,  2.65it/s][A
+learner:  63%|██████▎   | 632/1000 [07:41<02:17,  2.67it/s][A
+learner:  63%|██████▎   | 633/1000 [07:41<02:18,  2.66it/s][A
+learner:  63%|██████▎   | 634/1000 [07:41<02:15,  2.70it/s][A
+learner:  64%|██████▎   | 635/1000 [07:42<02:15,  2.69it/s][A
+learner:  64%|██████▎   | 636/1000 [07:42<02:14,  2.71it/s][A
+learner:  64%|██████▎   | 637/1000 [07:43<02:16,  2.65it/s][A
+learner:  64%|██████▍   | 638/1000 [07:43<02:22,  2.55it/s][A
+learner:  64%|██████▍   | 639/1000 [07:43<02:18,  2.61it/s][A
+learner:  64%|██████▍   | 640/1000 [07:44<02:18,  2.59it/s][A\n[TRAIN] step=640 actor/actor_loss=-1.784804 actor/entropy=0.404518 actor/temperature=0.008038 actor_lr=0.000300 critic/critic_loss=0.064979 critic/predicted_qs=1.780164 critic/target_qs=1.771091 critic_lr=0.000300 temperature/temperature_loss=0.014161 temperature_lr=0.000300
+
+learner:  64%|██████▍   | 641/1000 [07:44<02:19,  2.58it/s][A
+learner:  64%|██████▍   | 642/1000 [07:45<02:17,  2.61it/s][A
+learner:  64%|██████▍   | 643/1000 [07:45<02:18,  2.58it/s][A
+learner:  64%|██████▍   | 644/1000 [07:45<02:17,  2.59it/s][A
+learner:  64%|██████▍   | 645/1000 [07:46<02:16,  2.60it/s][A
+learner:  65%|██████▍   | 646/1000 [07:46<02:15,  2.61it/s][A
+learner:  65%|██████▍   | 647/1000 [07:46<02:13,  2.64it/s][A
+learner:  65%|██████▍   | 648/1000 [07:47<02:14,  2.62it/s][A
+learner:  65%|██████▍   | 649/1000 [07:47<02:14,  2.61it/s][A
+learner:  65%|██████▌   | 650/1000 [07:48<02:11,  2.65it/s][A\n[TRAIN] step=650 actor/actor_loss=-1.302207 actor/entropy=-0.059166 actor/temperature=0.008014 actor_lr=0.000300 critic/critic_loss=0.031315 critic/predicted_qs=1.342880 critic/target_qs=1.293225 critic_lr=0.000300 temperature/temperature_loss=0.016830 temperature_lr=0.000300
+
+learner:  65%|██████▌   | 651/1000 [07:48<02:09,  2.69it/s][A
+learner:  65%|██████▌   | 652/1000 [07:48<02:07,  2.72it/s][A
+learner:  65%|██████▌   | 653/1000 [07:49<02:07,  2.72it/s][A
+learner:  65%|██████▌   | 654/1000 [07:49<02:08,  2.69it/s][A
+learner:  66%|██████▌   | 655/1000 [07:49<02:06,  2.72it/s][A
+learner:  66%|██████▌   | 656/1000 [07:50<02:07,  2.70it/s][A
+learner:  66%|██████▌   | 657/1000 [07:50<02:12,  2.59it/s][A
+learner:  66%|██████▌   | 658/1000 [07:51<02:11,  2.61it/s][A
+learner:  66%|██████▌   | 659/1000 [07:51<02:11,  2.60it/s][A
+learner:  66%|██████▌   | 660/1000 [07:51<02:09,  2.63it/s][A\n[TRAIN] step=660 actor/actor_loss=-1.619433 actor/entropy=0.370845 actor/temperature=0.007980 actor_lr=0.000300 critic/critic_loss=0.051441 critic/predicted_qs=1.588190 critic/target_qs=1.761421 critic_lr=0.000300 temperature/temperature_loss=0.013637 temperature_lr=0.000300
+
+learner:  66%|██████▌   | 661/1000 [07:52<02:06,  2.67it/s][A
+learner:  66%|██████▌   | 662/1000 [07:52<02:05,  2.69it/s][A
+learner:  66%|██████▋   | 663/1000 [07:52<02:04,  2.72it/s][A
+learner:  66%|██████▋   | 664/1000 [07:53<02:05,  2.67it/s][A
+learner:  66%|██████▋   | 665/1000 [07:53<02:05,  2.66it/s][A
+learner:  67%|██████▋   | 666/1000 [07:54<02:04,  2.69it/s][A
+learner:  67%|██████▋   | 667/1000 [07:54<02:05,  2.66it/s][A
+learner:  67%|██████▋   | 668/1000 [07:54<02:02,  2.71it/s][A
+learner:  67%|██████▋   | 669/1000 [07:55<02:01,  2.73it/s][A
+learner:  67%|██████▋   | 670/1000 [07:55<02:03,  2.67it/s][A\n[TRAIN] step=670 actor/actor_loss=-1.445451 actor/entropy=-0.149210 actor/temperature=0.007944 actor_lr=0.000300 critic/critic_loss=0.007598 critic/predicted_qs=1.404163 critic/target_qs=1.409542 critic_lr=0.000300 temperature/temperature_loss=0.013065 temperature_lr=0.000300
+
+learner:  67%|██████▋   | 671/1000 [07:55<02:02,  2.68it/s][A
+learner:  67%|██████▋   | 672/1000 [07:56<02:05,  2.62it/s][A
+learner:  67%|██████▋   | 673/1000 [07:56<02:04,  2.63it/s][A
+learner:  67%|██████▋   | 674/1000 [07:57<02:02,  2.66it/s][A
+learner:  68%|██████▊   | 675/1000 [07:57<02:02,  2.65it/s][A
+learner:  68%|██████▊   | 676/1000 [07:57<02:01,  2.66it/s][A
+learner:  68%|██████▊   | 677/1000 [07:58<02:00,  2.68it/s][A
+learner:  68%|██████▊   | 678/1000 [07:58<02:00,  2.67it/s][A
+learner:  68%|██████▊   | 679/1000 [07:58<01:58,  2.72it/s][A
+learner:  68%|██████▊   | 680/1000 [07:59<01:58,  2.69it/s][A\n[TRAIN] step=680 actor/actor_loss=-1.769656 actor/entropy=-1.259525 actor/temperature=0.007915 actor_lr=0.000300 critic/critic_loss=0.007956 critic/predicted_qs=1.668285 critic/target_qs=1.682156 critic_lr=0.000300 temperature/temperature_loss=0.019467 temperature_lr=0.000300
+
+learner:  68%|██████▊   | 681/1000 [07:59<01:59,  2.67it/s][A
+learner:  68%|██████▊   | 682/1000 [08:00<01:57,  2.70it/s][A
+learner:  68%|██████▊   | 683/1000 [08:00<01:58,  2.67it/s][A
+learner:  68%|██████▊   | 684/1000 [08:00<01:57,  2.69it/s][A
+learner:  68%|██████▊   | 685/1000 [08:01<01:57,  2.69it/s][A
+learner:  69%|██████▊   | 686/1000 [08:01<01:56,  2.69it/s][A
+learner:  69%|██████▊   | 687/1000 [08:01<01:56,  2.68it/s][A
+learner:  69%|██████▉   | 688/1000 [08:02<01:58,  2.63it/s][A
+learner:  69%|██████▉   | 689/1000 [08:02<01:59,  2.60it/s][A
+learner:  69%|██████▉   | 690/1000 [08:03<01:58,  2.62it/s][A\n[TRAIN] step=690 actor/actor_loss=-1.356706 actor/entropy=0.025791 actor/temperature=0.007892 actor_lr=0.000300 critic/critic_loss=0.031719 critic/predicted_qs=1.360743 critic/target_qs=1.228022 critic_lr=0.000300 temperature/temperature_loss=0.022920 temperature_lr=0.000300
+
+learner:  69%|██████▉   | 691/1000 [08:03<01:57,  2.62it/s][A
+learner:  69%|██████▉   | 692/1000 [08:03<01:54,  2.68it/s][A
+learner:  69%|██████▉   | 693/1000 [08:04<01:54,  2.67it/s][A
+learner:  69%|██████▉   | 694/1000 [08:04<01:55,  2.65it/s][A
+learner:  70%|██████▉   | 695/1000 [08:04<01:53,  2.68it/s][A
+learner:  70%|██████▉   | 696/1000 [08:05<01:54,  2.65it/s][A
+learner:  70%|██████▉   | 697/1000 [08:05<01:54,  2.65it/s][A
+learner:  70%|██████▉   | 698/1000 [08:06<01:53,  2.66it/s][A
+learner:  70%|██████▉   | 699/1000 [08:06<01:54,  2.63it/s][A
+learner:  70%|███████   | 700/1000 [08:06<01:52,  2.66it/s][A\n[TRAIN] step=700 actor/actor_loss=-1.666842 actor/entropy=1.257504 actor/temperature=0.007857 actor_lr=0.000300 critic/critic_loss=0.119067 critic/predicted_qs=1.517223 critic/target_qs=1.743063 critic_lr=0.000300 temperature/temperature_loss=0.023125 temperature_lr=0.000300
+
+learner:  70%|███████   | 701/1000 [08:07<01:52,  2.65it/s][A
+learner:  70%|███████   | 702/1000 [08:07<01:52,  2.64it/s][A
+learner:  70%|███████   | 703/1000 [08:07<01:50,  2.68it/s][A
+learner:  70%|███████   | 704/1000 [08:08<01:52,  2.63it/s][A
+learner:  70%|███████   | 705/1000 [08:08<01:51,  2.65it/s][A
+learner:  71%|███████   | 706/1000 [08:09<01:49,  2.68it/s][A
+learner:  71%|███████   | 707/1000 [08:09<01:50,  2.66it/s][A
+learner:  71%|███████   | 708/1000 [08:09<01:48,  2.69it/s][A
+learner:  71%|███████   | 709/1000 [08:10<01:48,  2.67it/s][A
+learner:  71%|███████   | 710/1000 [08:10<01:50,  2.63it/s][A\n[TRAIN] step=710 actor/actor_loss=-1.327074 actor/entropy=1.476666 actor/temperature=0.007820 actor_lr=0.000300 critic/critic_loss=0.069256 critic/predicted_qs=1.330835 critic/target_qs=1.151463 critic_lr=0.000300 temperature/temperature_loss=0.031101 temperature_lr=0.000300
+
+learner:  71%|███████   | 711/1000 [08:10<01:49,  2.64it/s][A
+learner:  71%|███████   | 712/1000 [08:11<01:50,  2.61it/s][A
+learner:  71%|███████▏  | 713/1000 [08:11<01:50,  2.59it/s][A
+learner:  71%|███████▏  | 714/1000 [08:12<01:49,  2.62it/s][A
+learner:  72%|███████▏  | 715/1000 [08:12<01:51,  2.55it/s][A
+learner:  72%|███████▏  | 716/1000 [08:12<01:50,  2.57it/s][A
+learner:  72%|███████▏  | 717/1000 [08:13<01:52,  2.51it/s][A
+learner:  72%|███████▏  | 718/1000 [08:13<01:52,  2.50it/s][A
+learner:  72%|███████▏  | 719/1000 [08:14<01:52,  2.49it/s][A
+learner:  72%|███████▏  | 720/1000 [08:14<02:04,  2.26it/s][A\n[TRAIN] step=720 actor/actor_loss=-1.912970 actor/entropy=-0.607628 actor/temperature=0.007784 actor_lr=0.000300 critic/critic_loss=0.035013 critic/predicted_qs=1.847814 critic/target_qs=1.968490 critic_lr=0.000300 temperature/temperature_loss=0.008258 temperature_lr=0.000300
+
+learner:  72%|███████▏  | 721/1000 [08:15<02:00,  2.32it/s][A
+learner:  72%|███████▏  | 722/1000 [08:15<01:58,  2.34it/s][A
+learner:  72%|███████▏  | 723/1000 [08:15<01:56,  2.37it/s][A
+learner:  72%|███████▏  | 724/1000 [08:16<01:55,  2.39it/s][A
+learner:  72%|███████▎  | 725/1000 [08:16<01:52,  2.44it/s][A
+learner:  73%|███████▎  | 726/1000 [08:17<01:50,  2.49it/s][A
+learner:  73%|███████▎  | 727/1000 [08:17<01:49,  2.49it/s][A
+learner:  73%|███████▎  | 728/1000 [08:17<01:50,  2.46it/s][A
+learner:  73%|███████▎  | 729/1000 [08:18<01:49,  2.48it/s][A
+learner:  73%|███████▎  | 730/1000 [08:18<01:49,  2.46it/s][A\n[TRAIN] step=730 actor/actor_loss=-1.747323 actor/entropy=-1.087209 actor/temperature=0.007763 actor_lr=0.000300 critic/critic_loss=0.013883 critic/predicted_qs=1.711345 critic/target_qs=1.667239 critic_lr=0.000300 temperature/temperature_loss=0.010846 temperature_lr=0.000300
+
+learner:  73%|███████▎  | 731/1000 [08:19<01:47,  2.51it/s][A
+learner:  73%|███████▎  | 732/1000 [08:19<01:45,  2.54it/s][A
+learner:  73%|███████▎  | 733/1000 [08:19<01:42,  2.59it/s][A
+learner:  73%|███████▎  | 734/1000 [08:20<01:40,  2.63it/s][A
+learner:  74%|███████▎  | 735/1000 [08:20<01:41,  2.60it/s][A
+learner:  74%|███████▎  | 736/1000 [08:20<01:41,  2.60it/s][A
+learner:  74%|███████▎  | 737/1000 [08:21<01:41,  2.59it/s][A
+learner:  74%|███████▍  | 738/1000 [08:21<01:41,  2.58it/s][A
+learner:  74%|███████▍  | 739/1000 [08:22<01:41,  2.57it/s][A
+learner:  74%|███████▍  | 740/1000 [08:22<01:40,  2.58it/s][A\n[TRAIN] step=740 actor/actor_loss=-1.367262 actor/entropy=1.350709 actor/temperature=0.007735 actor_lr=0.000300 critic/critic_loss=0.048595 critic/predicted_qs=1.393376 critic/target_qs=1.289493 critic_lr=0.000300 temperature/temperature_loss=0.012762 temperature_lr=0.000300
+
+learner:  74%|███████▍  | 741/1000 [08:22<01:38,  2.62it/s][A
+learner:  74%|███████▍  | 742/1000 [08:23<01:39,  2.60it/s][A
+learner:  74%|███████▍  | 743/1000 [08:23<01:37,  2.62it/s][A
+learner:  74%|███████▍  | 744/1000 [08:24<01:36,  2.64it/s][A
+learner:  74%|███████▍  | 745/1000 [08:24<01:37,  2.63it/s][A
+learner:  75%|███████▍  | 746/1000 [08:24<01:36,  2.64it/s][A
+learner:  75%|███████▍  | 747/1000 [08:25<01:35,  2.64it/s][A
+learner:  75%|███████▍  | 748/1000 [08:25<01:35,  2.64it/s][A
+learner:  75%|███████▍  | 749/1000 [08:25<01:33,  2.67it/s][A
+learner:  75%|███████▌  | 750/1000 [08:26<01:35,  2.61it/s][A\n[TRAIN] step=750 actor/actor_loss=-1.240075 actor/entropy=0.274049 actor/temperature=0.007706 actor_lr=0.000300 critic/critic_loss=0.047629 critic/predicted_qs=1.154079 critic/target_qs=1.250503 critic_lr=0.000300 temperature/temperature_loss=0.018603 temperature_lr=0.000300
+
+learner:  75%|███████▌  | 751/1000 [08:26<01:37,  2.54it/s][A
+learner:  75%|███████▌  | 752/1000 [08:27<01:36,  2.56it/s][A
+learner:  75%|███████▌  | 753/1000 [08:27<01:34,  2.62it/s][A
+learner:  75%|███████▌  | 754/1000 [08:27<01:32,  2.65it/s][A
+learner:  76%|███████▌  | 755/1000 [08:28<01:32,  2.65it/s][A
+learner:  76%|███████▌  | 756/1000 [08:28<01:31,  2.66it/s][A
+learner:  76%|███████▌  | 757/1000 [08:28<01:30,  2.69it/s][A
+learner:  76%|███████▌  | 758/1000 [08:29<01:30,  2.67it/s][A
+learner:  76%|███████▌  | 759/1000 [08:29<01:30,  2.66it/s][A
+learner:  76%|███████▌  | 760/1000 [08:30<01:30,  2.65it/s][A\n[TRAIN] step=760 actor/actor_loss=-1.921216 actor/entropy=-0.454136 actor/temperature=0.007672 actor_lr=0.000300 critic/critic_loss=0.021793 critic/predicted_qs=1.906206 critic/target_qs=1.913858 critic_lr=0.000300 temperature/temperature_loss=0.008939 temperature_lr=0.000300
+
+learner:  76%|███████▌  | 761/1000 [08:30<01:30,  2.64it/s][A
+learner:  76%|███████▌  | 762/1000 [08:30<01:29,  2.66it/s][A
+learner:  76%|███████▋  | 763/1000 [08:31<01:29,  2.64it/s][A
+learner:  76%|███████▋  | 764/1000 [08:31<01:29,  2.65it/s][A
+learner:  76%|███████▋  | 765/1000 [08:32<01:27,  2.67it/s][A
+learner:  77%|███████▋  | 766/1000 [08:32<01:27,  2.66it/s][A
+learner:  77%|███████▋  | 767/1000 [08:32<01:27,  2.66it/s][A
+learner:  77%|███████▋  | 768/1000 [08:33<01:26,  2.67it/s][A
+learner:  77%|███████▋  | 769/1000 [08:33<01:26,  2.66it/s][A
+learner:  77%|███████▋  | 770/1000 [08:33<01:25,  2.70it/s][A\n[TRAIN] step=770 actor/actor_loss=-2.488507 actor/entropy=1.090483 actor/temperature=0.007643 actor_lr=0.000300 critic/critic_loss=0.003425 critic/predicted_qs=2.485087 critic/target_qs=2.483471 critic_lr=0.000300 temperature/temperature_loss=0.024663 temperature_lr=0.000300
+
+learner:  77%|███████▋  | 771/1000 [08:34<01:25,  2.69it/s][A
+learner:  77%|███████▋  | 772/1000 [08:34<01:26,  2.64it/s][A
+learner:  77%|███████▋  | 773/1000 [08:35<01:25,  2.65it/s][A
+learner:  77%|███████▋  | 774/1000 [08:35<01:27,  2.59it/s][A
+learner:  78%|███████▊  | 775/1000 [08:35<01:26,  2.62it/s][A
+learner:  78%|███████▊  | 776/1000 [08:36<01:24,  2.66it/s][A
+learner:  78%|███████▊  | 777/1000 [08:36<01:25,  2.62it/s][A
+learner:  78%|███████▊  | 778/1000 [08:36<01:25,  2.59it/s][A
+learner:  78%|███████▊  | 779/1000 [08:37<01:25,  2.58it/s][A
+learner:  78%|███████▊  | 780/1000 [08:37<01:24,  2.59it/s][A\n[TRAIN] step=780 actor/actor_loss=-2.471306 actor/entropy=0.200697 actor/temperature=0.007608 actor_lr=0.000300 critic/critic_loss=0.006154 critic/predicted_qs=2.469686 critic/target_qs=2.469039 critic_lr=0.000300 temperature/temperature_loss=0.017336 temperature_lr=0.000300
+
+learner:  78%|███████▊  | 781/1000 [08:38<01:23,  2.61it/s][A
+learner:  78%|███████▊  | 782/1000 [08:38<01:23,  2.60it/s][A
+learner:  78%|███████▊  | 783/1000 [08:38<01:22,  2.64it/s][A
+learner:  78%|███████▊  | 784/1000 [08:39<01:21,  2.64it/s][A
+learner:  78%|███████▊  | 785/1000 [08:39<01:23,  2.58it/s][A
+learner:  79%|███████▊  | 786/1000 [08:39<01:21,  2.62it/s][A
+learner:  79%|███████▊  | 787/1000 [08:40<01:21,  2.63it/s][A
+learner:  79%|███████▉  | 788/1000 [08:40<01:21,  2.62it/s][A
+learner:  79%|███████▉  | 789/1000 [08:41<01:20,  2.61it/s][A
+learner:  79%|███████▉  | 790/1000 [08:41<01:20,  2.61it/s][A\n[TRAIN] step=790 actor/actor_loss=-1.333241 actor/entropy=-0.109646 actor/temperature=0.007579 actor_lr=0.000300 critic/critic_loss=0.267858 critic/predicted_qs=1.425185 critic/target_qs=1.114538 critic_lr=0.000300 temperature/temperature_loss=0.011923 temperature_lr=0.000300
+
+learner:  79%|███████▉  | 791/1000 [08:41<01:21,  2.56it/s][A
+learner:  79%|███████▉  | 792/1000 [08:42<01:20,  2.57it/s][A
+learner:  79%|███████▉  | 793/1000 [08:42<01:18,  2.62it/s][A
+learner:  79%|███████▉  | 794/1000 [08:43<01:17,  2.65it/s][A
+learner:  80%|███████▉  | 795/1000 [08:43<01:17,  2.63it/s][A
+learner:  80%|███████▉  | 796/1000 [08:43<01:16,  2.65it/s][A
+learner:  80%|███████▉  | 797/1000 [08:44<01:16,  2.66it/s][A
+learner:  80%|███████▉  | 798/1000 [08:44<01:16,  2.63it/s][A
+learner:  80%|███████▉  | 799/1000 [08:44<01:15,  2.66it/s][A
+learner:  80%|████████  | 800/1000 [08:45<01:16,  2.63it/s][A\n[TRAIN] step=800 actor/actor_loss=-1.680193 actor/entropy=-0.009787 actor/temperature=0.007554 actor_lr=0.000300 critic/critic_loss=0.031067 critic/predicted_qs=1.590621 critic/target_qs=1.681321 critic_lr=0.000300 temperature/temperature_loss=0.007918 temperature_lr=0.000300
+I0713 13:12:28.106163 133733199308608 checkpoints.py:574] Saving checkpoint at step: 800
+I0713 13:12:28.106312 133733199308608 checkpoints.py:662] Using Orbax as backend to save Flax checkpoints. For potential troubleshooting see: https://flax.readthedocs.io/en/latest/guides/training_techniques/use_checkpointing.html#orbax-as-backend-troubleshooting
+I0713 13:12:28.110232 133733199308608 checkpointer.py:189] [process=0] Started saving checkpoint to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_800.
+I0713 13:12:28.111193 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:pre.checkpoint_800.13
+I0713 13:12:28.111979 133733199308608 atomicity.py:175] Creating tmp directory /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_800.orbax-checkpoint-tmp-12
+I0713 13:12:28.112632 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: create_tmp_directory:post.checkpoint_800.14
+I0713 13:12:28.157969 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/blocking_bytes_per_sec: 6.4 GiB/s (total bytes: 290.2 MiB) (time elapsed: 44 milliseconds) (per-host)
+I0713 13:12:28.733679 133733199308608 future.py:88] ChainedFuture completed 2/2 futures in 0.57 seconds.
+I0713 13:12:28.733882 133733199308608 base_pytree_checkpoint_handler.py:108] [process=0] /jax/checkpoint/write/bytes_per_sec: 467.8 MiB/s (total bytes: 290.2 MiB) (time elapsed: 620 milliseconds) (per-host)
+I0713 13:12:28.734088 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:save.checkpoint_800
+I0713 13:12:28.747048 133733199308608 type_handlers.py:562] [process=0][thread=MainThread] Validating params (raw input=1196, unique=598) in TensorStore KvStore: KvStore({
+  'base': {
+    'driver': 'file',
+    'path': '/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_800.orbax-checkpoint-tmp-12/',
+  },
+  'cache_pool': 'cache_pool#ocdbt',
+  'config': {
+    'compression': {'id': 'zstd'},
+    'max_decoded_node_bytes': 100000000,
+    'max_inline_value_bytes': 1024,
+    'uuid': 'fb2a719596f66cc44c3ab0024716c869',
+    'version_tree_arity_log2': 4,
+  },
+  'context': {
+    'cache_pool#ocdbt': {'total_bytes_limit': 100000000},
+    'data_copy_concurrency': {},
+    'file_io_concurrency': {'limit': 128},
+    'file_io_locking': {},
+    'file_io_mode': {},
+    'file_io_sync': True,
+    'ocdbt_coordinator': {},
+  },
+  'driver': 'ocdbt',
+  'experimental_read_coalescing_interval': '1ms',
+  'experimental_read_coalescing_merged_bytes': 500000000000,
+  'experimental_read_coalescing_threshold_bytes': 1000000,
+}).
+I0713 13:12:28.748295 133733199308608 atomicity.py:316] Renaming /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_800.orbax-checkpoint-tmp-12 to /home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_800
+I0713 13:12:28.749165 133733199308608 atomicity.py:518] [process=0][thread=MainThread] Finished saving checkpoint (finalized tmp dir) to `/home/zero/serl/checkpoints/drq_seed0_run2/checkpoint_800`.
+I0713 13:12:28.749272 133733199308608 utils.py:240] [process=0][thread=MainThread] Skipping global process sync, barrier name: Checkpointer:finalize.checkpoint_800
+
+learner:  80%|████████  | 801/1000 [08:46<01:54,  1.74it/s][A
+learner:  80%|████████  | 802/1000 [08:46<01:41,  1.94it/s][A
+learner:  80%|████████  | 803/1000 [08:47<01:33,  2.11it/s][A
+learner:  80%|████████  | 804/1000 [08:47<01:30,  2.16it/s][A
+learner:  80%|████████  | 805/1000 [08:47<01:28,  2.21it/s][A
+learner:  81%|████████  | 806/1000 [08:48<01:23,  2.32it/s][A
+learner:  81%|████████  | 807/1000 [08:48<01:19,  2.44it/s][A
+learner:  81%|████████  | 808/1000 [08:49<01:17,  2.49it/s][A
+learner:  81%|████████  | 809/1000 [08:49<01:15,  2.52it/s][A
+learner:  81%|████████  | 810/1000 [08:49<01:13,  2.58it/s][A\n[TRAIN] step=810 actor/actor_loss=-2.011748 actor/entropy=-0.725176 actor/temperature=0.007531 actor_lr=0.000300 critic/critic_loss=0.014571 critic/predicted_qs=1.992689 critic/target_qs=1.966503 critic_lr=0.000300 temperature/temperature_loss=0.005075 temperature_lr=0.000300
+
+learner:  81%|████████  | 811/1000 [08:50<01:12,  2.59it/s][A
+learner:  81%|████████  | 812/1000 [08:50<01:12,  2.59it/s][A
+learner:  81%|████████▏ | 813/1000 [08:50<01:10,  2.65it/s][A
+learner:  81%|████████▏ | 814/1000 [08:51<01:10,  2.64it/s][A
+learner:  82%|████████▏ | 815/1000 [08:51<01:09,  2.65it/s][A
+learner:  82%|████████▏ | 816/1000 [08:52<01:09,  2.65it/s][A
+learner:  82%|████████▏ | 817/1000 [08:52<01:08,  2.66it/s][A
+learner:  82%|████████▏ | 818/1000 [08:52<01:08,  2.66it/s][A
+learner:  82%|████████▏ | 819/1000 [08:53<01:07,  2.68it/s][A
+learner:  82%|████████▏ | 820/1000 [08:53<01:07,  2.67it/s][A\n[TRAIN] step=820 actor/actor_loss=-1.151113 actor/entropy=0.468763 actor/temperature=0.007503 actor_lr=0.000300 critic/critic_loss=0.083114 critic/predicted_qs=1.072104 critic/target_qs=1.162374 critic_lr=0.000300 temperature/temperature_loss=0.006579 temperature_lr=0.000300
+
+learner:  82%|████████▏ | 821/1000 [08:53<01:06,  2.68it/s][A
+learner:  82%|████████▏ | 822/1000 [08:54<01:06,  2.66it/s][A
+learner:  82%|████████▏ | 823/1000 [08:54<01:09,  2.56it/s][A
+learner:  82%|████████▏ | 824/1000 [08:55<01:09,  2.52it/s][A
+learner:  82%|████████▎ | 825/1000 [08:55<01:09,  2.52it/s][A
+learner:  83%|████████▎ | 826/1000 [08:55<01:08,  2.56it/s][A
+learner:  83%|████████▎ | 827/1000 [08:56<01:07,  2.56it/s][A
+learner:  83%|████████▎ | 828/1000 [08:56<01:06,  2.57it/s][A
+learner:  83%|████████▎ | 829/1000 [08:57<01:05,  2.62it/s][A
+learner:  83%|████████▎ | 830/1000 [08:57<01:05,  2.60it/s][A\n[TRAIN] step=830 actor/actor_loss=-2.562634 actor/entropy=0.622954 actor/temperature=0.007479 actor_lr=0.000300 critic/critic_loss=0.016958 critic/predicted_qs=2.524986 critic/target_qs=2.605343 critic_lr=0.000300 temperature/temperature_loss=0.012335 temperature_lr=0.000300
+
+learner:  83%|████████▎ | 831/1000 [08:57<01:05,  2.56it/s][A
+learner:  83%|████████▎ | 832/1000 [08:58<01:06,  2.51it/s][A
+learner:  83%|████████▎ | 833/1000 [08:58<01:08,  2.44it/s][A
+learner:  83%|████████▎ | 834/1000 [08:59<01:08,  2.43it/s][A
+learner:  84%|████████▎ | 835/1000 [08:59<01:06,  2.48it/s][A
+learner:  84%|████████▎ | 836/1000 [08:59<01:04,  2.55it/s][A
+learner:  84%|████████▎ | 837/1000 [09:00<01:05,  2.48it/s][A
+learner:  84%|████████▍ | 838/1000 [09:00<01:03,  2.54it/s][A
+learner:  84%|████████▍ | 839/1000 [09:01<01:01,  2.60it/s][A
+learner:  84%|████████▍ | 840/1000 [09:01<01:01,  2.62it/s][A\n[TRAIN] step=840 actor/actor_loss=-2.142070 actor/entropy=1.154222 actor/temperature=0.007451 actor_lr=0.000300 critic/critic_loss=0.007343 critic/predicted_qs=2.099118 critic/target_qs=2.091158 critic_lr=0.000300 temperature/temperature_loss=0.008227 temperature_lr=0.000300
+
+learner:  84%|████████▍ | 841/1000 [09:01<00:59,  2.65it/s][A
+learner:  84%|████████▍ | 842/1000 [09:02<00:59,  2.66it/s][A
+learner:  84%|████████▍ | 843/1000 [09:02<00:59,  2.65it/s][A
+learner:  84%|████████▍ | 844/1000 [09:02<00:57,  2.69it/s][A
+learner:  84%|████████▍ | 845/1000 [09:03<00:57,  2.68it/s][A
+learner:  85%|████████▍ | 846/1000 [09:03<00:56,  2.70it/s][A
+learner:  85%|████████▍ | 847/1000 [09:04<00:56,  2.72it/s][A
+learner:  85%|████████▍ | 848/1000 [09:04<00:56,  2.67it/s][A
+learner:  85%|████████▍ | 849/1000 [09:04<00:56,  2.70it/s][A
+learner:  85%|████████▌ | 850/1000 [09:05<00:55,  2.70it/s][A\n[TRAIN] step=850 actor/actor_loss=-2.709247 actor/entropy=-0.694635 actor/temperature=0.007428 actor_lr=0.000300 critic/critic_loss=0.015459 critic/predicted_qs=2.668804 critic/target_qs=2.583889 critic_lr=0.000300 temperature/temperature_loss=0.013332 temperature_lr=0.000300
+
+learner:  85%|████████▌ | 851/1000 [09:05<00:57,  2.61it/s][A
+learner:  85%|████████▌ | 852/1000 [09:06<01:00,  2.45it/s][A
+learner:  85%|████████▌ | 853/1000 [09:06<01:01,  2.41it/s][A
+learner:  85%|████████▌ | 854/1000 [09:06<00:59,  2.47it/s][A
+learner:  86%|████████▌ | 855/1000 [09:07<00:59,  2.44it/s][A
+learner:  86%|████████▌ | 856/1000 [09:07<00:58,  2.45it/s][A
+learner:  86%|████████▌ | 857/1000 [09:08<00:58,  2.46it/s][A
+learner:  86%|████████▌ | 858/1000 [09:08<00:58,  2.42it/s][A
+learner:  86%|████████▌ | 859/1000 [09:08<00:57,  2.43it/s][A
+learner:  86%|████████▌ | 860/1000 [09:09<00:56,  2.46it/s][A\n[TRAIN] step=860 actor/actor_loss=-0.844428 actor/entropy=-0.697940 actor/temperature=0.007406 actor_lr=0.000300 critic/critic_loss=0.121304 critic/predicted_qs=0.994353 critic/target_qs=0.811066 critic_lr=0.000300 temperature/temperature_loss=0.015075 temperature_lr=0.000300
+
+learner:  86%|████████▌ | 861/1000 [09:09<00:55,  2.51it/s][A
+learner:  86%|████████▌ | 862/1000 [09:10<00:54,  2.53it/s][A
+learner:  86%|████████▋ | 863/1000 [09:10<00:54,  2.50it/s][A
+learner:  86%|████████▋ | 864/1000 [09:10<00:56,  2.40it/s][A
+learner:  86%|████████▋ | 865/1000 [09:11<00:56,  2.38it/s][A
+learner:  87%|████████▋ | 866/1000 [09:11<00:56,  2.39it/s][A
+learner:  87%|████████▋ | 867/1000 [09:12<00:57,  2.32it/s][A
+learner:  87%|████████▋ | 868/1000 [09:12<00:54,  2.42it/s][A
+learner:  87%|████████▋ | 869/1000 [09:13<00:53,  2.43it/s][A
+learner:  87%|████████▋ | 870/1000 [09:13<00:54,  2.38it/s][A\n[TRAIN] step=870 actor/actor_loss=-1.514790 actor/entropy=0.004718 actor/temperature=0.007380 actor_lr=0.000300 critic/critic_loss=0.036099 critic/predicted_qs=1.444514 critic/target_qs=1.601192 critic_lr=0.000300 temperature/temperature_loss=0.027152 temperature_lr=0.000300
+
+learner:  87%|████████▋ | 871/1000 [09:13<00:54,  2.35it/s][A
+learner:  87%|████████▋ | 872/1000 [09:14<00:54,  2.37it/s][A
+learner:  87%|████████▋ | 873/1000 [09:14<00:56,  2.25it/s][A
+learner:  87%|████████▋ | 874/1000 [09:15<00:55,  2.28it/s][A
+learner:  88%|████████▊ | 875/1000 [09:15<00:54,  2.30it/s][A
+learner:  88%|████████▊ | 876/1000 [09:16<00:52,  2.36it/s][A
+learner:  88%|████████▊ | 877/1000 [09:16<00:51,  2.39it/s][A
+learner:  88%|████████▊ | 878/1000 [09:16<00:50,  2.41it/s][A
+learner:  88%|████████▊ | 879/1000 [09:17<00:49,  2.43it/s][A
+learner:  88%|████████▊ | 880/1000 [09:17<00:48,  2.47it/s][A\n[TRAIN] step=880 actor/actor_loss=-0.740853 actor/entropy=-1.195176 actor/temperature=0.007347 actor_lr=0.000300 critic/critic_loss=0.041882 critic/predicted_qs=0.735252 critic/target_qs=0.682254 critic_lr=0.000300 temperature/temperature_loss=0.002178 temperature_lr=0.000300
+
+learner:  88%|████████▊ | 881/1000 [09:18<00:48,  2.48it/s][A
+learner:  88%|████████▊ | 882/1000 [09:18<00:47,  2.48it/s][A
+learner:  88%|████████▊ | 883/1000 [09:18<00:46,  2.51it/s][A
+learner:  88%|████████▊ | 884/1000 [09:19<00:45,  2.57it/s][A
+learner:  88%|████████▊ | 885/1000 [09:19<00:43,  2.62it/s][A
+learner:  89%|████████▊ | 886/1000 [09:19<00:42,  2.65it/s][A
+learner:  89%|████████▊ | 887/1000 [09:20<00:42,  2.63it/s][A
+learner:  89%|████████▉ | 888/1000 [09:20<00:42,  2.63it/s][A
+learner:  89%|████████▉ | 889/1000 [09:21<00:42,  2.62it/s][A
+learner:  89%|████████▉ | 890/1000 [09:21<00:42,  2.60it/s][A\n[TRAIN] step=890 actor/actor_loss=-2.089908 actor/entropy=1.239176 actor/temperature=0.007325 actor_lr=0.000300 critic/critic_loss=0.013097 critic/predicted_qs=2.075166 critic/target_qs=2.096608 critic_lr=0.000300 temperature/temperature_loss=0.025766 temperature_lr=0.000300
+
+learner:  89%|████████▉ | 891/1000 [09:21<00:41,  2.64it/s][A
+learner:  89%|████████▉ | 892/1000 [09:22<00:41,  2.62it/s][A
+learner:  89%|████████▉ | 893/1000 [09:22<00:40,  2.61it/s][A
+learner:  89%|████████▉ | 894/1000 [09:23<00:40,  2.64it/s][A
+learner:  90%|████████▉ | 895/1000 [09:23<00:40,  2.60it/s][A
+learner:  90%|████████▉ | 896/1000 [09:23<00:40,  2.59it/s][A
+learner:  90%|████████▉ | 897/1000 [09:24<00:39,  2.58it/s][A
+learner:  90%|████████▉ | 898/1000 [09:24<00:39,  2.60it/s][A
+learner:  90%|████████▉ | 899/1000 [09:24<00:38,  2.65it/s][A
+learner:  90%|█████████ | 900/1000 [09:25<00:37,  2.64it/s][A\n[TRAIN] step=900 actor/actor_loss=-1.824958 actor/entropy=0.005439 actor/temperature=0.007293 actor_lr=0.000300 critic/critic_loss=0.020957 critic/predicted_qs=1.818430 critic/target_qs=1.829974 critic_lr=0.000300 temperature/temperature_loss=0.018665 temperature_lr=0.000300
+
+learner:  90%|█████████ | 901/1000 [09:25<00:37,  2.64it/s][A
+learner:  90%|█████████ | 902/1000 [09:26<00:36,  2.68it/s][A
+learner:  90%|█████████ | 903/1000 [09:26<00:36,  2.67it/s][A
+learner:  90%|█████████ | 904/1000 [09:26<00:35,  2.71it/s][A
+learner:  90%|█████████ | 905/1000 [09:27<00:35,  2.71it/s][A
+learner:  91%|█████████ | 906/1000 [09:27<00:35,  2.68it/s][A
+learner:  91%|█████████ | 907/1000 [09:27<00:34,  2.69it/s][A
+learner:  91%|█████████ | 908/1000 [09:28<00:34,  2.66it/s][A
+learner:  91%|█████████ | 909/1000 [09:28<00:34,  2.66it/s][A
+learner:  91%|█████████ | 910/1000 [09:29<00:34,  2.65it/s][A\n[TRAIN] step=910 actor/actor_loss=-2.360799 actor/entropy=1.966845 actor/temperature=0.007257 actor_lr=0.000300 critic/critic_loss=0.021943 critic/predicted_qs=2.290649 critic/target_qs=2.378858 critic_lr=0.000300 temperature/temperature_loss=0.021023 temperature_lr=0.000300
+
+learner:  91%|█████████ | 911/1000 [09:29<00:33,  2.65it/s][A
+learner:  91%|█████████ | 912/1000 [09:29<00:33,  2.62it/s][A
+learner:  91%|█████████▏| 913/1000 [09:30<00:32,  2.64it/s][A
+learner:  91%|█████████▏| 914/1000 [09:30<00:32,  2.66it/s][A
+learner:  92%|█████████▏| 915/1000 [09:30<00:31,  2.70it/s][A
+learner:  92%|█████████▏| 916/1000 [09:31<00:31,  2.68it/s][A
+learner:  92%|█████████▏| 917/1000 [09:31<00:30,  2.68it/s][A
+learner:  92%|█████████▏| 918/1000 [09:32<00:30,  2.72it/s][A
+learner:  92%|█████████▏| 919/1000 [09:32<00:29,  2.71it/s][A
+learner:  92%|█████████▏| 920/1000 [09:32<00:29,  2.71it/s][A\n[TRAIN] step=920 actor/actor_loss=-2.548628 actor/entropy=-0.834273 actor/temperature=0.007224 actor_lr=0.000300 critic/critic_loss=0.021930 critic/predicted_qs=2.541999 critic/target_qs=2.486343 critic_lr=0.000300 temperature/temperature_loss=0.011094 temperature_lr=0.000300
+
+learner:  92%|█████████▏| 921/1000 [09:33<00:29,  2.71it/s][A
+learner:  92%|█████████▏| 922/1000 [09:33<00:29,  2.66it/s][A
+learner:  92%|█████████▏| 923/1000 [09:33<00:28,  2.68it/s][A
+learner:  92%|█████████▏| 924/1000 [09:34<00:28,  2.67it/s][A
+learner:  92%|█████████▎| 925/1000 [09:34<00:28,  2.66it/s][A
+learner:  93%|█████████▎| 926/1000 [09:35<00:27,  2.69it/s][A
+learner:  93%|█████████▎| 927/1000 [09:35<00:27,  2.65it/s][A
+learner:  93%|█████████▎| 928/1000 [09:35<00:26,  2.67it/s][A
+learner:  93%|█████████▎| 929/1000 [09:36<00:26,  2.70it/s][A
+learner:  93%|█████████▎| 930/1000 [09:36<00:26,  2.66it/s][A\n[TRAIN] step=930 actor/actor_loss=-2.902015 actor/entropy=0.863054 actor/temperature=0.007196 actor_lr=0.000300 critic/critic_loss=0.008073 critic/predicted_qs=2.906276 critic/target_qs=2.868071 critic_lr=0.000300 temperature/temperature_loss=0.019008 temperature_lr=0.000300
+
+learner:  93%|█████████▎| 931/1000 [09:36<00:25,  2.67it/s][A
+learner:  93%|█████████▎| 932/1000 [09:37<00:25,  2.66it/s][A
+learner:  93%|█████████▎| 933/1000 [09:37<00:25,  2.65it/s][A
+learner:  93%|█████████▎| 934/1000 [09:38<00:24,  2.67it/s][A
+learner:  94%|█████████▎| 935/1000 [09:38<00:24,  2.64it/s][A
+learner:  94%|█████████▎| 936/1000 [09:38<00:24,  2.62it/s][A
+learner:  94%|█████████▎| 937/1000 [09:39<00:23,  2.64it/s][A
+learner:  94%|█████████▍| 938/1000 [09:39<00:23,  2.61it/s][A
+learner:  94%|█████████▍| 939/1000 [09:39<00:23,  2.63it/s][A
+learner:  94%|█████████▍| 940/1000 [09:40<00:23,  2.60it/s][A\n[TRAIN] step=940 actor/actor_loss=-1.184507 actor/entropy=-0.294745 actor/temperature=0.007167 actor_lr=0.000300 critic/critic_loss=0.111539 critic/predicted_qs=1.177580 critic/target_qs=1.143896 critic_lr=0.000300 temperature/temperature_loss=0.015477 temperature_lr=0.000300
+
+learner:  94%|█████████▍| 941/1000 [09:40<00:22,  2.58it/s][A
+learner:  94%|█████████▍| 942/1000 [09:41<00:22,  2.60it/s][A
+learner:  94%|█████████▍| 943/1000 [09:41<00:22,  2.58it/s][A
+learner:  94%|█████████▍| 944/1000 [09:41<00:21,  2.58it/s][A
+learner:  94%|█████████▍| 945/1000 [09:42<00:21,  2.58it/s][A
+learner:  95%|█████████▍| 946/1000 [09:42<00:20,  2.58it/s][A
+learner:  95%|█████████▍| 947/1000 [09:43<00:20,  2.60it/s][A
+learner:  95%|█████████▍| 948/1000 [09:43<00:20,  2.59it/s][A
+learner:  95%|█████████▍| 949/1000 [09:43<00:19,  2.62it/s][A
+learner:  95%|█████████▌| 950/1000 [09:44<00:19,  2.61it/s][A\n[TRAIN] step=950 actor/actor_loss=-2.925643 actor/entropy=0.820970 actor/temperature=0.007141 actor_lr=0.000300 critic/critic_loss=0.012144 critic/predicted_qs=2.927769 critic/target_qs=2.861445 critic_lr=0.000300 temperature/temperature_loss=0.020939 temperature_lr=0.000300
+
+learner:  95%|█████████▌| 951/1000 [09:44<00:18,  2.60it/s][A
+learner:  95%|█████████▌| 952/1000 [09:44<00:18,  2.65it/s][A
+learner:  95%|█████████▌| 953/1000 [09:45<00:17,  2.64it/s][A
+learner:  95%|█████████▌| 954/1000 [09:45<00:17,  2.63it/s][A
+learner:  96%|█████████▌| 955/1000 [09:46<00:17,  2.63it/s][A
+learner:  96%|█████████▌| 956/1000 [09:46<00:17,  2.59it/s][A
+learner:  96%|█████████▌| 957/1000 [09:46<00:16,  2.63it/s][A
+learner:  96%|█████████▌| 958/1000 [09:47<00:15,  2.64it/s][A
+learner:  96%|█████████▌| 959/1000 [09:47<00:15,  2.63it/s][A
+learner:  96%|█████████▌| 960/1000 [09:47<00:15,  2.64it/s][A\n[TRAIN] step=960 actor/actor_loss=-1.260591 actor/entropy=-1.949430 actor/temperature=0.007114 actor_lr=0.000300 critic/critic_loss=0.035211 critic/predicted_qs=1.228494 critic/target_qs=1.269032 critic_lr=0.000300 temperature/temperature_loss=0.017071 temperature_lr=0.000300
+
+learner:  96%|█████████▌| 961/1000 [09:48<00:14,  2.64it/s][A
+learner:  96%|█████████▌| 962/1000 [09:48<00:14,  2.66it/s][A
+learner:  96%|█████████▋| 963/1000 [09:49<00:13,  2.66it/s][A
+learner:  96%|█████████▋| 964/1000 [09:49<00:13,  2.66it/s][A
+learner:  96%|█████████▋| 965/1000 [09:49<00:12,  2.70it/s][A
+learner:  97%|█████████▋| 966/1000 [09:50<00:12,  2.70it/s][A
+learner:  97%|█████████▋| 967/1000 [09:50<00:12,  2.71it/s][A
+learner:  97%|█████████▋| 968/1000 [09:50<00:11,  2.70it/s][A
+learner:  97%|█████████▋| 969/1000 [09:51<00:11,  2.69it/s][A
+learner:  97%|█████████▋| 970/1000 [09:51<00:11,  2.68it/s][A\n[TRAIN] step=970 actor/actor_loss=-1.825180 actor/entropy=-0.214965 actor/temperature=0.007087 actor_lr=0.000300 critic/critic_loss=0.265891 critic/predicted_qs=1.889071 critic/target_qs=1.530773 critic_lr=0.000300 temperature/temperature_loss=0.017916 temperature_lr=0.000300
+
+learner:  97%|█████████▋| 971/1000 [09:52<00:10,  2.70it/s][A
+learner:  97%|█████████▋| 972/1000 [09:52<00:10,  2.67it/s][A
+learner:  97%|█████████▋| 973/1000 [09:52<00:10,  2.70it/s][A
+learner:  97%|█████████▋| 974/1000 [09:53<00:09,  2.67it/s][A
+learner:  98%|█████████▊| 975/1000 [09:53<00:09,  2.66it/s][A
+learner:  98%|█████████▊| 976/1000 [09:53<00:08,  2.68it/s][A
+learner:  98%|█████████▊| 977/1000 [09:54<00:08,  2.65it/s][A
+learner:  98%|█████████▊| 978/1000 [09:54<00:08,  2.65it/s][A
+learner:  98%|█████████▊| 979/1000 [09:55<00:07,  2.67it/s][A
+learner:  98%|█████████▊| 980/1000 [09:55<00:07,  2.62it/s][A\n[TRAIN] step=980 actor/actor_loss=-1.624830 actor/entropy=0.435667 actor/temperature=0.007053 actor_lr=0.000300 critic/critic_loss=0.020621 critic/predicted_qs=1.645611 critic/target_qs=1.646061 critic_lr=0.000300 temperature/temperature_loss=0.008675 temperature_lr=0.000300
+
+learner:  98%|█████████▊| 981/1000 [09:55<00:07,  2.64it/s][A
+learner:  98%|█████████▊| 982/1000 [09:56<00:06,  2.66it/s][A
+learner:  98%|█████████▊| 983/1000 [09:56<00:06,  2.65it/s][A
+learner:  98%|█████████▊| 984/1000 [09:56<00:05,  2.67it/s][A
+learner:  98%|█████████▊| 985/1000 [09:57<00:05,  2.65it/s][A
+learner:  99%|█████████▊| 986/1000 [09:57<00:05,  2.63it/s][A
+learner:  99%|█████████▊| 987/1000 [09:58<00:04,  2.61it/s][A
+learner:  99%|█████████▉| 988/1000 [09:58<00:04,  2.61it/s][A
+learner:  99%|█████████▉| 989/1000 [09:58<00:04,  2.65it/s][A
+learner:  99%|█████████▉| 990/1000 [09:59<00:03,  2.66it/s][A\n[TRAIN] step=990 actor/actor_loss=-2.429236 actor/entropy=0.237715 actor/temperature=0.007028 actor_lr=0.000300 critic/critic_loss=0.023721 critic/predicted_qs=2.395191 critic/target_qs=2.303211 critic_lr=0.000300 temperature/temperature_loss=0.012033 temperature_lr=0.000300
+
+learner:  99%|█████████▉| 991/1000 [09:59<00:03,  2.64it/s][A
+learner:  99%|█████████▉| 992/1000 [09:59<00:02,  2.68it/s][A
+learner:  99%|█████████▉| 993/1000 [10:00<00:02,  2.65it/s][A
+learner:  99%|█████████▉| 994/1000 [10:00<00:02,  2.67it/s][A
+learner: 100%|█████████▉| 995/1000 [10:01<00:01,  2.68it/s][A
+learner: 100%|█████████▉| 996/1000 [10:01<00:01,  2.67it/s][A
+learner: 100%|█████████▉| 997/1000 [10:01<00:01,  2.70it/s][A
+learner: 100%|█████████▉| 998/1000 [10:02<00:00,  2.67it/s][A
+learner: 100%|█████████▉| 999/1000 [10:02<00:00,  2.67it/s][A
+learner: 100%|██████████| 1000/1000 [10:02<00:00,  2.67it/s][Alearner: 100%|██████████| 1000/1000 [10:02<00:00,  1.66it/s]
+replay buffer:  20%|██        | 1010/5000 [10:02<49:37,  1.34it/s]
