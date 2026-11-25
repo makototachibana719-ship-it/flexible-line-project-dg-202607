@@ -4,6 +4,8 @@
 
 环境补充：`archives/vmware/2026-11-25/environments/serl_peg/` 仅保存用户确认本项目独占的 VMware `serl_peg` 环境。其他 Conda 环境、共享包缓存、系统及其他项目仍不属于备份范围；恢复约束见该目录 README。
 
+后续补充：用户又明确确认 `serl_clean` 仅本项目使用，其完整环境另存于 `archives/vmware/2026-11-25/environments/serl_clean/`。这一例外不扩大到 `serl`、base 或共享缓存。完整归档包含 pip 已安装文件，但不代表已测试跨机器或任意路径恢复。
+
 2026-11-25 补充：`archives/vmware/2026-11-25/` 保存本次明确核验范围内的 VMware Peg 文件，含部分历史 checkpoint、Demo 和日志，并附逐文件 SHA-256 清单。以下排除规则仍适用于归档之外的资产；不能据此认为其他工艺、当前 WSL 实验数据或共享运行环境已完整上传。
 
 ## 权威存储位置

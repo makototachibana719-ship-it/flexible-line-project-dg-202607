@@ -1,5 +1,7 @@
 # Project Status
 
+Second dedicated environment preservation 2026-11-25: after the user separately confirmed project-only ownership, VMware `serl_clean` was captured under `archives/vmware/2026-11-25/environments/serl_clean/`. The full installed-file archive supplements Conda's warning about 92 pip packages; recipes alone are not treated as a reproducibility guarantee. Transfer, member/link checks and part reassembly passed; executable restoration remains untested.
+
 Environment preservation 2026-11-25: the user-confirmed project-only VMware `serl_peg` environment is archived separately under `archives/vmware/2026-11-25/environments/serl_peg/`, with a full binary snapshot, dependency recipes, member/part hashes and same-prefix restoration constraints. No environment restoration or new scientific evaluation is claimed.
 
 Storage update 2026-11-25: scoped VMware Peg checkpoint, Demo, source and log preservation is recorded under `archives/vmware/2026-11-25/`. This archival task does not change any scientific result or validate a new policy. See the archive README and per-file SHA-256 manifest for scope and recovery constraints.

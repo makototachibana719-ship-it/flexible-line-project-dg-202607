@@ -34,3 +34,5 @@ No VMware source file was deleted as part of this upload.
 ## Dedicated environment supplement
 
 `environments/serl_peg/` separately preserves the full environment that the user confirmed is dedicated to this project. It has its own source archive hash, 23 part hashes, complete member manifest and restoration constraints. It is not included in the 1,606 scoped asset-file count above. Other environments and shared caches are excluded.
+
+`environments/serl_clean/` separately preserves the second environment that the user subsequently confirmed is exclusive to this project. Its full snapshot also has 23 verified parts, exports, manifests, a reassembly helper and same-prefix recovery constraints. Neither environment archive includes or authorizes changes to base, `serl`, shared caches or other projects.

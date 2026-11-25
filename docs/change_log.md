@@ -1,5 +1,14 @@
 # Change Log
 
+## 2026-11-25 — Dedicated VMware serl_clean environment backup
+
+- Authorization: user explicitly confirmed `serl_clean` is project-only, separately from the previously handled `serl_peg`.
+- Scope: `archives/vmware/2026-11-25/environments/serl_clean/`, archive/status/task/storage documentation and source manifest. No shared environment/cache is part of the operation.
+- Preservation: full streamed installed environment plus Conda YAML/explicit exports; source warned about 92 pip packages, so package lists are supplementary rather than the sole backup.
+- Checks: sender/receiver SHA-256 `8839f6cbe62444046c6ab62fb62c586913e9862555ccb492b684cdb7eae37301` agrees; 68,498 archive members; 1,382 internal links and no external symlinks; basic credential scan found no matches; all 23 parts reassembled to the exact source archive hash.
+- Recovery: raw same-prefix Linux snapshot, with per-member hashes/modes/link targets, part hashes and reassembly helper. Executable restoration and end-to-end scientific reproduction are not tested.
+- Rollback: original guest environment remains until separately guarded removal; received Windows archive and remotely published parts provide preservation sources.
+
 ## 2026-11-25 — Dedicated VMware serl_peg environment backup
 
 - Scope: only the environment the user explicitly confirmed is dedicated to this project; no other installed environment or shared cache is part of this operation.

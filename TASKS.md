@@ -1,5 +1,7 @@
 # Project Tasks
 
+Second dedicated environment backup 2026-11-25: preserve only user-confirmed project-exclusive `serl_clean`, verify sender/receiver and 23-part reassembly hashes, and verify remote publication before a guarded exact-prefix removal. Base, `serl`, shared caches and other projects remain protected.
+
 Dedicated environment backup 2026-11-25: preserve VMware `serl_peg` independently of all other environments, verify sender/receiver/archive-part hashes and local reassembly before allowing any subsequent guarded environment deletion. Leave `serl`, `serl_clean`, base and shared caches untouched.
 
 Storage archival 2026-11-25: preserve the 1,606 scoped VMware Peg files under `archives/vmware/2026-11-25/`, verify transfer and per-file SHA-256, and check staged Git blob hashes before remote publication. No further guest deletion belongs to this upload task.
