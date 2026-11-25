@@ -1,0 +1,12 @@
+{
+  "algorithm": "sha256(sorted compact JSON rows of relative path/type and file bytes/SHA256 or symlink target; excludes the root directory itself)",
+  "source_prefix": "/home/makoto/miniconda3/envs/serl_peg",
+  "entries": 68816,
+  "fingerprint": "cf874e638c535fa235e5fba52a43806b6591abccec73394673d78fffc959d40d",
+  "archive_type_counts": {
+    "file": 58784,
+    "directory": 8653,
+    "symlink": 1382
+  },
+  "external_symlinks": 0
+}

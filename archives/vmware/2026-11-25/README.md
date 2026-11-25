@@ -30,3 +30,7 @@ Clone the repository and use this directory's `home/makoto/` tree as a restorati
 For any checkpoint, restore the entire checkpoint directory including its metadata, manifests and data chunks. Do not restore isolated chunks or treat the mere presence of a checkpoint as evidence of a validated policy.
 
 No VMware source file was deleted as part of this upload.
+
+## Dedicated environment supplement
+
+`environments/serl_peg/` separately preserves the full environment that the user confirmed is dedicated to this project. It has its own source archive hash, 23 part hashes, complete member manifest and restoration constraints. It is not included in the 1,606 scoped asset-file count above. Other environments and shared caches are excluded.

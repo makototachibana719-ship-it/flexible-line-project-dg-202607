@@ -1,0 +1,12 @@
+{
+  "source_prefix": "/home/makoto/miniconda3/envs/serl_peg",
+  "source_machine": "zuodequandui-vm",
+  "source_archive": "serl_peg_environment_vmware_20261125.tar.gz",
+  "archive_bytes": 1053456392,
+  "archive_sha256": "261b877fbea4af46b59dce66fa79f04adfc5f7a1411c4a39038c881835e0f96e",
+  "part_bytes": 47185920,
+  "parts": 23,
+  "archive_members": 68819,
+  "regular_files": 58784,
+  "external_reference_count": 4
+}

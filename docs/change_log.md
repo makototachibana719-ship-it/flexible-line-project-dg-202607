@@ -1,5 +1,14 @@
 # Change Log
 
+## 2026-11-25 — Dedicated VMware serl_peg environment backup
+
+- Scope: only the environment the user explicitly confirmed is dedicated to this project; no other installed environment or shared cache is part of this operation.
+- Files: `archives/vmware/2026-11-25/environments/serl_peg/`, archive documentation, project status/tasks and source manifest.
+- Preservation: streamed a complete raw environment snapshot to Windows without allocating a large guest archive; saved Conda environment/explicit recipes, regular-file hashes, modes, links, installation origins and a live-tree comparison fingerprint.
+- Validation: sender and receiver SHA-256 match; all 23 part hashes and reassembled archive hash match; full tar member/type/path checks; 1,382 internal symlinks and zero external symlinks; basic credential scan found no matches.
+- Constraints: raw archive is intended primarily for same-prefix restoration on a compatible Linux system. Reassembly is tested; executable environment restoration and end-to-end scientific reproduction are not tested.
+- Rollback: the installed guest environment remains present until a separate guarded deletion is executed; the original received archive and remotely versioned parts provide recovery sources.
+
 ## 2026-11-25 — Scoped VMware Peg asset preservation
 
 - Files: `archives/vmware/2026-11-25/`, project status/tasks, storage scope documentation.
