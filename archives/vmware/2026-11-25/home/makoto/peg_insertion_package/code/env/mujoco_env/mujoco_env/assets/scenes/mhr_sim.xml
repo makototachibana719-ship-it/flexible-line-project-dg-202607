@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mujoco model="mhr_sim">
+  <!-- MHR 仿真场景 - 空地面场景 -->
+  <compiler angle="radian"/>
+
+  <option timestep="0.002" gravity="0 0 -9.81" impratio="10">
+    <flag contact="enable" energy="enable" gravity="enable"/>
+  </option>
+  
+  <!-- 注意：default 和 visualgeom material 由机器人 XML 提供，这里不重复定义 -->
+  
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.68 0.68 0.68" rgb2="0.3 0.3 0.3" width="512" height="3072"/>
+    <texture name="groundplane" type="2d" builtin="checker" mark="edge" rgb1="0.68 0.68 0.68" rgb2="0.8 0.8 0.8"
+      markrgb="0.68 0.68 0.68" width="300" height="300"/>
+    <material name="groundplane" reflectance="0.2" shininess="0.0" specular="0.0" texrepeat="5 5" texture="groundplane" texuniform="true"/>
+    
+    <!-- 欧标箱 -->
+    <mesh name="eurbox_600x400x300_mesh" file="../objects/eurbox_600x400x300/European box 600x400x300.STL" scale="0.001 0.001 0.001"/>
+    <mesh name="eurbox_qr_plane" file="../objects/eurbox_600x400x300/qr_plane.obj"/>
+    <texture name="eurbox_qr_tex" type="2d" file="../objects/eurbox_600x400x300/QRCode.png"/>
+    <material name="eurbox_qr_mat" texture="eurbox_qr_tex" texrepeat="8.33 8.33" texuniform="false" reflectance="0.1"/>
+    <!-- 托盘 -->
+    <mesh name="paleta_1200x1200_mesh" file="../objects/pallet/paleta 1200x1200.STL" scale="0.001 0.001 0.001"/>
+  </asset>
+
+  <worldbody>
+    <!-- 地面 -->
+    <geom condim="3" material="groundplane" name="floor" pos="0 0 0" size="10 10 0.125" type="plane"/>
+    <light diffuse=".8 .8 .8" dir="0 -.15 -1" directional="false" pos="0 0 8.0" specular="0.3 0.3 0.3" castshadow="false"/>
+    <light diffuse=".8 .8 .8" dir="0 -.15 -1" directional="false" pos="0.5 0.6 8.0" specular="0.3 0.3 0.3" castshadow="false"/>
+
+   <!-- 托盘1 -->    
+   <body name="paleta1_1200x1200" pos="1.1 0 0.065" euler="1.5708 0 1.5708">
+        <geom name="paleta1_1200x1200_visual" type="mesh" mesh="paleta_1200x1200_mesh" pos="-0.641654 -0.066165 -0.611399" rgba="0.72 0.58 0.40 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="paleta1_1200x1200_collision" type="box" size="0.600000 0.065500 0.600000" contype="1" conaffinity="1" condim="3" group="4" rgba="0 0 0 0"/>
+    </body>
+    <!-- 托盘2 --> 
+    <body name="paleta2_1200x1200" pos="-2.0 0 0.065" euler="1.5708 0 1.5708">
+        <geom name="paleta2_1200x1200_visual" type="mesh" mesh="paleta_1200x1200_mesh" pos="-0.641654 -0.066165 -0.611399" rgba="0.72 0.58 0.40 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="paleta2_1200x1200_collision" type="box" size="0.600000 0.065500 0.600000" contype="1" conaffinity="1" condim="3" group="4" rgba="0 0 0 0"/>
+    </body>
+
+    
+    <!-- 欧标箱1 -->
+    <body name="eurbox1_600x400x300" pos="0.75 0.3 0.3" euler="1.5708 0.06 0">
+        <freejoint name="eurbox1_600x400x300_joint"/>
+        <geom name="eurbox_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox1_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox1_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+
+    <!-- 欧标箱2 -->
+    <body name="eurbox2_600x400x300" pos="0.75 -0.3 0.3" euler="-1.5708 0.06 0">
+        <freejoint name="eurbox2_600x400x300_joint"/>
+        <geom name="eurbox2_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox2_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox2_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+
+    <!-- 欧标箱3 -->
+    <body name="eurbox3_600x400x300" pos="1.3 -0.4 0.3" euler="0 0 0">
+        <freejoint name="eurbox3_600x400x300_joint"/>
+        <geom name="eurbox3_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox3_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox3_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+
+    <!-- 欧标箱4 -->
+    <body name="eurbox4_600x400x300" pos="1.3 0 0.3" euler="0 0 0">
+        <freejoint name="eurbox4_600x400x300_joint"/>
+        <geom name="eurbox4_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox4_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox4_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+
+    <!-- 欧标箱5 -->
+    <body name="eurbox5_600x400x300" pos="1.3 0.4 0.3" euler="0 0 0">
+        <freejoint name="eurbox5_600x400x300_joint"/>
+        <geom name="eurbox5_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox5_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox5_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+
+    <!-- 欧标箱6 -->
+    <body name="eurbox6_600x400x300" pos="0.75 0.3 0.62" euler="1.5708 0.06 0">
+        <freejoint name="eurbox6_600x400x300_joint"/>
+        <geom name="eurbox6_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox6_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox6_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+
+    <!-- 欧标箱7 -->
+    <body name="eurbox7_600x400x300" pos="0.75 -0.3 0.62" euler="-1.5708 0.06 0">
+        <freejoint name="eurbox7_600x400x300_joint"/>
+        <geom name="eurbox7_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox7_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox7_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+
+    <!-- 欧标箱8 -->
+    <body name="eurbox8_600x400x300" pos="1.3 -0.4 0.62" euler="0 0 0">
+        <freejoint name="eurbox8_600x400x300_joint"/>
+        <geom name="eurbox8_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox8_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox8_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+
+    <!-- 欧标箱9 -->
+    <body name="eurbox9_600x400x300" pos="1.3 0 0.62" euler="0 0 0">
+        <freejoint name="eurbox9_600x400x300_joint"/>
+        <geom name="eurbox9_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox9_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox9_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+
+    <!-- 欧标箱10 -->
+    <body name="eurbox10_600x400x300" pos="1.3 0.4 0.62" euler="0 0 0">
+        <freejoint name="eurbox10_600x400x300_joint"/>
+        <geom name="eurbox10_600x400x300_visual" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" rgba="0.4 0.4 0.6 1" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox10_600x400x300_qr" type="mesh" mesh="eurbox_qr_plane" pos="0.304 0 0" material="eurbox_qr_mat" contype="0" conaffinity="0" group="1"/>
+        <geom name="eurbox10_600x400x300_collision" type="mesh" mesh="eurbox_600x400x300_mesh" pos="-0.301770 -0.201770 -0.150000" friction="2.5 1.2 1.2" contype="1" conaffinity="17" condim="4" group="4" mass="7.2"/>
+    </body>
+  </worldbody>
+</mujoco>

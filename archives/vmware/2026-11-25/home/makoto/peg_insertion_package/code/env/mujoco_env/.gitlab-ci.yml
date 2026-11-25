@@ -1,0 +1,125 @@
+stages:
+  - test
+  - release
+  - build
+
+# 使用内部 CI 镜像
+image: 172.16.29.17:30002/kubeflow-environment/mujoco_ci:latest
+
+# ============================================================================
+# Check python setup
+# ============================================================================
+.python_setup: &python_setup
+  before_script:
+    - pip install -e . --no-deps --user
+    
+    #暂未推送的依赖
+    - pip install requests==2.32.3 --user
+
+# ============================================================================
+# Test阶段：功能验证
+# ============================================================================
+test:
+  stage: test
+  <<: *python_setup
+  script:
+    - cd $CI_PROJECT_DIR
+    - echo "Running Unit Tests..."
+    - pytest tests/
+    - echo "Running Demos..."
+    - if [ -f examples/demo_aubo_i5_pick_apple.py ]; then python examples/demo_aubo_i5_pick_apple.py --no-render --steps 1000; else echo "Skipping examples/demo_aubo_i5_pick_apple.py (not found)"; fi
+    - if [ -f examples/demo_aubo_i5_pick_cube.py ]; then python examples/demo_aubo_i5_pick_cube.py --no-render --steps 500 --episodes 1; else echo "Skipping examples/demo_aubo_i5_pick_cube.py (not found)"; fi
+    - if [ -f examples/demo_aubo_i5_simple_move.py ]; then python examples/demo_aubo_i5_simple_move.py --no-render --mode moveL; else echo "Skipping examples/demo_aubo_i5_simple_move.py (not found)"; fi
+    - if [ -f examples/demo_franka_fr3_simple_move.py ]; then python examples/demo_franka_fr3_simple_move.py --no-render --mode moveL; else echo "Skipping examples/demo_franka_fr3_simple_move.py (not found)"; fi
+    - if [ -f examples/demo_franka_panda_pick_cube.py ]; then python examples/demo_franka_panda_pick_cube.py --no-render --steps 500; else echo "Skipping examples/demo_franka_panda_pick_cube.py (not found)"; fi
+  tags:
+    - local-linux-runner-dp
+    
+# ============================================================================
+# Release阶段：自动打Tag
+# ============================================================================
+release:
+  stage: release
+  <<: *python_setup
+  script:
+    - |
+      set -e
+      # Avoid "dubious ownership" in GitLab Kubernetes runners
+      git config --global --add safe.directory "$CI_PROJECT_DIR"
+      git fetch --tags
+      VERSION=$(python setup.py --version)
+      echo "Base setup.py version: $VERSION"
+      
+      # 使用Python计算下一个可用版本号
+      NEXT_VERSION=$(python -c "
+      import subprocess
+      base_ver = '$VERSION'
+      try:
+          tags = set(subprocess.check_output(['git', 'tag']).decode().split())
+      except:
+          tags = set()
+      parts = list(map(int, base_ver.split('.')))
+      tag_str = 'v' + '.'.join(map(str, parts))
+      while tag_str in tags:
+          parts[-1] += 1
+          tag_str = 'v' + '.'.join(map(str, parts))
+      print('.'.join(map(str, parts)))
+      ")
+      
+      echo "Target Tag: v$NEXT_VERSION"
+      
+      # 配置 Git
+      git config --global user.email "ci-bot@gitlab.com"
+      git config --global user.name "CI Bot"
+      
+      # 设置认证
+      if [ -n "$GIT_PUSH_TOKEN" ]; then
+        PUSH_USER=oauth2
+        PUSH_TOKEN=$GIT_PUSH_TOKEN
+      else
+        PUSH_USER=gitlab-ci-token
+        PUSH_TOKEN=$CI_JOB_TOKEN
+      fi
+      REPO_URL=$(echo $CI_SERVER_URL | sed "s|://|://${PUSH_USER}:${PUSH_TOKEN}@|")/${CI_PROJECT_PATH}.git
+      git remote set-url origin $REPO_URL
+      
+      # 创建并推送 Tag
+      git tag -a "v$NEXT_VERSION" -m "Release v$NEXT_VERSION [auto]"
+      git push origin "v$NEXT_VERSION"
+      echo "Successfully pushed tag v$NEXT_VERSION"
+  only:
+    - main
+    - master
+  tags:
+    - local-linux-runner-dp
+
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_STRATEGY: clone
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .cache/pip
+
+# ============================================================================
+# Build阶段：构建Python包
+# ============================================================================
+build:
+  stage: build
+  <<: *python_setup
+  script:
+    - echo "构建Python包..."
+    - pip install build wheel
+    - python -m build
+  artifacts:
+    paths:
+      - dist/*.whl
+      - dist/*.tar.gz
+    expire_in: 7 days
+  only:
+    - tags
+  tags:
+    - local-linux-runner-dp

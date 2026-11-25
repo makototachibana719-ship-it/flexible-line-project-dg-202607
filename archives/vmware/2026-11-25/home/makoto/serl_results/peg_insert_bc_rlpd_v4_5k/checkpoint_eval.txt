@@ -1,0 +1,330 @@
+
+==================================================
+checkpoint_0
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_0
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-3427.084 max_force=13.218 lat=0.067787 axial=0.045739 ori=0.130401
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -3427.084228515625
+Max force max: 13.217723846435547
+======================================================================
+
+==================================================
+checkpoint_500
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_500
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-5825.144 max_force=86.603 lat=0.064077 axial=0.061303 ori=1.939104
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -5825.14453125
+Max force max: 86.6025390625
+======================================================================
+
+==================================================
+checkpoint_1000
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_1000
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-14540.353 max_force=86.603 lat=0.200363 axial=0.192036 ori=1.231922
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -14540.353515625
+Max force max: 86.6025390625
+======================================================================
+
+==================================================
+checkpoint_1500
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_1500
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-8661.896 max_force=86.603 lat=0.257957 axial=0.063804 ori=2.394422
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -8661.8955078125
+Max force max: 86.6025390625
+======================================================================
+
+==================================================
+checkpoint_2000
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_2000
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-8063.256 max_force=86.603 lat=0.140290 axial=0.006002 ori=0.614948
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -8063.255859375
+Max force max: 86.6025390625
+======================================================================
+
+==================================================
+checkpoint_2500
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_2500
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-9485.696 max_force=86.603 lat=0.276296 axial=0.044381 ori=1.640830
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -9485.6962890625
+Max force max: 86.6025390625
+======================================================================
+
+==================================================
+checkpoint_3000
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_3000
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-5838.308 max_force=86.603 lat=0.095530 axial=0.044860 ori=3.012673
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -5838.3076171875
+Max force max: 86.6025390625
+======================================================================
+
+==================================================
+checkpoint_3500
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_3500
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-9301.924 max_force=86.603 lat=0.146339 axial=0.076823 ori=1.371666
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -9301.9248046875
+Max force max: 86.6025390625
+======================================================================
+
+==================================================
+checkpoint_4000
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_4000
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-12001.102 max_force=86.603 lat=0.237873 axial=0.486082 ori=1.594682
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -12001.1025390625
+Max force max: 86.6025390625
+======================================================================
+
+==================================================
+checkpoint_4500
+==================================================
+rlds logger is not installed, install it if required: https://github.com/rail-berkeley/oxe_envlogger 
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[EVAL] restoring checkpoint: /home/makoto/serl_eval_tmp/checkpoint_4500
+[OK] checkpoint agent.state 已正确恢复
+
+======================================================================
+[EVAL] deterministic PegInsert evaluation
+[EVAL] episodes: 1
+======================================================================
+[EVAL] episode=01 success=False steps=500 return=-13146.579 max_force=86.603 lat=0.309081 axial=0.091150 ori=2.975370
+
+======================================================================
+[EVAL SUMMARY]
+Success rate : 0/1 (0.0%)
+Mean steps   : 500.0
+Median steps : 500.0
+Mean cycle s : 25.0
+Median cycle : 25.0
+Mean return  : -13146.5791015625
+Max force max: 86.6025390625
+======================================================================

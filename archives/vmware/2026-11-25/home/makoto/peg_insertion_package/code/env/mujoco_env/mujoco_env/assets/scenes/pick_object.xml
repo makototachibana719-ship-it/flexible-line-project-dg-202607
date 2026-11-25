@@ -1,0 +1,143 @@
+<mujoco model="grasping_scene">
+  <compiler angle="radian"/>
+
+  <option timestep="0.001" gravity="0 0 -9.81" integrator="implicitfast" impratio="10">
+      <flag contact="enable" energy="enable" gravity="enable"/>
+  </option>
+
+  <visual>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="120" elevation="-20"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.68 0.68 0.68" rgb2="0.3 0.3 0.3" width="512" height="3072"/>
+    <texture name="groundplane" type="2d" builtin="checker" mark="edge"  rgb1="0.68 0.68 0.68" rgb2="0.8 0.8 0.8"
+      markrgb="0.68 0.68 0.68" width="300" height="300"/>
+    <material name="groundplane" reflectance="0.2" shininess="0.0" specular="0.0" texrepeat="5 5" texture="groundplane" texuniform="true"/>
+    
+    <texture name="wood" type="2d" file="../textures/wood.png"/>
+    <material name="wood" texture="wood" texrepeat="1 1" texuniform="true" rgba="0.68 0.68 0.68 1"/>
+    
+    <!-- 包含table的mesh -->
+    <mesh name="table" file="../objects/table/table.STL" scale="1.0 1.0 0.66"/>
+    
+    <!-- 牛奶盒资源 -->
+    <texture file="../objects/milk/texture_map.png" name="tex-milk" type="2d" />
+    <material name="milk_material" reflectance="0.5" texrepeat="1 1" texture="tex-milk" texuniform="false" />
+    <mesh file="../objects/milk/visual/textured_vis.msh" name="milk_mesh" scale="0.0075 0.0075 0.0075" />
+    
+    <!-- alphabet_soup 资源 -->
+    <texture file="../objects/alphabet_soup/texture_map.png" name="tex-alphabet_soup" type="2d" />
+    <material name="alphabet_soup_material" reflectance="0.5" texrepeat="1 1" texture="tex-alphabet_soup" texuniform="false" />
+    <mesh file="../objects/alphabet_soup/visual/textured_vis.msh" name="alphabet_soup_mesh" scale="0.01 0.01 0.01" />
+    
+    <!-- bbq_sauce 资源 -->
+    <texture file="../objects/bbq_sauce/texture_map.png" name="tex-bbq_sauce" type="2d" />
+    <material name="bbq_sauce_material" reflectance="0.5" texrepeat="1 1" texture="tex-bbq_sauce" texuniform="false" />
+    <mesh file="../objects/bbq_sauce/visual/bbq_sauce_vis.msh" name="bbq_sauce_mesh" scale="0.0077 0.0077 0.0077" />
+    
+    <!-- cookies 资源 -->
+    <texture file="../objects/cookies/texture_map.png" name="tex-cookies" type="2d" />
+    <material name="cookies_material" reflectance="0.5" texrepeat="1 1" texture="tex-cookies" texuniform="false" />
+    <mesh file="../objects/cookies/visual/cookies_vis.msh" name="cookies_mesh" scale="0.005 0.005 0.005" />
+  </asset>
+
+  <worldbody>
+    <!-- Floor -->
+    <geom condim="3" material="groundplane" name="floor" pos="0 0 0" size="3 3 .125" type="plane"/>
+    <light diffuse=".8 .8 .8" dir="0 -.15 -1" directional="false" pos="1 1 8.0" specular="0.3 0.3 0.3" castshadow="false"/>
+    <light diffuse=".8 .8 .8" dir="0 -.15 -1" directional="false" pos="-3. -3. 8.0" specular="0.3 0.3 0.3" castshadow="false"/>
+    
+    <!-- 相机 -->
+    <camera mode="fixed" name="front_view_cam" pos="0.4 0.6 1.0" xyaxes="-1 0 0 0 -0.707 0.707" fovy="60"/>
+
+    <!-- 篮子 (用于放置抓取的方块) -->
+    <body name="basket" pos="0.9 0.2 0.412">
+        <!-- 篮子底 -->
+        <geom name="basket_bottom" type="box" size="0.1 0.1 0.005" pos="0 0 0.005" rgba="0.6 0.4 0.2 1" friction="1 0.5 0.5"/>
+        <!-- 篮子四壁 -->
+        <geom name="basket_wall1" type="box" size="0.1 0.005 0.04" pos="0 0.095 0.04" rgba="0.6 0.4 0.2 1"/>
+        <geom name="basket_wall2" type="box" size="0.1 0.005 0.04" pos="0 -0.095 0.04" rgba="0.6 0.4 0.2 1"/>
+        <geom name="basket_wall3" type="box" size="0.005 0.09 0.04" pos="0.095 0 0.04" rgba="0.6 0.4 0.2 1"/>
+        <geom name="basket_wall4" type="box" size="0.005 0.09 0.04" pos="-0.095 0 0.04" rgba="0.6 0.4 0.2 1"/>
+    </body>
+
+    <!-- 桌子（直接定义，不再include table.xml以避免嵌套问题） -->
+    <body name="table" pos="1.0 0.3 0.0" euler="0 0 0">
+        <geom pos="-0.6 -0.3 0.411" contype="0" conaffinity="0" group="1" euler="0 0 1.57" type="box" size="0.3 0.6 0.01" material="wood"/>
+        <geom pos="-0.6 -0.3 0.411" conaffinity="1" condim="3" contype="0" group="4" euler="0 0 1.57" type="box" size="0.3 0.6 0.01" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" rgba="0.68 0.68 0.68 1" mesh="table" friction="0.95 0.9 0.9"/>
+        <geom type="mesh" conaffinity="1" condim="3" contype="0" group="4" rgba="0.68 0.68 0.68 1" mesh="table" friction="0.95 0.9 0.9"/>
+    </body>
+
+    <!-- 只保留一个方块（用于抓取任务） -->
+    <body name="green_cube" pos="0.6 0.0 0.442">
+        <geom name="green_cube_geom" type="box" size="0.02 0.02 0.02" rgba="0 1 0 1" mass="0.2" friction="1.5 1.0 1.0"/>
+        <joint name="green_cube_joint" type="free"/>
+    </body>
+
+    <body name="red_cube" pos="0.52 0.14 0.442">
+        <geom name="red_cube_geom" type="box" size="0.02 0.02 0.02" rgba="1 0 0 1" mass="0.2" friction="1.5 1.0 1.0"/>
+        <joint name="red_cube_joint" type="free"/>
+    </body>
+
+    <body name="blue_cube" pos="0.4 0.0 0.442">
+        <geom name="blue_cube_geom" type="box" size="0.02 0.02 0.02" rgba="0 0 1 1" mass="0.2" friction="1.5 1.0 1.0"/>
+        <joint name="blue_cube_joint" type="free"/>
+    </body>
+
+    <!-- 牛奶盒 -->
+    <body name="milk" pos="0.2 0.1 0.442" quat="1 0 0 0">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="1.0" diaginertia="0.005 0.005 0.003"/>
+      <geom solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" 
+            type="mesh" mesh="milk_mesh" conaffinity="0" contype="0" group="1" material="milk_material" />
+      <geom solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" 
+            type="box" pos="0.00037 -0.01500 0.00000" quat="0.70711 0.70711 0.00000 -0.00000" 
+            size="0.02625 0.02625 0.05475" conaffinity="1" contype="1" group="0" rgba="0.8 0.8 0.8 0.3" />
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.06" name="milk_bottom" />
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 0.04" name="milk_top" />
+    </body>
+    
+    <!-- 字母汤罐头 -->
+    <body name="alphabet_soup" pos="0.0 0.15 0.442" quat="0.7071 0.7071 0 0">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="1.2" diaginertia="0.006 0.006 0.004"/>
+      <geom solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" 
+            type="mesh" mesh="alphabet_soup_mesh" conaffinity="0" contype="0" group="1" material="alphabet_soup_material" />
+      <geom solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" 
+            type="box" pos="0.00000 -0.00104 -0.00235" quat="0.50000 -0.50000 0.50000 0.50000" 
+            size="0.01874 0.02352 0.03625" conaffinity="1" contype="1" group="0" rgba="0.8 0.8 0.8 0.3" />
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.04" name="alphabet_soup_bottom" />
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 0.04" name="alphabet_soup_top" />
+    </body>
+    
+    <!-- BBQ酱 -->
+    <body name="bbq_sauce" pos="0.35 -0.15 0.442" quat="1 0 0 0">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="1.1" diaginertia="0.006 0.006 0.004"/>
+      <geom solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" 
+            type="mesh" mesh="bbq_sauce_mesh" conaffinity="0" contype="0" group="1" material="bbq_sauce_material" />
+      <geom solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" 
+            type="box" pos="0.00000 0.00000 -0.02782" quat="0.00000 0.00530 0.00530 0.00000" 
+            size="0.01447 0.02349 0.02682" conaffinity="1" contype="1" group="0" rgba="0.8 0.8 0.8 0.3" />
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.06" name="bbq_sauce_bottom" />
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 0.06" name="bbq_sauce_top" />
+    </body>
+    
+    <!-- 饼干盒 -->
+    <body name="cookies" pos="0.8 0.0 0.442" quat="0.7071 0.7071 0 0">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.8" diaginertia="0.008 0.008 0.003"/>
+      <geom solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" 
+            type="mesh" mesh="cookies_mesh" conaffinity="0" contype="0" group="1" material="cookies_material" />
+      <geom solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" 
+            type="box" pos="-0.00000 0.00000 -0.00000" quat="0.00250 -0.00250 0.00250 0.00250" 
+            size="0.00940 0.03104 0.04131" conaffinity="1" contype="1" group="0" rgba="0.8 0.8 0.8 0.3" />
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.06" name="cookies_bottom" />
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 0.04" name="cookies_top" />
+    </body>
+
+  </worldbody>
+</mujoco>

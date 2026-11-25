@@ -1,0 +1,6 @@
+<root>
+  <asset>
+    <mesh name="sus_link" content_type="model/stl" file="meshes/sus_link.stl" />
+    <mesh name="robot_wheel" content_type="model/stl" file="meshes/robot_wheel.stl" />
+  </asset>
+</root>

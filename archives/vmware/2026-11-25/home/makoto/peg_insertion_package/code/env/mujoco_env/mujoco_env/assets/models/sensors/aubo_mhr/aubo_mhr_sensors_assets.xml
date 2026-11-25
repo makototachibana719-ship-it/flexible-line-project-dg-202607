@@ -1,0 +1,7 @@
+<root>
+  <asset>
+    <mesh name="camera_chest" content_type="model/stl" file="meshes/camera_chest.STL" />
+    <mesh name="camera_head" content_type="model/stl" file="meshes/camera_head.STL" />
+    <mesh name="xtion_pro_live" content_type="model/stl" file="meshes/xtion_pro_live.stl" />
+  </asset>
+</root>

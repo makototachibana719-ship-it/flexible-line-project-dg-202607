@@ -1,0 +1,18 @@
+<root>
+  <asset>
+    <mesh name="link0" content_type="model/stl" file="meshes/link0.STL" />
+    <mesh name="link1" content_type="model/stl" file="meshes/link1.STL" />
+    <mesh name="link2" content_type="model/stl" file="meshes/link2.STL" />
+    <mesh name="link3" content_type="model/stl" file="meshes/link3.STL" />
+    <mesh name="link4" content_type="model/stl" file="meshes/link4.STL" />
+    <mesh name="link5" content_type="model/stl" file="meshes/link5.STL" />
+    <mesh name="link6" content_type="model/stl" file="meshes/link6.STL" />
+    <mesh name="link7" content_type="model/stl" file="meshes/link7.STL" />
+    <mesh name="base_link" content_type="model/stl" file="meshes/base_link.STL" />
+    <mesh name="body_link" content_type="model/stl" file="meshes/body_link.STL" scale="1.07 1.07 1.07" />
+    <mesh name="neck_rotation" content_type="model/stl" file="meshes/neck_rotation.STL" />
+    <mesh name="neck_pitch" content_type="model/stl" file="meshes/neck_pitch.STL" />
+    <mesh name="base_leftArm" content_type="model/stl" file="meshes/base_leftArm.STL" />
+    <mesh name="base_rightArm" content_type="model/stl" file="meshes/base_rightArm.STL" />
+  </asset>
+</root>

@@ -1,5 +1,15 @@
 # Change Log
 
+## 2026-11-25 — Scoped VMware Peg asset preservation
+
+- Files: `archives/vmware/2026-11-25/`, project status/tasks, storage scope documentation.
+- Original behavior: this repository excluded large research assets; several remaining VMware Peg checkpoint versions and small diagnostic datasets/logs had no verified remote copy.
+- Modification: import only the 1,606 explicitly scoped guest files into a dated archive preserving the original home-relative paths. Record file size, SHA-256 and Unix mode. Disable Git text conversion within the archived home tree.
+- Reason: provide a remotely versioned asset backup before considering any further local cleanup.
+- Validation: transfer archive SHA-256; safe archive path/type and file-size checks; per-file comparison with the earlier VMware inventory; obvious credential-pattern scan; staged Git blob hashing and remote commit/tree verification.
+- Limits: this backup does not establish complete environment or end-to-end scientific reproducibility. Unreviewed paths, other projects and shared environments remain outside scope.
+- Rollback: the original guest files and local transfer archive remain available. Archived files can be restored individually after manifest verification; no source rollback or experiment rerun is required.
+
 ## 2026-09-08 — Peg F3 V2 behavior-critical Actor trust region V1
 
 - Files: added preflight, R1, matched R2, replay-handoff R2, canonical-safety and C1 runners; added `configs/peg_insertion/peg_v2_behavior_critical_actor_trust_region_v1_20260908.yaml`; preserved all preflight attempts and isolated result directories.

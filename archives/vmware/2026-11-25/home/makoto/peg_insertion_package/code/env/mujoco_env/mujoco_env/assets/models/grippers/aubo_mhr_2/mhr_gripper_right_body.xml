@@ -1,0 +1,15 @@
+<root>
+  <!-- aubo_mhr_2 right gripper body (rotate +90deg about X then -90deg about Z) -->
+  <body name="mhr2_gripper_right_rot" quat="0.5 0.5 -0.5 -0.5">
+    <geom name="mhr2_figure_base_right_geom" type="mesh" mesh="mhr2_figure_base" rgba="0.7 0.7 0.7 1" contype="1" conaffinity="15" />
+    <body name="mhr2_figure1_right" pos="-0.31 0.091 0.178" quat="0 0 1 0">
+      <geom name="mhr2_figure1_right_geom" type="mesh" mesh="mhr2_figure1_right" rgba="0.7 0.7 0.7 1" contype="1" conaffinity="15" />
+    </body>
+    <body name="mhr2_figure2_right" pos="0.005 0.07 -0.002" quat="0.707107 -0.707107 0 0">
+      <!--joint name="gripper_slide_right" type="slide" axis="0 -1 0" range="0 0.022" /-->
+      <joint name="gripper_slide_right" type="slide" axis="0 -1 0" range="0 0.022" damping="10" frictionloss="5" />
+      <geom name="mhr2_figure2_right_geom" type="mesh" mesh="mhr2_figure2_right" rgba="0.7 0.7 0.7 1" contype="1" conaffinity="15" />
+      <site name="ee_site_right" pos="0 0 0" size="0.005" rgba="1 0 0 0" />
+    </body>
+  </body>
+</root>

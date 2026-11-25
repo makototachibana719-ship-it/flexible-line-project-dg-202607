@@ -1,0 +1,69 @@
+<mujoco model="freight">
+    <asset>
+        <mesh name="freight_base_link" file="../../mobile_bases/freight/meshes/base_link.STL" scale="1.2 1.2 1.2"/>
+        <mesh name="freight_base_link_collision" file="../../mobile_bases/freight/meshes/base_link_collision.STL" scale="1.2 1.2 1.2"/>
+        <mesh name="freight_estop_link" file="../../mobile_bases/freight/meshes/estop_link.STL" scale="1.2 1.2 1.2"/>
+        <mesh name="freight_estop_link_collision" file="../../mobile_bases/freight/meshes/estop_link_collision.STL" scale="1.2 1.2 1.2"/>
+        <mesh name="freight_laser_link" file="../../mobile_bases/freight/meshes/laser_link.STL" scale="1.2 1.2 1.2"/>
+        <mesh name="freight_laser_link_collision" file="../../mobile_bases/freight/meshes/laser_link_collision.STL" scale="1.2 1.2 1.2"/>
+    </asset>
+    
+    <default>
+        <default class="freight">
+            <joint armature="0" damping="0" limited="false"/>
+            <default class="freight_visual">
+                <geom conaffinity="0" contype="0" group="2" density="0"/>
+            </default>
+            <default class="freight_collision">
+                <geom conaffinity="1" contype="1" condim="3" group="3" friction="1 0.5 0.5"/>
+            </default>
+        </default>
+    </default>
+    
+    <worldbody>
+        <body name="freight_base" pos="-0.2 0 0" euler="0 0 0">
+            <!-- free joint 实现全向移动 -->
+            <joint type="free" name="base_free_joint"/>
+            <inertial pos="0 0 0.3" mass="80" diaginertia="8 8 4"/>
+            
+            <!-- 货运车车体 -->
+            <geom type="mesh" mesh="freight_base_link" rgba="0.656 0.661 0.676 1" class="freight_visual"/>
+            <geom type="mesh" contype="1" conaffinity="1" friction="0.3 0.1 0.1" 
+                  mesh="freight_base_link_collision" priority="1" class="freight_collision"/>
+            
+            <!-- 急停按钮 -->
+            <geom pos="-0.1488 0.287 0.3735" quat="0.707105 0.707108 0 0" 
+                  type="mesh" mesh="freight_estop_link" rgba="0.8 0 0 1" class="freight_visual"/>
+            <geom pos="-0.1488 0.287 0.3735" quat="0.707105 0.707108 0 0" 
+                  type="mesh" mesh="freight_estop_link_collision" class="freight_collision"/>
+            
+            <!-- 激光雷达 -->
+            <geom pos="0.282 0 0.39536" quat="0 1 0 0" 
+                  type="mesh" mesh="freight_laser_link" class="freight_visual"/>
+            <geom pos="0.282 0 0.39536" quat="0 1 0 0" 
+                  type="mesh" mesh="freight_laser_link_collision" class="freight_collision"/>
+            
+            <!-- 左轮 -->
+            <body name="l_wheel_link" pos="0.00154968 0.224856 0.06639" euler="1.5708 0 0">
+                <inertial pos="0 0 0" mass="4.3542" diaginertia="0.005 0.0045 0.0045"/>
+                <joint name="l_wheel_joint" pos="0 0 0" axis="0 0 -1" type="hinge" damping="0.1"/>
+                <geom size="0.07 0.07 0.05" type="ellipsoid" contype="1" conaffinity="1" class="freight_collision" rgba="0.3 0.3 0.3 1"/>
+                <geom size="0.07 0.07 0.05" type="ellipsoid" class="freight_visual" rgba="0.3 0.3 0.3 1"/>
+            </body>
+            
+            <!-- 右轮 -->
+            <body name="r_wheel_link" pos="0.00154968 -0.224856 0.06639" euler="1.5708 0 0">
+                <inertial pos="0 0 0" mass="4.3542" diaginertia="0.005 0.0045 0.0045"/>
+                <joint name="r_wheel_joint" pos="0 0 0" axis="0 0 -1" type="hinge" damping="0.1"/>
+                <geom size="0.07 0.07 0.05" type="ellipsoid" contype="1" conaffinity="1" class="freight_collision" rgba="0.3 0.3 0.3 1"/>
+                <geom size="0.07 0.07 0.05" type="ellipsoid" class="freight_visual" rgba="0.3 0.3 0.3 1"/>
+            </body>
+            
+            <!-- 机械臂安装点（这是manipulator会附加到的地方） -->
+            <body name="mount_base_link" pos="-0.08 0 0.43" euler="0 0 0">
+                <inertial pos="0 0 0" mass="0.01" diaginertia="0.001 0.001 0.001"/>
+            </body>
+        </body>
+    </worldbody>
+</mujoco>
+

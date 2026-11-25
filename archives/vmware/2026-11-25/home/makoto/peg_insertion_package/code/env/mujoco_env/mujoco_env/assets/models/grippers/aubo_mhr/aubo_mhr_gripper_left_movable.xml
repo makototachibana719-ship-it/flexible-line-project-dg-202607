@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  左侧可动夹爪 - 基于 gripper_macro.xacro 重建
+  
+  结构 (7 bodies, 6 revolute joints):
+  - gripper_base_link_left
+    ├── gripper_r_link1_left (joint1: 驱动连杆)
+    ├── gripper_r_link2_left (joint2: 被动连杆)
+    │   └── gripper_r_link_finger_left (joint_finger: 指尖)
+    ├── gripper_l_link1_left (joint1: 驱动连杆)
+    └── gripper_l_link2_left (joint2: 被动连杆)
+        └── gripper_l_link_finger_left (joint_finger: 指尖)
+            └── gripper_tip_left (固定: EE site)
+  
+  关节轴和limits完全按照xacro定义
+-->
+<mujoco model="gripper_left_movable">
+  <compiler angle="radian" eulerseq="xyz" autolimits="true" />
+  
+  <default>
+    <joint limited="true" damping="0.1" armature="0.01" />
+    <geom condim="4" contype="0" conaffinity="0" friction="0.9 0.2 0.2" />
+    <default class="visualgeom">
+      <geom material="visualgeom" condim="1" contype="0" conaffinity="0" />
+    </default>
+  </default>
+  
+  <asset>
+    <mesh name="gripper_base_visual" file="meshes/visual/gripper_base.stl" />
+    <mesh name="gripper_link1_visual" file="meshes/visual/gripper_link1.stl" />
+    <mesh name="gripper_link2_visual" file="meshes/visual/gripper_link2.stl" />
+    <mesh name="gripper_link_finger_visual" file="meshes/visual/gripper_link_finger.stl" />
+    <mesh name="gripper_base_collision" file="meshes/collision/gripper_base.stl" />
+    <mesh name="gripper_link1_collision" file="meshes/collision/gripper_link1.stl" />
+    <mesh name="gripper_link2_collision" file="meshes/collision/gripper_link2.stl" />
+    <mesh name="gripper_link_finger_collision" file="meshes/collision/gripper_link_finger.stl" />
+    <material name="visualgeom" rgba="0.9 0.9 0.9 1" />
+  </asset>
+  
+  <worldbody>
+    <light pos="0 0 1" dir="0 0 -1" diffuse="1 1 1" />
+    <geom type="plane" size="0.5 0.5 0.01" rgba="0.5 0.5 0.5 1" />
+    
+    <!-- Gripper Base -->
+    <body name="gripper_base_link_left" pos="0 0 0.02" quat="0.707107 0 0 -0.707107">
+      <inertial pos="8.625e-08 -4.6583e-06 0.03145" mass="0.22652" 
+                diaginertia="0.00020005 0.00017832 0.00013478" />
+      <geom class="visualgeom" type="mesh" mesh="gripper_base_visual" />
+      <geom type="mesh" mesh="gripper_base_collision" rgba="0 0 0 0" />
+      
+      <!-- Right finger chain -->
+      <!-- gripper_r_joint1: xyz=0.025, 0, 0.0856  rpy=π/2, 0, π -->
+      <body name="gripper_r_link1_left" pos="0.025 0 0.0856" quat="0 0 0.707107 0.707107">
+        <inertial pos="8.625e-08 -4.6583e-06 0.03145" mass="0.22652" 
+                  diaginertia="0.00020005 0.00017832 0.00013478" />
+        <joint name="gripper_r_joint1_left" type="hinge" axis="0 0 1" range="-10 10" />
+        <geom class="visualgeom" type="mesh" mesh="gripper_link1_visual" />
+        <geom type="mesh" mesh="gripper_link1_collision" rgba="0 0 0 0" />
+      </body>
+      
+      <!-- gripper_r_joint2: xyz=0.0115, 0, 0.1056  rpy=π/2, 0, 0 -->
+      <body name="gripper_r_link2_left" pos="0.0115 0 0.1056" quat="0.707107 0.707107 0 0">
+        <inertial pos="8.625e-08 -4.6583e-06 0.03145" mass="0.22652" 
+                  diaginertia="0.00020005 0.00017832 0.00013478" />
+        <joint name="gripper_r_joint2_left" type="hinge" axis="0 0 -1" range="-10 10" damping="0.05" frictionloss="0" />
+        <geom class="visualgeom" type="mesh" mesh="gripper_link2_visual" />
+        <geom type="mesh" mesh="gripper_link2_collision" rgba="0 0 0 0" />
+        
+        <!-- gripper_r_joint_finger: xyz=0, 0.053, 0  rpy=π, 0, π -->
+        <body name="gripper_r_link_finger_left" pos="0 0.053 0" quat="0 0 1 0">
+          <inertial pos="8.625e-08 -4.6583e-06 0.03145" mass="0.22652" 
+                    diaginertia="0.00020005 0.00017832 0.00013478" />
+          <joint name="gripper_r_joint_finger_left" type="hinge" axis="0 0 -1" range="-10 10" />
+          <geom class="visualgeom" type="mesh" mesh="gripper_link_finger_visual" />
+          <geom type="mesh" mesh="gripper_link_finger_collision" rgba="0 0 0 0" />
+        </body>
+      </body>
+      
+      <!-- Left finger chain -->
+      <!-- gripper_l_joint1: xyz=-0.025, 0, 0.0856  rpy=π/2, 0, 0 -->
+      <body name="gripper_l_link1_left" pos="-0.025 0 0.0856" quat="0.707107 0.707107 0 0">
+        <inertial pos="8.625e-08 -4.6583e-06 0.03145" mass="0.22652" 
+                  diaginertia="0.00020005 0.00017832 0.00013478" />
+        <joint name="gripper_l_joint1_left" type="hinge" axis="0 0 1" range="-10 10" />
+        <geom class="visualgeom" type="mesh" mesh="gripper_link1_visual" />
+        <geom type="mesh" mesh="gripper_link1_collision" rgba="0 0 0 0" />
+      </body>
+      
+      <!-- gripper_l_joint2: xyz=-0.0115, 0, 0.1056  rpy=π/2, 0, π -->
+      <body name="gripper_l_link2_left" pos="-0.0115 0 0.1056" quat="0 0 0.707107 0.707107">
+        <inertial pos="8.625e-08 -4.6583e-06 0.03145" mass="0.22652" 
+                  diaginertia="0.00020005 0.00017832 0.00013478" />
+        <joint name="gripper_l_joint2_left" type="hinge" axis="0 0 -1" range="-10 10" />
+        <geom class="visualgeom" type="mesh" mesh="gripper_link2_visual" />
+        <geom type="mesh" mesh="gripper_link2_collision" rgba="0 0 0 0" />
+        
+        <!-- gripper_l_joint_finger: xyz=0, 0.053, 0  rpy=π, 0, π -->
+        <body name="gripper_l_link_finger_left" pos="0 0.053 0" quat="0 0 1 0">
+          <inertial pos="8.625e-08 -4.6583e-06 0.03145" mass="0.22652" 
+                    diaginertia="0.00020005 0.00017832 0.00013478" />
+          <joint name="gripper_l_joint_finger_left" type="hinge" axis="0 0 -1" range="-10 10" />
+          <geom class="visualgeom" type="mesh" mesh="gripper_link_finger_visual" />
+          <geom type="mesh" mesh="gripper_link_finger_collision" rgba="0 0 0 0" />
+          
+          <!-- gripper_tip: fixed at xyz=0.0115, 0, 0 -->
+          <body name="gripper_tip_left" pos="0.0115 0 0">
+            <site name="ee_site_left" pos="-0.016 0 0.17" size="0.005" rgba="1 0 0 1" />
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  
+  <!-- Actuator: 只驱动 joint2，其他关节通过 equality 联动 -->
+  <actuator>
+    <position name="gripper_left" joint="gripper_r_joint2_left" ctrllimited="true" ctrlrange="-0.6 0.6" kp="20" />
+  </actuator>
+  
+  <!-- Equality: 并联四连杆 mimic 约束 -->
+  <equality>
+    <!-- 左右 link2 对称反向 -->
+    <joint joint1="gripper_r_joint2_left" joint2="gripper_l_joint2_left" polycoef="0 1 0 0 0" />
+    <!-- link1 跟随 link2，系数取反以补偿坐标系翻转 -->
+    <joint joint1="gripper_r_joint1_left" joint2="gripper_r_joint2_left" polycoef="0 -1 0 0 0" />
+    <joint joint1="gripper_l_joint1_left" joint2="gripper_l_joint2_left" polycoef="0 -1 0 0 0" />
+    <!-- finger 跟随 link2 反向 (保持指尖平行) -->
+    <joint joint1="gripper_r_joint_finger_left" joint2="gripper_r_joint2_left" polycoef="0 -1 0 0 0" />
+    <joint joint1="gripper_l_joint_finger_left" joint2="gripper_l_joint2_left" polycoef="0 -1 0 0 0" />
+  </equality>
+</mujoco>

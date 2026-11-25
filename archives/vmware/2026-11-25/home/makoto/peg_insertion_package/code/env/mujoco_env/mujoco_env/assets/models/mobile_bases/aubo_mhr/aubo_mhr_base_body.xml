@@ -1,0 +1,52 @@
+<root>
+  <body name="base_components">
+    <geom size="0.275 0.225 0.15" pos="0 0 0.125" type="box" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+    <geom type="box" rgba="" size="0.275 0.225 0.15" pos="0 0 0.125" />
+    
+    <!-- Manipulator 支架立方体 -->
+    <body name="manipulator_mount">
+      <geom name="mount_visual" type="box" size="0.1 0.1 0.3" pos="-0.15 0 0.55" 
+            rgba="0.5 0.5 0.5 1" contype="0" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom name="mount_collision" type="box" size="0.1 0.1 0.3" pos="-0.15 0 0.55" rgba="" />
+      
+      <!-- Manipulator include -->
+      <include file="../../manipulators/aubo_mhr/aubo_mhr_manipulator_body.xml" />
+    </body>
+    
+    <body name="front_right_steering_link" pos="0.15 -0.08 -0.04">
+      <inertial pos="0 -0.0224 -0.024" quat="0.641954 0.766743 0 0" mass="25" diaginertia="1.22034 1.22034 1.2171" />
+      <joint name="front_right_steering_joint" pos="0 0 0" axis="0 0 1" range="-2.1 2.1" actuatorfrcrange="-5 5" />
+      <geom type="mesh" mesh="sus_link" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="" mesh="sus_link" />
+      <geom pos="0 -0.021 -0.025" quat="1 0 0 0" type="mesh" mesh="robot_wheel" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="" mesh="robot_wheel" pos="0 -0.021 -0.025" quat="1 0 0 0" />
+    </body>
+    
+    <body name="front_left_steering_link" pos="0.15 0.08 -0.04">
+      <inertial pos="0 0.0112 -0.024" quat="0.817416 0.576048 0 0" mass="25" diaginertia="1.21798 1.21798 1.2171" />
+      <joint name="front_left_steering_joint" pos="0 0 0" axis="0 0 1" range="-2.1 2.1" actuatorfrcrange="-5 5" />
+      <geom type="mesh" mesh="sus_link" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="" mesh="sus_link" />
+      <geom pos="0 0.021 -0.025" quat="1.32679e-06 0 0 1" type="mesh" mesh="robot_wheel" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="" mesh="robot_wheel" pos="0 0.021 -0.025" quat="1.32679e-06 0 0 1" />
+    </body>
+    
+    <body name="rear_right_steering_link" pos="-0.15 -0.08 -0.04">
+      <inertial pos="0 -0.0224 -0.024" quat="0.641954 0.766743 0 0" mass="25" diaginertia="1.22034 1.22034 1.2171" />
+      <joint name="rear_right_steering_joint" pos="0 0 0" axis="0 0 1" range="-2.1 2.1" actuatorfrcrange="-5 5" />
+      <geom type="mesh" mesh="sus_link" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="" mesh="sus_link" />
+      <geom pos="0 -0.021 -0.025" quat="1 0 0 0" type="mesh" mesh="robot_wheel" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="" mesh="robot_wheel" pos="0 -0.021 -0.025" quat="1 0 0 0" />
+    </body>
+    
+    <body name="rear_left_steering_link" pos="-0.15 0.08 -0.04">
+      <inertial pos="0 0.0112 -0.024" quat="0.817416 0.576048 0 0" mass="25" diaginertia="1.21798 1.21798 1.2171" />
+      <joint name="rear_left_steering_joint" pos="0 0 0" axis="0 0 1" range="-2.1 2.1" actuatorfrcrange="-5 5" />
+      <geom type="mesh" mesh="sus_link" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="" mesh="sus_link" />
+      <geom pos="0 0.021 -0.025" quat="1.32679e-06 0 0 1" type="mesh" mesh="robot_wheel" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="" mesh="robot_wheel" pos="0 0.021 -0.025" quat="1.32679e-06 0 0 1" />
+    </body>
+  </body>
+</root>

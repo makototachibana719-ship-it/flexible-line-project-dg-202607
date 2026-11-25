@@ -1,0 +1,28 @@
+<mujoco>
+    <asset>
+        <mesh name="roller_conveyor_mesh"
+              file="conveyor.STL"
+              scale="0.0025 0.0025 0.0025"/>
+    </asset>
+    <worldbody>
+        <body name="roller_conveyor">
+            <geom name="roller_conveyor_visual"
+                  type="mesh"
+                  mesh="roller_conveyor_mesh"
+                  pos="-0.757500 -0.126250 -0.281312"
+                  rgba="0.7 0.7 0.7 1"
+                  contype="0"
+                  conaffinity="0"
+                  group="1"/>
+            <geom name="roller_conveyor_collision"
+                  type="mesh"
+                  mesh="roller_conveyor_mesh"
+                  pos="-0.757500 -0.126250 -0.281312"
+                  contype="1"
+                  conaffinity="1"
+                  condim="3"
+                  group="4"
+                  mass="20"/>
+        </body>
+    </worldbody>
+</mujoco>

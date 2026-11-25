@@ -1,0 +1,168 @@
+<mujoco model="robotiq_realsense">
+    <compiler angle="radian"/>
+    
+    <asset>
+        <!-- RealSense 摄像头 meshes -->
+        <mesh name="cambase" file="../realsense/meshes/cambase.STL"/>
+        <mesh name="cam" file="../realsense/meshes/cam.STL"/>
+        
+        <!-- Robotiq 2F-85 夹爪 meshes -->
+        <mesh name="robotiq_base" file="../robotiq_gripper/meshes/robotiq-2f-base.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="robotiq_driver" file="../robotiq_gripper/meshes/robotiq-2f-driver.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="robotiq_coupler" file="../robotiq_gripper/meshes/robotiq-2f-coupler.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="robotiq_follower" file="../robotiq_gripper/meshes/robotiq-2f-follower.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="robotiq_pad" file="../robotiq_gripper/meshes/robotiq-2f-pad.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="robotiq_spring_link" file="../robotiq_gripper/meshes/robotiq-2f-spring_link.stl" scale="0.001 0.001 0.001"/>
+    </asset>
+    
+    <default>
+        <default class="robotiq2f85">
+            <joint damping="0.1" pos="0 0 0" axis="1 0 0" limited="true"/>
+            <geom rgba="0.1 0.1 0.1 1" type="mesh" contype="0" conaffinity="0" group="1"/>
+            <default class="robotiq_col">
+                <geom rgba="0.3 0.4 0.5 1" type="mesh" contype="1" conaffinity="0" group="3"/>
+            </default>
+            <default class="robotiq_pad_col">
+                <geom rgba="0.3 0.4 0.5 1" type="mesh" contype="1" conaffinity="1" group="3" 
+                      condim="4" friction="1 1 1" solref="0.001 1" solimp="1 0.99 0.001"/>
+            </default>
+        </default>
+    </default>
+    
+    <worldbody>
+        <!-- RealSense 摄像头在机械臂末端 -->
+        <body name="end_effector" quat="0 0.707107 0.707107 0">
+            <!-- 摄像头底座 -->
+            <geom type="mesh" rgba="1 1 1 1" mesh="cambase" />
+            
+            <!-- 摄像头本体 -->
+            <body name="camera_body" pos="0.065054 0.00068038 -0.013835" 
+                  quat="-2.59734e-06 0.707105 0.707108 -2.59735e-06">
+                <geom type="mesh" contype="0" conaffinity="0" group="1" 
+                      rgba="0.69804 0.69804 0.69804 1" mesh="cam"/>
+                <!-- 摄像头传感器 -->
+                <camera name="wrist_cam" pos="0.0175 0 0.008" quat="0 0 1 0" fovy="60"/>
+            </body>
+            
+            <!-- Robotiq 2F-85 夹爪（安装在摄像头Z轴负方向，方向与摄像头一致） -->
+            <body name="gripper_base" pos="0 0 -0.005" quat="0 1 0 0" childclass="robotiq2f85">
+                <geom mesh="robotiq_base"/>
+                <geom class="robotiq_col" type="mesh" mesh="robotiq_base"/>
+                
+                <!-- 抓取参考点 -->
+                <body name="eef" pos="0 0 0.14" quat="0 1 1 0">
+                    <site name="grip_site" pos="0 0 0" size="0.005" rgba="1 0 0 0.5" type="sphere" group="1"/>
+                </body>
+                
+                <!-- 右侧四杆连杆机构 -->
+                <body name="right_driver" pos="0 0.0306011 0.054904">
+                    <inertial pos="0 0.01575 0.05295" quat="0.738425 0.674335 0 0" 
+                              mass="0.0002" diaginertia="0.00043212 0.000431866 0.000360253"/>
+                    <joint name="right_driver_joint" range="0 0.834"/>
+                    <geom mesh="robotiq_driver"/>
+                    <geom pos="0 0.0315 -0.0041" mesh="robotiq_coupler"/>
+                    <geom class="robotiq_col" pos="0 0.0315 -0.0041" type="mesh" mesh="robotiq_coupler"/>
+                    
+                    <body name="right_follower" pos="0 0.0376 0.043">
+                        <inertial pos="0 0 0.055" quat="0.707107 0.707107 0 0" 
+                                  mass="0.0002" diaginertia="0.000380833 0.000380833 0.00036"/>
+                        <joint name="right_follower_joint" range="-0.837 0"/>
+                        <geom mesh="robotiq_follower"/>
+                        <geom type="mesh" mesh="robotiq_pad" rgba="1 1 1 1"/>
+                        <!-- 右侧抓取垫碰撞 -->
+                        <geom class="robotiq_pad_col" type="box" size="0.01 0.003 0.0175" pos="0 -0.021 0.031"/>
+                        <geom class="robotiq_pad_col" type="capsule" size="0.004 0.008" pos="0 -0.019 0.045" axisangle="0.1 1 0 1.57"/>
+                        <geom class="robotiq_pad_col" type="capsule" size="0.004 0.008" pos="0 -0.019 0.036" axisangle="0.1 1 0 1.57"/>
+                        <geom class="robotiq_pad_col" type="capsule" size="0.004 0.008" pos="0 -0.019 0.028" axisangle="0.1 1 0 1.57"/>
+                        <geom class="robotiq_pad_col" type="capsule" size="0.004 0.008" pos="0 -0.019 0.019" axisangle="0.1 1 0 1.57"/>
+                    </body>
+                </body>
+                
+                <body name="right_spring_link" pos="0 0.012 0.0614">
+                    <inertial pos="0 0 0.055" quat="0.707107 0.707107 0 0" 
+                              mass="0.0001" diaginertia="0.000190833 0.000190833 0.00018"/>
+                    <joint name="right_spring_link_joint" range="-2.96706 2.96706"/>
+                    <geom mesh="robotiq_spring_link"/>
+                    <geom class="robotiq_col" type="box" size="0.0125 0.007 0.014" pos="0 0.032 0.0365" euler="-0.7 0 0"/>
+                    <geom class="robotiq_col" type="box" size="0.0180 0.007 0.022" pos="0 0.012 0.013" euler="-0.7 0 0"/>
+                    <site type="sphere" size="0.01" pos="0 0.037 0.043" rgba="1 0 0 1" group="3"/>
+                </body>
+                
+                <!-- 左侧四杆连杆机构 -->
+                <body name="left_driver" pos="0 -0.0306011 0.054904" quat="0 0 0 1">
+                    <inertial pos="0 0.01575 0.05295" quat="0.738425 0.674335 0 0" 
+                              mass="0.0002" diaginertia="0.00043212 0.000431866 0.000360253"/>
+                    <joint name="left_driver_joint" range="0 0.834"/>
+                    <geom mesh="robotiq_driver"/>
+                    <geom pos="0 0.0315 -0.0041" mesh="robotiq_coupler"/>
+                    <geom class="robotiq_col" pos="0 0.0315 -0.0041" type="mesh" mesh="robotiq_coupler"/>
+                    
+                    <body name="left_follower" pos="0 0.0376 0.043">
+                        <inertial pos="0 0 0.055" quat="0.707107 0.707107 0 0" 
+                                  mass="0.0002" diaginertia="0.000380833 0.000380833 0.00036"/>
+                        <joint name="left_follower_joint" range="-0.837 0"/>
+                        <geom mesh="robotiq_follower"/>
+                        <geom type="mesh" mesh="robotiq_pad" rgba="1 1 1 1"/>
+                        <!-- 左侧抓取垫碰撞 -->
+                        <geom class="robotiq_pad_col" type="box" size="0.01 0.003 0.0175" pos="0 -0.021 0.031"/>
+                        <geom class="robotiq_pad_col" type="capsule" size="0.004 0.008" pos="0 -0.019 0.045" axisangle="0.1 1 0 1.57"/>
+                        <geom class="robotiq_pad_col" type="capsule" size="0.004 0.008" pos="0 -0.019 0.036" axisangle="0.1 1 0 1.57"/>
+                        <geom class="robotiq_pad_col" type="capsule" size="0.004 0.008" pos="0 -0.019 0.028" axisangle="0.1 1 0 1.57"/>
+                        <geom class="robotiq_pad_col" type="capsule" size="0.004 0.008" pos="0 -0.019 0.019" axisangle="0.1 1 0 1.57"/>
+                    </body>
+                </body>
+                
+                <body name="left_spring_link" pos="0 -0.012 0.0614" quat="0 0 0 1">
+                    <inertial pos="0 0 0.055" quat="0.707107 0.707107 0 0" 
+                              mass="0.0001" diaginertia="0.000190833 0.000190833 0.00018"/>
+                    <joint name="left_spring_link_joint" range="-2.96706 2.96706"/>
+                    <geom mesh="robotiq_spring_link"/>
+                    <geom class="robotiq_col" type="box" size="0.0125 0.007 0.014" pos="0 0.032 0.0365" euler="-0.7 0 0"/>
+                    <geom class="robotiq_col" type="box" size="0.0180 0.007 0.022" pos="0 0.012 0.013" euler="-0.7 0 0"/>
+                    <site type="sphere" size="0.01" pos="0 0.037 0.043" rgba="1 0 0 1" group="3"/>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+    
+    <!-- 夹爪碰撞排除 -->
+    <contact>
+        <exclude body1="right_spring_link" body2="right_follower"/>
+        <exclude body1="left_spring_link" body2="left_follower"/>
+        <exclude body1="gripper_base" body2="right_driver"/>
+        <exclude body1="gripper_base" body2="left_driver"/>
+        <exclude body1="gripper_base" body2="right_spring_link"/>
+        <exclude body1="gripper_base" body2="left_spring_link"/>
+    </contact>
+    
+    <!-- 夹爪连杆约束 -->
+    <tendon>
+        <fixed name="gripper_split">
+            <joint joint="right_driver_joint" coef="0.5"/>
+            <joint joint="left_driver_joint" coef="0.5"/>
+        </fixed>
+    </tendon>
+    
+    <equality>
+        <connect anchor="0 0.037 0.043" body1="right_spring_link" body2="right_follower" 
+                 solimp="0.95 0.99 0.001" solref="0.005 1"/>
+        <connect anchor="0 0.037 0.043" body1="left_spring_link" body2="left_follower"
+                 solimp="0.95 0.99 0.001" solref="0.005 1"/>
+        <joint joint1="right_driver_joint" joint2="left_driver_joint" polycoef="0 1 0 0 0"
+               solimp="0.95 0.99 0.001" solref="0.005 1"/>
+    </equality>
+    
+    <!-- Robotiq 2F-85 夹爪执行器 -->
+    <actuator>
+        <position name="gripper_actuator" tendon="gripper_split" kp="5" ctrlrange="0 1" ctrllimited="true"/>
+    </actuator>
+    
+    <!-- 传感器 -->
+    <sensor>
+        <!-- 夹爪位置传感器 -->
+        <jointpos name="gripper_pos" joint="right_driver_joint"/>
+        <!-- 抓取点位置传感器 -->
+        <framepos name="grip_site_pos" objtype="site" objname="grip_site"/>
+    </sensor>
+</mujoco>
+

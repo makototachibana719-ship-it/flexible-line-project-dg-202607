@@ -1,5 +1,7 @@
 # Project Tasks
 
+Storage archival 2026-11-25: preserve the 1,606 scoped VMware Peg files under `archives/vmware/2026-11-25/`, verify transfer and per-file SHA-256, and check staged Git blob hashes before remote publication. No further guest deletion belongs to this upload task.
+
 Peg Vision DrQ + Demo Replay V1 STOPPED/FAIL at engineering GPU smoke: compatibility, isolated visual env, camera preflight, five distinct physical Demo replays (878 transitions), Object replay, AgentLace online transport and GPU inference all PASS. Two unchanged-recipe batch256 first-update probes timed out at 15 minutes with 0 completed updates, so 100-update smoke, checkpoints, scientific training and canonical evaluation are NOT_RUN. `NEXT=VISION_DRQ_FAILURE_REVIEW`; do not start 500+ training from these artifacts. Evidence: `results/evaluation/peg_vision_drq_demo_v1_20260910_190000/MASTER_REPORT.md`.
 
 Peg F3 minimal actor Demo-action anchor design VALIDATED: isolated all-Demo additive MSE anchor, `lambda_small=0.07`, gradient contribution 9.8207%, baseline optimizer/critic/environment/data semantics preserved. A fresh 1K ablation requires separate user authorization.

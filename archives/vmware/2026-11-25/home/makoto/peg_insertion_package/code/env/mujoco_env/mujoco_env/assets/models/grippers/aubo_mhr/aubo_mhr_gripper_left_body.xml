@@ -1,0 +1,9 @@
+<root>
+  <body name="gripper_base_link_left" pos="0 0 0" quat="0 -0.707107 -0.707107 0">
+    <inertial pos="8.625e-08 -4.6583e-06 0.03145" mass="0.22652" diaginertia="0.00020005 0.00017832 0.00013478" />
+    <geom class="visualgeom" type="mesh" mesh="left_gripper" rgba="0.5 0.5 0.5 1" />
+    <geom type="mesh" mesh="left_gripper" rgba="0.5 0.5 0.5 1" />
+    <!-- IK Target Site: Red sphere representing gripper TCP. Adjust 'pos' to match fingertips. -->
+    <site name="ee_site_left" pos="0 0 -0.15" size="0.002" rgba="1 0 0 0" />
+  </body>
+</root>

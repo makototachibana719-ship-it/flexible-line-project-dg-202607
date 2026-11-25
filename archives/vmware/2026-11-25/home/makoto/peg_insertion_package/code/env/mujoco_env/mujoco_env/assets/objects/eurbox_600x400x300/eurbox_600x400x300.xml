@@ -1,0 +1,45 @@
+<mujoco>
+    <asset>
+        <mesh name="eurbox_600x400x300_mesh"
+              file="European box 600x400x300.STL"
+              scale="0.001 0.001 0.001"/>
+        <mesh name="eurbox_qr_plane" file="qr_plane.obj"/>
+        <texture name="eurbox_qr_tex" type="2d" file="QRCode.png"/>
+        <material name="eurbox_qr_mat" texture="eurbox_qr_tex" texrepeat="1 1" texuniform="false" reflectance="0.1"/>
+    </asset>
+    <worldbody>
+        <body name="eurbox_600x400x300">
+            <freejoint/>
+            <geom name="eurbox_600x400x300_visual"
+                  type="mesh"
+                  mesh="eurbox_600x400x300_mesh"
+                  pos="-0.301770 -0.201770 -0.150000"
+                  rgba="0.78 0.62 0.42 1"
+                  contype="0"
+                  conaffinity="0"
+                  group="1"/>
+            <geom name="eurbox_600x400x300_qr"
+                  type="mesh"
+                  mesh="eurbox_qr_plane"
+                  pos="0.304 0 0"
+                  material="eurbox_qr_mat"
+                  contype="0"
+                  conaffinity="0"
+                  group="1"/>
+            <geom name="eurbox_600x400x300_collision"
+                  type="mesh"
+                  mesh="eurbox_600x400x300_mesh"
+                  pos="-0.301770 -0.201770 -0.150000"
+                  friction="1.5 0.8 0.01"
+                  contype="1"
+                  conaffinity="1"
+                  condim="4"
+                  group="4"
+                  mass="7.2"/>
+            <site name="eurbox_600x400x300_site"
+                  pos="0 0 0"
+                  size="0.02"
+                  rgba="0 0 0 0"/>
+        </body>
+    </worldbody>
+</mujoco>

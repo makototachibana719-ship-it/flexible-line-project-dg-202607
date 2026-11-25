@@ -1,0 +1,15 @@
+<root>
+  <asset>
+    <mesh name="gripper_base_visual" file="meshes/visual/gripper_base.stl" />
+    <mesh name="gripper_link1_visual" file="meshes/visual/gripper_link1.stl" />
+    <mesh name="gripper_link2_visual" file="meshes/visual/gripper_link2.stl" />
+    <mesh name="gripper_link_finger_visual" file="meshes/visual/gripper_link_finger.stl" />
+
+    <mesh name="gripper_base_collision" file="meshes/collision/gripper_base.stl" />
+    <mesh name="gripper_link1_collision" file="meshes/collision/gripper_link1.stl" />
+    <mesh name="gripper_link2_collision" file="meshes/collision/gripper_link2.stl" />
+    <mesh name="gripper_link_finger_collision" file="meshes/collision/gripper_link_finger.stl" />
+    <mesh name="left_gripper" file="meshes/visual/left_gripper.STL" />
+    <mesh name="right_gripper" file="meshes/visual/right_gripper.STL" />
+  </asset>
+</root>

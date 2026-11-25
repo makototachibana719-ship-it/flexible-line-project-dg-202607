@@ -1,0 +1,317 @@
+diff --git a/examples/async_sac_state_sim/async_sac_state_sim.py b/examples/async_sac_state_sim/async_sac_state_sim.py
+index 90a1acf..41d38c4 100644
+--- a/examples/async_sac_state_sim/async_sac_state_sim.py
++++ b/examples/async_sac_state_sim/async_sac_state_sim.py
+@@ -27,6 +27,106 @@ from serl_launcher.utils.timer_utils import Timer
+ 
+ import franka_sim
+ 
++class CompatFlattenObservation(gym.Wrapper):
++    """
++    扁平化 Dict observation，并统一为 Gymnasium 风格接口。
++
++    reset() -> observation, info
++    step()  -> observation, reward, terminated, truncated, info
++    """
++
++    def __init__(self, env):
++        super().__init__(env)
++
++        self._original_observation_space = env.observation_space
++
++        flat_space = gym.spaces.flatten_space(
++            self._original_observation_space
++        )
++
++        self.observation_space = gym.spaces.Box(
++            low=np.asarray(flat_space.low, dtype=np.float32),
++            high=np.asarray(flat_space.high, dtype=np.float32),
++            dtype=np.float32,
++        )
++
++    def _flatten_observation(self, observation):
++        flattened = gym.spaces.flatten(
++            self._original_observation_space,
++            observation,
++        )
++
++        return np.asarray(flattened, dtype=np.float32)
++
++    def reset(self, **kwargs):
++        result = self.env.reset(**kwargs)
++
++        if (
++            isinstance(result, tuple)
++            and len(result) == 2
++            and isinstance(result[1], dict)
++        ):
++            observation, info = result
++        else:
++            observation = result
++            info = {}
++
++        if info is None:
++            info = {}
++
++        observation = self._flatten_observation(observation)
++
++        return observation, info
++
++    def step(self, action):
++        result = self.env.step(action)
++
++        if not isinstance(result, tuple):
++            raise TypeError(
++                "env.step() 必须返回 tuple，"
++                f"当前类型为 {type(result)}"
++            )
++
++        if len(result) == 5:
++            (
++                observation,
++                reward,
++                terminated,
++                truncated,
++                info,
++            ) = result
++
++        elif len(result) == 4:
++            observation, reward, done, info = result
++
++            if info is None:
++                info = {}
++
++            truncated = bool(
++                info.get("TimeLimit.truncated", False)
++            )
++            terminated = bool(done) and not truncated
++
++        else:
++            raise RuntimeError(
++                "无法识别 env.step() 返回格式，"
++                f"返回值数量为 {len(result)}"
++            )
++
++        if info is None:
++            info = {}
++
++        observation = self._flatten_observation(observation)
++
++        return (
++            observation,
++            reward,
++            bool(terminated),
++            bool(truncated),
++            info,
++        )
++
++
+ FLAGS = flags.FLAGS
+ 
+ flags.DEFINE_string("env", "HalfCheetah-v4", "Name of environment.")
+@@ -37,8 +137,8 @@ flags.DEFINE_integer("seed", 42, "Random seed.")
+ flags.DEFINE_bool("save_model", False, "Whether to save model.")
+ flags.DEFINE_integer("batch_size", 256, "Batch size.")
+ flags.DEFINE_integer("critic_actor_ratio", 8, "critic to actor update ratio.")
+-
+-flags.DEFINE_integer("max_steps", 1000000, "Maximum number of training steps.")
++flags.DEFINE_integer("utd_ratio",8,"Update-to-data ratio.")
++flags.DEFINE_integer("max_steps", 10000, "Maximum number of training steps.")
+ flags.DEFINE_integer("replay_buffer_capacity", 1000000, "Replay buffer capacity.")
+ 
+ flags.DEFINE_integer("random_steps", 300, "Sample random actions for this many steps.")
+@@ -93,8 +193,10 @@ def actor(agent: SACAgent, data_store, env, sampling_rng):
+ 
+     eval_env = gym.make(FLAGS.env)
+     if FLAGS.env == "PandaPickCube-v0":
+-        eval_env = gym.wrappers.FlattenObservation(eval_env)
+-    eval_env = RecordEpisodeStatistics(eval_env)
++        eval_env = eval_env.unwrapped
++        eval_env = CompatFlattenObservation(eval_env)
++    else:
++         eval_env = RecordEpisodeStatistics(eval_env)
+ 
+     obs, _ = env.reset()
+     done = False
+@@ -267,7 +369,8 @@ def main(_):
+         env = gym.make(FLAGS.env)
+ 
+     if FLAGS.env == "PandaPickCube-v0":
+-        env = gym.wrappers.FlattenObservation(env)
++        env = env.unwrapped
++        env = CompatFlattenObservation(env)
+ 
+     rng, sampling_rng = jax.random.split(rng)
+     agent: SACAgent = make_sac_agent(
+diff --git a/examples/async_sac_state_sim/run_actor.sh b/examples/async_sac_state_sim/run_actor.sh
+index 5767791..85b8209 100644
+--- a/examples/async_sac_state_sim/run_actor.sh
++++ b/examples/async_sac_state_sim/run_actor.sh
+@@ -2,7 +2,6 @@ export XLA_PYTHON_CLIENT_PREALLOCATE=false && \
+ export XLA_PYTHON_CLIENT_MEM_FRACTION=.05 && \
+ python async_sac_state_sim.py "$@" \
+     --actor \
+-    --render \
+     --env PandaPickCube-v0 \
+     --exp_name=serl_dev_sim_test \
+     --seed 0 \
+diff --git a/examples/async_sac_state_sim/run_learner.sh b/examples/async_sac_state_sim/run_learner.sh
+index 10a203c..9502f1b 100644
+--- a/examples/async_sac_state_sim/run_learner.sh
++++ b/examples/async_sac_state_sim/run_learner.sh
+@@ -1,5 +1,16 @@
+-export XLA_PYTHON_CLIENT_PREALLOCATE=false && \
+-export XLA_PYTHON_CLIENT_MEM_FRACTION=.05 && \
++#!/usr/bin/env bash
++set -e
++
++export XLA_PYTHON_CLIENT_PREALLOCATE=false
++export XLA_PYTHON_CLIENT_MEM_FRACTION=.05
++
++# W&B 在线记录
++export WANDB_MODE=online
++export WANDB_SHOW_RUN=true
++export WANDB_DIR="$HOME/serl_wandb"
++
++mkdir -p "$WANDB_DIR"
++
+ python async_sac_state_sim.py "$@" \
+     --learner \
+     --env PandaPickCube-v0 \
+@@ -8,4 +19,5 @@ python async_sac_state_sim.py "$@" \
+     --training_starts 1000 \
+     --critic_actor_ratio 8 \
+     --batch_size 256 \
+-    --debug # wandb is disabled when debug
++    --checkpoint_period 1000 \
++    --checkpoint_path "$HOME/serl_checkpoints/panda_pick_sac"
+diff --git a/examples/async_sac_state_sim/tmux_launch.sh b/examples/async_sac_state_sim/tmux_launch.sh
+index 78ff94a..3d12c89 100644
+--- a/examples/async_sac_state_sim/tmux_launch.sh
++++ b/examples/async_sac_state_sim/tmux_launch.sh
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+ 
+ EXAMPLE_DIR=${EXAMPLE_DIR:-"examples/async_sac_state_sim"}
+-CONDA_ENV=${CONDA_ENV:-"serl"}
++CONDA_ENV="serl_clean"
+ 
+ cd $EXAMPLE_DIR
+ echo "Running from $(pwd)"
+diff --git a/franka_sim/franka_sim/envs/panda_pick_gym_env.py b/franka_sim/franka_sim/envs/panda_pick_gym_env.py
+index f0a8d25..3aa83df 100644
+--- a/franka_sim/franka_sim/envs/panda_pick_gym_env.py
++++ b/franka_sim/franka_sim/envs/panda_pick_gym_env.py
+@@ -144,6 +144,8 @@ class PandaPickCubeGymEnv(MujocoGymEnv):
+         self._viewer = MujocoRenderer(
+             self.model,
+             self.data,
++            width=640,
++            height=480,
+         )
+         self._viewer.render(self.render_mode)
+ 
+diff --git a/serl_launcher/serl_launcher/agents/continuous/bc.py b/serl_launcher/serl_launcher/agents/continuous/bc.py
+index c36a4f0..8b983c4 100644
+--- a/serl_launcher/serl_launcher/agents/continuous/bc.py
++++ b/serl_launcher/serl_launcher/agents/continuous/bc.py
+@@ -35,7 +35,14 @@ class BCAgent(flax.struct.PyTreeNode):
+ 
+     @partial(jax.jit, static_argnames="pmap_axis")
+     def update(self, batch: Batch, pmap_axis: str = None):
+-        if self.config["image_keys"][0] not in batch["next_observations"]:
++        # SERL_STATE_ONLY_BC_PATCH_V1
++        # Pixel BC 才需要检查 image key / unpack。
++        # State-only BC 的 image_keys=()，直接使用 flat state batch。
++        if (
++            self.config["image_keys"]
++            and self.config["image_keys"][0]
++            not in batch["next_observations"]
++        ):
+             batch = _unpack(batch)
+ 
+         # rng = self.state.rng
+@@ -114,6 +121,83 @@ class BCAgent(flax.struct.PyTreeNode):
+             "pi_actions": pi_actions,
+         }
+ 
++    @classmethod
++    def create_states(
++        cls,
++        rng,
++        observations,
++        actions,
++        network_kwargs=None,
++        policy_kwargs=None,
++        learning_rate=3e-4,
++    ):
++        """
++        SERL_STATE_ONLY_BC_PATCH_V1
++
++        State-only Behavior Cloning agent.
++
++        与 SACAgent.create_states() 一样：
++        不使用视觉 encoder，直接把 flat state
++        输入 Policy + MLP。
++        """
++        if network_kwargs is None:
++            network_kwargs = {
++                "hidden_dims": [256, 256],
++            }
++
++        if policy_kwargs is None:
++            policy_kwargs = {
++                "tanh_squash_distribution": False,
++            }
++
++        # 防止修改调用方传入的 dict
++        network_kwargs = dict(network_kwargs)
++        policy_kwargs = dict(policy_kwargs)
++
++        network_kwargs["activate_final"] = True
++
++        networks = {
++            "actor": Policy(
++                encoder=None,
++                network=MLP(**network_kwargs),
++                action_dim=actions.shape[-1],
++                **policy_kwargs,
++            )
++        }
++
++        model_def = ModuleDict(networks)
++
++        tx = optax.adam(
++            learning_rate,
++        )
++
++        rng, init_rng = jax.random.split(rng)
++
++        params = model_def.init(
++            init_rng,
++            actor=[observations],
++        )["params"]
++
++        rng, create_rng = jax.random.split(rng)
++
++        state = JaxRLTrainState.create(
++            apply_fn=model_def.apply,
++            params=params,
++            txs=tx,
++            target_params=params,
++            rng=create_rng,
++        )
++
++        # 空 tuple 明确表示纯 state agent
++        config = dict(
++            image_keys=(),
++        )
++
++        return cls(
++            state=state,
++            config=config,
++        )
++
+     @classmethod
+     def create(
+         cls,

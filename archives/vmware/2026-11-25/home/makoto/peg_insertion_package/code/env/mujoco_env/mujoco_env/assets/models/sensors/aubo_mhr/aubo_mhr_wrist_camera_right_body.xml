@@ -1,0 +1,7 @@
+<root>
+  <body name="wrist_camera_right" pos="-0.015 0 0" quat="0.707107 0 -0.707107 0">
+    <!-- <geom class="visualgeom" type="mesh" mesh="xtion_pro_live" rgba="0.2 0.2 0.2 1" /> -->
+    <!-- <geom type="mesh" mesh="xtion_pro_live" rgba="0.2 0.2 0.2 1" /> -->
+    <camera name="wrist_right" fovy="58" mode="fixed" />
+  </body>
+</root>

@@ -1,0 +1,10 @@
+<root>
+  <!-- aubo_mhr_2 gripper meshes -->
+  <asset>
+    <mesh name="mhr2_figure_base" file="mesh/Figure_base.obj" scale="0.001 0.001 0.001" />
+    <mesh name="mhr2_figure1_left" file="mesh/PGC-FZY_figure_L1.obj" scale="0.001 0.001 0.001" />
+    <mesh name="mhr2_figure2_left" file="mesh/PGC-FZY_figure_L2.obj" scale="0.001 0.001 0.001" />
+    <mesh name="mhr2_figure1_right" file="mesh/PGC-FZY_figure_R1.obj" scale="0.001 0.001 0.001" />
+    <mesh name="mhr2_figure2_right" file="mesh/PGC-FZY_figure_R2.obj" scale="0.001 0.001 0.001" />
+  </asset>
+</root>

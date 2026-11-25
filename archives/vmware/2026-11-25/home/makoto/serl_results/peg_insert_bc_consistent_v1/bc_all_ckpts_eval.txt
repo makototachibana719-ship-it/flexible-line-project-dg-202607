@@ -1,0 +1,330 @@
+
+========================================
+BC CHECKPOINT 500
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 500
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -4153.625
+  first_position_err  = 0.16711153664874484
+  min_position_err    = 0.06498037144329226
+  approach_reduction  = 61.1%
+  min_lateral_err     = 0.06363125041356218
+  min_axial_err       = 0.00568422603677066
+  max_force           = 54.631
+  action_saturation   = 2.0%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================
+
+========================================
+BC CHECKPOINT 1000
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 1000
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -4288.317
+  first_position_err  = 0.1670889389618117
+  min_position_err    = 0.06787697387831573
+  approach_reduction  = 59.4%
+  min_lateral_err     = 0.06701918916894238
+  min_axial_err       = 1.672027320582274e-05
+  max_force           = 29.017
+  action_saturation   = 0.0%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================
+
+========================================
+BC CHECKPOINT 1500
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 1500
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -3935.211
+  first_position_err  = 0.16707807333815727
+  min_position_err    = 0.06886276799058005
+  approach_reduction  = 58.8%
+  min_lateral_err     = 0.06691793052255517
+  min_axial_err       = 2.9524266821744465e-05
+  max_force           = 21.172
+  action_saturation   = 0.0%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================
+
+========================================
+BC CHECKPOINT 2000
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 2000
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -3348.548
+  first_position_err  = 0.16701140472081882
+  min_position_err    = 0.055054759436978316
+  approach_reduction  = 67.0%
+  min_lateral_err     = 0.054248701718910886
+  min_axial_err       = 0.009385831945207979
+  max_force           = 13.334
+  action_saturation   = 0.0%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================
+
+========================================
+BC CHECKPOINT 2500
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 2500
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -4106.793
+  first_position_err  = 0.16705506030422915
+  min_position_err    = 0.0711546744145229
+  approach_reduction  = 57.4%
+  min_lateral_err     = 0.06689910285149667
+  min_axial_err       = 2.112883101944992e-05
+  max_force           = 17.177
+  action_saturation   = 0.0%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================
+
+========================================
+BC CHECKPOINT 3000
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 3000
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -4498.191
+  first_position_err  = 0.1670834376627066
+  min_position_err    = 0.0819133010302575
+  approach_reduction  = 51.0%
+  min_lateral_err     = 0.07392627765006415
+  min_axial_err       = 6.191166151910098e-05
+  max_force           = 12.746
+  action_saturation   = 0.0%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================
+
+========================================
+BC CHECKPOINT 3500
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 3500
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -3676.135
+  first_position_err  = 0.16703766949799895
+  min_position_err    = 0.0655167276845866
+  approach_reduction  = 60.8%
+  min_lateral_err     = 0.06536936364329214
+  min_axial_err       = 4.02168322495826e-05
+  max_force           = 20.305
+  action_saturation   = 0.0%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================
+
+========================================
+BC CHECKPOINT 4000
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 4000
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -3681.331
+  first_position_err  = 0.16704384328679073
+  min_position_err    = 0.06697361763749254
+  approach_reduction  = 59.9%
+  min_lateral_err     = 0.0666927601539201
+  min_axial_err       = 1.040010638235557e-05
+  max_force           = 23.596
+  action_saturation   = 0.2%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================
+
+========================================
+BC CHECKPOINT 4500
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 4500
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -3851.921
+  first_position_err  = 0.16704710235222278
+  min_position_err    = 0.0669604904422571
+  approach_reduction  = 59.9%
+  min_lateral_err     = 0.06694997573873808
+  min_axial_err       = 7.540607563283719e-06
+  max_force           = 25.772
+  action_saturation   = 0.4%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================
+
+========================================
+BC CHECKPOINT 5000
+========================================
+DEBUG: Processing mount pedestal with pos [0.4, -0.4, 0.092]
+DEBUG: Using default robot XML: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/manipulators/Aubo_i5/Aubo_i5.xml
+DEBUG: Processing robot Aubo_i5 with pos [0.4, -0.4, 0.484]
+DEBUG: Processing force sensor KWR75B from /home/makoto/projects/mujoco_env/mujoco_env/assets/models/sensors/ftsensor/KWR75B.xml
+DEBUG: Sensor attached. New target attachment body: ft_sensor_mount
+DEBUG: Checking gripper path: /home/makoto/projects/mujoco_env/mujoco_env/assets/models/grippers/assemble_axle/assemble_axle.xml, exists: True
+DEBUG: Attaching gripper to body 'ft_sensor_mount'
+Loaded hole position from scene: [0.6   0.    0.526]
+Loaded hole orientation from scene: [1. 0. 0. 0.] (from euler: [0.0, 0.0, 0.0])
+[BC-EVAL] restoring: /home/makoto/serl_checkpoints/peg_insert_bc_consistent_v1 step= 5000
+[OK] BC checkpoint restored
+
+[BC-EVAL] episode=1
+  success             = False
+  steps               = 500
+  cycle_time          = 25.000s
+  return              = -2371.053
+  first_position_err  = 0.16701158914300634
+  min_position_err    = 0.014532173248498512
+  approach_reduction  = 91.3%
+  min_lateral_err     = 0.0006193316482707089
+  min_axial_err       = 1.4186879847229095e-05
+  max_force           = 66.286
+  action_saturation   = 0.6%
+
+======================================================================
+[BC EVAL SUMMARY]
+Success: 0/1
+======================================================================

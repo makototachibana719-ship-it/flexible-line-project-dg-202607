@@ -1,0 +1,13 @@
+<root>
+  <body name="sensors">
+    <body name="camera_chest_link">
+      <geom pos="0 -0.32 0.105" quat="-0.50 -0.5 -0.5 0.5" type="mesh" rgba="0.792157 0.819608 0.933333 1" mesh="camera_chest" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="0.792157 0.819608 0.933333 1" mesh="camera_chest" pos="0 -0.32 0.105" quat="-0.50 -0.5 -0.5 0.5" />
+    </body>
+
+    <body name="camera_head_link">
+      <geom pos="0 -0.31 0.635" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.792157 0.819608 0.933333 1" mesh="camera_head" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="mesh" rgba="0.792157 0.819608 0.933333 1" mesh="camera_head" pos="0 -0.31 0.635" quat="0.707107 0.707107 0 0" />
+    </body>
+  </body>
+</root>

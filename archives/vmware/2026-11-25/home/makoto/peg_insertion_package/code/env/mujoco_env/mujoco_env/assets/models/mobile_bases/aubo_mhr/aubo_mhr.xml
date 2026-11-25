@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mujoco model="aubo_mhr_base">
+  <!-- Aubo MHR 移动底盘 -->
+  <!-- 作为RobotAssembler的入口文件，包含assets和worldbody -->
+  
+  <!-- 引入底盘资源 -->
+  <include file="aubo_mhr_base_assets.xml" />
+  
+  <!-- 底盘主体 -->
+  <worldbody>
+    <include file="aubo_mhr_base_body.xml" />
+  </worldbody>
+  
+  <!-- 底盘驱动电机 -->
+  <actuator>
+    <motor name="front_right_steering_joint" joint="front_right_steering_joint" ctrllimited="true" ctrlrange="-5 5" gear="1" />
+    <motor name="front_left_steering_joint" joint="front_left_steering_joint" ctrllimited="true" ctrlrange="-5 5" gear="1" />
+    <motor name="rear_right_steering_joint" joint="rear_right_steering_joint" ctrllimited="true" ctrlrange="-5 5" gear="1" />
+    <motor name="rear_left_steering_joint" joint="rear_left_steering_joint" ctrllimited="true" ctrlrange="-5 5" gear="1" />
+  </actuator>
+</mujoco>
